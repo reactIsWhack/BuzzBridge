@@ -2,10 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const generateFakeUsers = require('./utils/seeds');
 const dotenv = require('dotenv').config();
 
 const app = express();
 const PORT = 5000;
+
+generateFakeUsers();
 
 // Middleware
 

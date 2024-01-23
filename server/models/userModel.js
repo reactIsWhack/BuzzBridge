@@ -40,6 +40,7 @@ const userSchema = new Schema(
     friends: [{ type: Schema.Types.ObjectId, ref: 'user' }],
     posts: [{ type: Schema.Types.ObjectId, ref: 'post' }],
     // Each user will have their own posts array, which will be an array of ObjectId's refrencing the post model.
+    isFake: Boolean,
   },
   { timestamps: true }
 );
