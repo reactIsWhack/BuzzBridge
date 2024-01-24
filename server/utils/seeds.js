@@ -3,7 +3,7 @@ const { faker } = require('@faker-js/faker');
 
 const generateFakeUsers = async () => {
   const usersGenerated = await User.find();
-  // If 10 fake users have already been generated, then return as more than 10 fake users is not needed for testing purposes
+  // If fake users have already been generated, then return as more than 10 fake users is not needed for testing purposes
 
   if (usersGenerated.length) {
     return;
