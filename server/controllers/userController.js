@@ -90,4 +90,42 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, loginUser };
+const logoutUser = asyncHandler(async (req, res) => {
+  res.cookie('token', '', {
+    path: '/',
+    expires: new Date(0),
+    sameSite: 'none',
+    secure: true,
+    httpOnly: true,
+  });
+
+  res.status(200).json({ message: 'Logged Out Successfully' });
+});
+
+const getLoginStatus = asyncHandler(async (req, res) => {
+  const { token } = req.cookies;
+
+  if (!token) {
+    return res.json(false);
+  }
+
+  const verified = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (verified) {
+    return res.json(true);
+  } else {
+    return res.json(false);
+  }
+});
+
+const friendRequest = asyncHandler(async (req, res) => {
+  res.send('Friend Request');
+});
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getLoginStatus,
+  friendRequest,
+};
