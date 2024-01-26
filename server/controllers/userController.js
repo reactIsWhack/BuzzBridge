@@ -11,6 +11,8 @@ const generateToken = (id) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
+  // testingUser for this controller sends a registered user a friendRequest every time they create an account (for testing)
+  const testingUser = await User.findOne({ email: 'packer.slacker@gmail.com' });
 
   if (!confirmPassword) {
     res.status(400);
@@ -22,7 +24,13 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error('Passwords do not match');
   }
 
-  const user = await User.create({ name, email, password });
+  // Create the user and add the testingUser id to the friendRequests
+  const user = await User.create({
+    name,
+    email,
+    password,
+    friendRequests: [testingUser._id],
+  });
   const token = generateToken(user._id);
 
   // sends jwt as a cookie to the browser, using generated token
@@ -38,6 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({
       name: user.name,
       email: user.email,
+      friendRequests: user.friendRequests,
       _id: user._id,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -79,11 +88,17 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
     });
 
-    const { name, bio, friends, friendRequests, _id } = user;
+    const { name, bio, friends, friendRequests, _id, photo } = user;
 
-    res
-      .status(200)
-      .json({ name, email: user.email, bio, friends, friendRequests, _id });
+    res.status(200).json({
+      name,
+      email: user.email,
+      bio,
+      friends,
+      friendRequests,
+      _id,
+      photo,
+    });
   } else {
     res.status(400);
     throw new Error('Invalid email or password');
@@ -119,7 +134,71 @@ const getLoginStatus = asyncHandler(async (req, res) => {
 });
 
 const friendRequest = asyncHandler(async (req, res) => {
-  res.send('Friend Request');
+  const { friendId } = req.params;
+
+  // get friendId from the params and find the requestedUser, if it is not found throw a 404 error
+
+  const requestedUser = await User.findById(friendId);
+
+  if (!requestedUser) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  // Now add the id of the user making the friendRequest to the requested users friendRequests array.
+  // This id will come from the req.userId property attatched in the authMiddleware which protects the routes.
+
+  requestedUser.friendRequests = [...requestedUser.friendRequests, req.userId];
+
+  // The friendRequests array of a user represents all of the userId's that have requested to be a friend of this user. It will be populated during GET requests
+
+  const updatedRequestedUser = await requestedUser.save();
+
+  if (updatedRequestedUser) {
+    res.status(200).json({ message: 'Friend Request Sent!' });
+  }
+});
+
+const acceptFriendRequest = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const requestedUser = await User.findById(userId);
+
+  // makes sure the accepted user exists
+
+  if (!requestedUser) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  // user variable is the user logged in / person accepting the request.
+  // The req.userId comes from the auth middleware which attaches the logged in usersId if they are logged in using jwt.
+
+  const user = await User.findById(req.userId);
+
+  // find the user, and remove the requested userId from the requestedUser friendRequests array
+
+  user.friendRequests = requestedUser.friendRequests.filter(
+    (friendRequest) => String(friendRequest) !== String(userId)
+  );
+
+  // Add the logged in usersId (user that accepted the request) to the requestedUsers friends and the logged in usersFriends
+
+  requestedUser.friends = [...requestedUser.friends, user._id];
+  user.friends = [...user.friends, requestedUser._id];
+
+  // Save both the accepted user, and the user that accepted the request
+
+  await requestedUser.save();
+  const updatedUser = await user.save();
+
+  if (updatedUser) {
+    const { name, email, bio, friends, friendRequests, photo, _id } =
+      updatedUser;
+    res
+      .status(200)
+      .json({ name, email, bio, friends, friendRequests, photo, _id });
+  }
 });
 
 module.exports = {
@@ -128,4 +207,5 @@ module.exports = {
   logoutUser,
   getLoginStatus,
   friendRequest,
+  acceptFriendRequest,
 };
