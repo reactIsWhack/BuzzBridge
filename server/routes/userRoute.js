@@ -6,6 +6,9 @@ const {
   getLoginStatus,
   friendRequest,
   acceptFriendRequest,
+  getLoggedInUser,
+  getAllUsers,
+  getUserProfile,
 } = require('../controllers/userController');
 const protect = require('../middleware/routeProtector');
 const router = express.Router();
@@ -16,5 +19,8 @@ router.get('/logoutuser', logoutUser);
 router.get('/getloginstatus', getLoginStatus);
 router.patch('/friendrequest/:friendId', protect, friendRequest);
 router.patch('/acceptfriendrequest/:userId', protect, acceptFriendRequest);
+router.get('/user', protect, getLoggedInUser);
+router.get('/allusers', protect, getAllUsers);
+router.get('/userprofile/:userId', protect, getUserProfile);
 
 module.exports = router;

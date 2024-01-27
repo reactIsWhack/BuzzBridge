@@ -201,6 +201,88 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
   }
 });
 
+const getLoggedInUser = asyncHandler(async (req, res) => {
+  console.log(req.userId);
+  const user = await User.findById(req.userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  const {
+    name,
+    email,
+    bio,
+    friends,
+    friendRequests,
+    _id,
+    createdAt,
+    updatedAt,
+  } = user;
+
+  res.status(200).json({
+    name,
+    email,
+    bio,
+    friends,
+    friendRequests,
+    _id,
+    createdAt,
+    updatedAt,
+  });
+});
+
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find();
+
+  if (!users) {
+    throw new Error('Failed to get users');
+  }
+
+  // Passwords cannot be viewed on the client
+
+  res.status(200).json(
+    users.map((user) => {
+      user.password = null;
+      return user;
+    })
+  );
+});
+
+const getUserProfile = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  const {
+    name,
+    email,
+    bio,
+    friends,
+    friendRequests,
+    _id,
+    createdAt,
+    updatedAt,
+  } = user;
+
+  res.status(200).json({
+    name,
+    email,
+    bio,
+    friends,
+    friendRequests,
+    _id,
+    createdAt,
+    updatedAt,
+  });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -208,4 +290,7 @@ module.exports = {
   getLoginStatus,
   friendRequest,
   acceptFriendRequest,
+  getLoggedInUser,
+  getAllUsers,
+  getUserProfile,
 };
