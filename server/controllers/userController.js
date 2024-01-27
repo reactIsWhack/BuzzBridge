@@ -1,7 +1,14 @@
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const cloudinary = require('cloudinary').v2;
 const User = require('../models/userModel');
+
+cloudinary.config({
+  cloud_name: 'dlxmlfspp',
+  api_key: 786446394932271,
+  api_secret: 'UfEUwsEnVjcGWFsHFzBLWZA3RR4',
+});
 
 const generateToken = (id) => {
   // Generates a json web token using the id of the registered or logged in user
@@ -217,6 +224,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
     friends,
     friendRequests,
     _id,
+    photo,
     createdAt,
     updatedAt,
   } = user;
@@ -227,6 +235,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
     bio,
     friends,
     friendRequests,
+    photo,
     _id,
     createdAt,
     updatedAt,
@@ -266,6 +275,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
     bio,
     friends,
     friendRequests,
+    photo,
     _id,
     createdAt,
     updatedAt,
@@ -277,10 +287,86 @@ const getUserProfile = asyncHandler(async (req, res) => {
     bio,
     friends,
     friendRequests,
+    photo,
     _id,
     createdAt,
     updatedAt,
   });
+});
+
+const updateUser = asyncHandler(async (req, res) => {
+  const { bio, currentPassword, newPassword, confirmPassword } = req.body;
+  const user = await User.findById(req.userId);
+
+  // First check if the user is updating their avatar, and if so update the avatar and return
+
+  if (req.file) {
+    let avatar = '';
+    try {
+      const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: 'image',
+        folder: 'NodeNet',
+      });
+      avatar = secure_url;
+    } catch (error) {
+      console.log(error);
+    }
+
+    user.photo = avatar;
+    const updatedUser = await user.save();
+    const {
+      name,
+      email,
+      bio,
+      friends,
+      friendRequests,
+      _id,
+      photo,
+      createdAt,
+      updatedAt,
+    } = updatedUser;
+
+    return res.status(200).json({
+      name,
+      email,
+      bio,
+      friends,
+      friendRequests,
+      photo,
+      _id,
+      createdAt,
+      updatedAt,
+    });
+  }
+
+  if (currentPassword && confirmPassword && newPassword) {
+    const currentPasswordIsCorrect = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    // Check if the current password is correct
+
+    if (!currentPasswordIsCorrect) {
+      res.status(400);
+      throw new Error('Current password is not correct');
+    }
+
+    if (newPassword !== confirmPassword) {
+      res.status(400);
+      throw new Error('Passwords do not match');
+    }
+
+    user.password = newPassword;
+
+    await user.save();
+    return res.status(200).json({ message: 'Password Updated!' });
+  }
+
+  user.bio = bio;
+
+  const updatedUser = await user.save();
+  res.status(200).json({ bio: updatedUser.bio });
 });
 
 module.exports = {
@@ -293,4 +379,5 @@ module.exports = {
   getLoggedInUser,
   getAllUsers,
   getUserProfile,
+  updateUser,
 };
