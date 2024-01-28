@@ -5,9 +5,9 @@ const cloudinary = require('cloudinary').v2;
 const User = require('../models/userModel');
 
 cloudinary.config({
-  cloud_name: 'dlxmlfspp',
-  api_key: 786446394932271,
-  api_secret: 'UfEUwsEnVjcGWFsHFzBLWZA3RR4',
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
 });
 
 const generateToken = (id) => {

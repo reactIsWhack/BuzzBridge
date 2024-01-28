@@ -23,26 +23,20 @@ const generateFakeUsers = async () => {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
 
-    const name = firstName + ' ' + lastName; // Generated first and last names to avoid having Dr., ms., mr., ect in the name
-    const email = faker.internet.email();
-    const password = faker.internet.password();
-    const bio = faker.lorem.paragraph();
-    // Every fake user will have the testingUser as a friend for testing purposes
-    const friends = [testingUser._id];
-
-    // Generates a friend for 4 fake users (don't want every fake user to have a friend)
-    if (users.length > 5) {
-      friends.push(users[randomIndex]);
-    }
-
-    const createdUser = await User.create({
-      name,
-      email,
-      password,
-      bio,
-      friends,
+    const fakeUser = {
+      name: firstName + ' ' + lastName, // Generated first and last names to avoid having Dr., ms., mr., ect in the name
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      bio: faker.lorem.paragraph(),
+      // Every fake user will have the testingUser as a friend for testing purposes
+      friends:
+        users.length > 5
+          ? [testingUser._id, users[randomIndex]]
+          : [testingUser._id], // Generates multiple friends for some users depending on their index in the users array
       isFake: true,
-    });
+    };
+
+    const createdUser = await User.create(fakeUser);
 
     // Add the fake users to the testingUsers friends
     testingUser.friends = [...testingUser.friends, createdUser._id];

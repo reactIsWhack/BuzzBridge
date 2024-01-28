@@ -5,7 +5,11 @@ const cookieParser = require('cookie-parser');
 const generateFakeUsers = require('./utils/seeds');
 const dotenv = require('dotenv').config();
 const userRouter = require('./routes/userRoute');
-const { authErrorHandler } = require('./middleware/errorHandler');
+const {
+  authErrorHandler,
+  postErrorHandler,
+} = require('./middleware/errorHandler');
+const postRouter = require('./routes/postRoute');
 
 const app = express();
 const PORT = 5000;
@@ -22,6 +26,7 @@ app.use(cors());
 // Routes Middleware
 
 app.use('/api/users', userRouter, authErrorHandler);
+app.use('/api/posts', postRouter, postErrorHandler);
 
 // Connect to MongoDB
 
