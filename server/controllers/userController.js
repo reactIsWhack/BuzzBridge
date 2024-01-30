@@ -69,7 +69,15 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error('All fields are required');
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email })
+    .populate({
+      path: 'posts',
+      populate: {
+        path: 'author',
+        model: 'user',
+      },
+    })
+    .populate('friends');
 
   // Check if the user is registered
 
@@ -95,7 +103,7 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
     });
 
-    const { name, bio, friends, friendRequests, _id, photo } = user;
+    const { name, bio, friends, friendRequests, _id, photo, posts } = user;
 
     res.status(200).json({
       name,
@@ -105,6 +113,7 @@ const loginUser = asyncHandler(async (req, res) => {
       friendRequests,
       _id,
       photo,
+      posts,
     });
   } else {
     res.status(400);
@@ -197,7 +206,10 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
   // Save both the accepted user, and the user that accepted the request
 
   await requestedUser.save();
-  const updatedUser = await user.save();
+  const updatedUser = (await user.save()).populate([
+    'friends',
+    'friendRequests',
+  ]);
 
   if (updatedUser) {
     const { name, email, bio, friends, friendRequests, photo, _id } =
@@ -209,8 +221,16 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
 });
 
 const getLoggedInUser = asyncHandler(async (req, res) => {
-  console.log(req.userId);
-  const user = await User.findById(req.userId);
+  const user = await User.findById(req.userId)
+    .populate({
+      path: 'posts',
+      populate: {
+        path: 'author',
+        model: 'user',
+      },
+    })
+    .populate('friends')
+    .select('-password');
 
   if (!user) {
     res.status(404);
@@ -225,6 +245,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
     friendRequests,
     _id,
     photo,
+    posts,
     createdAt,
     updatedAt,
   } = user;
@@ -236,6 +257,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
     friends,
     friendRequests,
     photo,
+    posts,
     _id,
     createdAt,
     updatedAt,
@@ -262,36 +284,23 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const getUserProfile = asyncHandler(async (req, res) => {
   const { userId } = req.params;
 
-  const user = await User.findById(userId);
+  const user = await User.findById(userId)
+    .select('-password')
+    .populate('friends')
+    .populate({
+      path: 'posts',
+      populate: {
+        path: 'author',
+        model: 'user',
+      },
+    });
 
   if (!user) {
     res.status(404);
     throw new Error('User not found');
   }
 
-  const {
-    name,
-    email,
-    bio,
-    friends,
-    friendRequests,
-    photo,
-    _id,
-    createdAt,
-    updatedAt,
-  } = user;
-
-  res.status(200).json({
-    name,
-    email,
-    bio,
-    friends,
-    friendRequests,
-    photo,
-    _id,
-    createdAt,
-    updatedAt,
-  });
+  res.status(200).json(user);
 });
 
 const updateUser = asyncHandler(async (req, res) => {
