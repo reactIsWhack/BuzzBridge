@@ -30,6 +30,7 @@ const createPost = asyncHandler(async (req, res) => {
     postMessage,
     author: req.userId,
     img: postImg,
+    likes: { total: 0, usersLiked: [] }, // Total = total likes for the post, and usersLiked is an array of users that have liked the post.
   });
 
   post.populate({
@@ -99,8 +100,55 @@ const getAllPosts = asyncHandler(async (req, res) => {
   res.status(200).json(allPosts);
 });
 
+const deletePost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const post = await Post.findById(id);
+
+  // Find the post by id and delete it, and also find the user that deleted the post and remove it from their posts array
+
+  if (!post) {
+    res.status(404);
+    throw new Error('Post not found');
+  }
+
+  await post.deleteOne();
+
+  // Only the user that created the post can delete the post (logged in user), so the id from req.userId can be used to find this user.
+
+  const user = await User.findById(req.userId);
+  // Remove post from posts array
+  user.posts = user.posts.filter((post) => String(post._id) !== id);
+  await user.save();
+
+  res.status(200).json({ message: 'Post Deleted!' });
+});
+
+const likeOrRemovelike = asyncHandler(async (req, res) => {
+  const { isLiking } = req.body;
+  const { id } = req.params;
+
+  // The isLiking variable is a boolean where true means a user is liking the post, and false means a user is unliking the post
+
+  const post = await Post.findById(id);
+
+  isLiking ? post.likes.total++ : post.likes.total--;
+  isLiking
+    ? (post.likes.usersLiked = [...post.likes.usersLiked, req.userId])
+    : (post.likes.usersLiked = post.likes.usersLiked.filter(
+        (user) => String(user) !== String(req.userId)
+      ));
+
+  post.markModified('likes');
+  const updatedPost = await post.save();
+
+  res.status(200).json(updatedPost);
+});
+
 module.exports = {
   createPost,
   getUserPosts,
   getAllPosts,
+  deletePost,
+  likeOrRemovelike,
 };

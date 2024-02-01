@@ -7,7 +7,9 @@ const postSchema = new Schema(
       type: String,
       required: [true, 'Please enter a messsage'],
     },
-    likes: Number,
+    // The likes object will have two properties, one is the total which represents how many likes a post has.
+    // The other property will be usersLikedPost which is an array of ObjectId's of users that liked the post.
+    likes: Object,
     // Auther refrences to the user, where the logged in user id will be the author id
     author: {
       type: Schema.ObjectId,

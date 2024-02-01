@@ -77,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
         model: 'user',
       },
     })
-    .populate('friends');
+    .populate({ path: 'friends', select: '-password' });
 
   // Check if the user is registered
 
@@ -229,7 +229,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
         model: 'user',
       },
     })
-    .populate('friends')
+    .populate({ path: 'friends', select: '-password' })
     .select('-password');
 
   if (!user) {
@@ -286,7 +286,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId)
     .select('-password')
-    .populate('friends')
+    .populate({ path: 'friends', select: '-password' })
     .populate({
       path: 'posts',
       populate: {
