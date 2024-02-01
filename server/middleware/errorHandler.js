@@ -36,9 +36,16 @@ const authErrorHandler = (err, req, res, next) => {
 const postErrorHandler = (err, req, res, next) => {
   const { statusCode } = res;
 
-  if (err.errors && err.errors.postMessage) {
+  // Accounts for errors in the posts, comments, and replies
+  if (
+    (err.errors && err.errors.postMessage) ||
+    (err.errors && err.errors.commentMessage)
+  ) {
+    const errMessage =
+      (err.errors.postMessage && err.errors.postMessage.properties.message) ||
+      err.errors.commentMessage.properties.message;
     return res.status(400).json({
-      message: err.errors.postMessage.properties.message,
+      message: errMessage,
       stack: err.stack,
     });
   }

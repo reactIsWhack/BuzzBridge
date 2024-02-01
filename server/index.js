@@ -10,6 +10,7 @@ const {
   postErrorHandler,
 } = require('./middleware/errorHandler');
 const postRouter = require('./routes/postRoute');
+const commentRouter = require('./routes/commentRoute');
 
 const app = express();
 const PORT = 5000;
@@ -27,6 +28,7 @@ app.use(cors());
 
 app.use('/api/users', userRouter, authErrorHandler);
 app.use('/api/posts', postRouter, postErrorHandler);
+app.use('/api/comments', commentRouter, postErrorHandler);
 
 // Connect to MongoDB
 
