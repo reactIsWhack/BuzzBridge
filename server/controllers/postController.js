@@ -49,15 +49,29 @@ const createPost = asyncHandler(async (req, res) => {
 });
 
 const getUserPosts = asyncHandler(async (req, res) => {
-  // Find the logged in user by id from protect middleware and populate their posts array
-  const user = await User.findById(req.userId).populate({
-    path: 'posts',
-    populate: {
-      path: 'author',
-      model: 'user',
-      select: ['-password', '-posts'],
-    },
-  });
+  // Find the logged in user by id from protect middleware and populate their posts array.
+  // Since each post also has an array of comments, populate the comments within the posts too.
+  const user = await User.findById(req.userId)
+    .populate({
+      path: 'posts',
+      populate: {
+        path: 'author',
+        model: 'user',
+        select: ['-password', '-posts'],
+      },
+    })
+    .populate({
+      path: 'posts',
+      populate: {
+        path: 'comments',
+        model: 'comment',
+        populate: {
+          path: 'author',
+          model: 'user',
+          select: ['-password', '-posts'],
+        },
+      },
+    });
 
   res.status(200).json(user.posts);
 });
@@ -82,6 +96,18 @@ const getAllPosts = asyncHandler(async (req, res) => {
         path: 'author',
         model: 'user',
         select: ['-password', '-posts'],
+      },
+    })
+    .populate({
+      path: 'posts',
+      populate: {
+        path: 'comments',
+        model: 'comment',
+        populate: {
+          path: 'author',
+          model: 'user',
+          select: ['-password', '-posts'],
+        },
       },
     });
 
@@ -124,31 +150,9 @@ const deletePost = asyncHandler(async (req, res) => {
   res.status(200).json({ message: 'Post Deleted!' });
 });
 
-const likeOrRemovelike = asyncHandler(async (req, res) => {
-  const { isLiking } = req.body;
-  const { id } = req.params;
-
-  // The isLiking variable is a boolean where true means a user is liking the post, and false means a user is unliking the post
-
-  const post = await Post.findById(id);
-
-  isLiking ? post.likes.total++ : post.likes.total--;
-  isLiking
-    ? (post.likes.usersLiked = [...post.likes.usersLiked, req.userId])
-    : (post.likes.usersLiked = post.likes.usersLiked.filter(
-        (user) => String(user) !== String(req.userId)
-      ));
-
-  post.markModified('likes');
-  const updatedPost = await post.save();
-
-  res.status(200).json(updatedPost);
-});
-
 module.exports = {
   createPost,
   getUserPosts,
   getAllPosts,
   deletePost,
-  likeOrRemovelike,
 };

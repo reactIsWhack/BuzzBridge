@@ -4,10 +4,10 @@ const {
   getUserPosts,
   getAllPosts,
   deletePost,
-  likeOrRemovelike,
 } = require('../controllers/postController');
 const protect = require('../middleware/routeProtector');
 const uploader = require('../utils/fileUpload');
+const likeOrRemovelike = require('../middleware/likePost');
 
 const router = Router();
 
