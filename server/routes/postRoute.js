@@ -8,6 +8,7 @@ const {
 const protect = require('../middleware/routeProtector');
 const uploader = require('../utils/fileUpload');
 const likeOrRemovelike = require('../middleware/likePost');
+const editContent = require('../middleware/editContent');
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router.post('/', protect, uploader.single('photo'), createPost);
 router.get('/userposts', protect, getUserPosts);
 router.get('/allposts', protect, getAllPosts);
 router.delete('/:id', protect, deletePost);
-router.patch('/:id', protect, likeOrRemovelike);
+router.patch('/likepost/:id', protect, likeOrRemovelike);
+router.patch('/editpost/:contentId', protect, editContent);
 
 module.exports = router;
