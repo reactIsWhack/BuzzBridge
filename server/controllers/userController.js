@@ -69,15 +69,14 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error('All fields are required');
   }
 
-  const user = await User.findOne({ email })
-    .populate({
-      path: 'posts',
-      populate: {
-        path: 'author',
-        model: 'user',
-      },
-    })
-    .populate({ path: 'friends', select: '-password' });
+  const user = await User.findOne({ email }).populate([
+    { path: 'friends', model: 'user', select: ['-password', '-posts'] },
+    {
+      path: 'friendRequests',
+      model: 'user',
+      select: ['-password', '-posts'],
+    },
+  ]);
 
   // Check if the user is registered
 
@@ -206,10 +205,18 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
   // Save both the accepted user, and the user that accepted the request
 
   await requestedUser.save();
-  const updatedUser = (await user.save()).populate([
-    'friends',
-    'friendRequests',
-  ]);
+  const updatedUser = await user.save().then((post) =>
+    post.populate([
+      { path: 'friends', model: 'user', select: ['-password', '-posts'] },
+      {
+        path: 'friendRequests',
+        model: 'user',
+        select: ['-password', '-posts'],
+      },
+    ])
+  );
+
+  console.log(updatedUser);
 
   if (updatedUser) {
     const { name, email, bio, friends, friendRequests, photo, _id } =
@@ -378,6 +385,41 @@ const updateUser = asyncHandler(async (req, res) => {
   res.status(200).json({ bio: updatedUser.bio });
 });
 
+const removeFriend = asyncHandler(async (req, res) => {
+  const { friendId } = req.params;
+
+  // Remove the friend id from the logged in user's array and the remove the logged in user's id from t he user being unfriended
+
+  const friend = await User.findById(friendId);
+  const loggedInUser = await User.findById(req.userId);
+
+  if (!friend) {
+    res.status(404);
+    throw new Error('Friend not found');
+  }
+
+  friend.friends = friend.friends.filter(
+    (userId) => String(userId) !== String(req.userId)
+  );
+  loggedInUser.friends = loggedInUser.friends.filter(
+    (userId) => String(userId) !== String(friendId)
+  );
+
+  await friend.save();
+  const { friends } = await loggedInUser.save().then((post) =>
+    post.populate([
+      { path: 'friends', model: 'user', select: ['-password', '-posts'] },
+      {
+        path: 'friendRequests',
+        model: 'user',
+        select: ['-password', '-posts'],
+      },
+    ])
+  );
+
+  res.status(200).json({ friends });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -389,4 +431,5 @@ module.exports = {
   getAllUsers,
   getUserProfile,
   updateUser,
+  removeFriend,
 };

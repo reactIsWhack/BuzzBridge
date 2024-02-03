@@ -31,12 +31,13 @@ const createPost = asyncHandler(async (req, res) => {
     author: req.userId,
     img: postImg,
     likes: { total: 0, usersLiked: [] }, // Total = total likes for the post, and usersLiked is an array of users that have liked the post.
-  });
-
-  post.populate({
-    path: 'author',
-    select: ['-password', '-posts'],
-  });
+  }).then((post) =>
+    post.populate({
+      path: 'author',
+      model: 'user',
+      select: ['-password', '-posts'],
+    })
+  );
 
   // Add the post to the user that created it, which will be the logged in user since only logged in users can create posts
 

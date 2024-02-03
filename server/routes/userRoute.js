@@ -10,6 +10,7 @@ const {
   getAllUsers,
   getUserProfile,
   updateUser,
+  removeFriend,
 } = require('../controllers/userController');
 const protect = require('../middleware/routeProtector');
 const uploader = require('../utils/fileUpload');
@@ -25,5 +26,6 @@ router.get('/user', protect, getLoggedInUser);
 router.get('/allusers', protect, getAllUsers);
 router.get('/userprofile/:userId', protect, getUserProfile);
 router.patch('/update', protect, uploader.single('avatar'), updateUser);
+router.patch('/removefriend/:friendId', protect, removeFriend);
 
 module.exports = router;
