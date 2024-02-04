@@ -229,14 +229,19 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
 
 const getLoggedInUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.userId)
-    .populate({
-      path: 'posts',
-      populate: {
-        path: 'author',
-        model: 'user',
+    .populate([
+      {
+        path: 'posts',
+        model: 'post',
+        populate: {
+          path: 'author',
+          model: 'user',
+          select: ['-password', '-posts'],
+        },
       },
-    })
-    .populate({ path: 'friends', select: '-password' })
+      { path: 'friendRequests', model: 'user', select: '-password' },
+      { path: 'friends', model: 'user', select: '-password' },
+    ])
     .select('-password');
 
   if (!user) {

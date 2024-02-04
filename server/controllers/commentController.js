@@ -87,4 +87,32 @@ const deleteComment = asyncHandler(async (req, res) => {
   res.status(200).json(updatedPost);
 });
 
-module.exports = { createComment, deleteComment };
+const getComments = asyncHandler(async (req, res) => {
+  // Since each post has an array of comments, recieve a postId to find the desired comments from a post
+  const { postId } = req.params;
+
+  // Retrieve the comments from the post requested by the user
+  const post = await Post.findById(postId).populate({
+    path: 'comments',
+    model: 'comment',
+    populate: [
+      {
+        path: 'author',
+        model: 'user',
+        select: ['-password', '-posts'],
+      },
+      {
+        path: 'likes',
+        populate: {
+          path: 'usersLiked',
+          model: 'user',
+          select: ['-password', '-posts', '-friends'],
+        },
+      },
+    ],
+  });
+
+  res.status(200).json(post.comments);
+});
+
+module.exports = { createComment, deleteComment, getComments };

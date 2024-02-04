@@ -5,6 +5,7 @@ const Comment = require('../models/commentModel');
 const likeOrRemovelike = asyncHandler(async (req, res) => {
   const { isLiking, content } = req.body;
   const { id } = req.params;
+  console.log(id);
 
   // The isLiking variable is a boolean where true means a user is liking the post, and false means a user is unliking the post.
   // The content field represents the content that is being liked, and tells whether a post, comment, or reply should be queryed to be updated.
@@ -16,6 +17,7 @@ const likeOrRemovelike = asyncHandler(async (req, res) => {
     likedContent = await Comment.findById(id);
   }
 
+  console.log(likedContent);
   isLiking ? likedContent.likes.total++ : likedContent.likes.total--;
   isLiking
     ? (likedContent.likes.usersLiked = [
