@@ -37,7 +37,13 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     friendRequests: [testingUser._id],
-  });
+  }).then((user) =>
+    user.populate({
+      path: 'friendRequests',
+      model: 'user',
+      select: ['-password'],
+    })
+  );
   const token = generateToken(user._id);
 
   // sends jwt as a cookie to the browser, using generated token
@@ -102,7 +108,16 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
     });
 
-    const { name, bio, friends, friendRequests, _id, photo, posts } = user;
+    const {
+      name,
+      bio,
+      friends,
+      friendRequests,
+      _id,
+      photo,
+      posts,
+      mutualFriends,
+    } = user;
 
     res.status(200).json({
       name,
@@ -110,6 +125,7 @@ const loginUser = asyncHandler(async (req, res) => {
       bio,
       friends,
       friendRequests,
+      mutualFriends,
       _id,
       photo,
       posts,
@@ -177,7 +193,11 @@ const friendRequest = asyncHandler(async (req, res) => {
 const acceptFriendRequest = asyncHandler(async (req, res) => {
   const { userId } = req.params;
 
-  const requestedUser = await User.findById(userId);
+  const requestedUser = await User.findById(userId).populate({
+    path: 'friends',
+    model: 'user',
+    populate: { path: 'friends', model: 'user' },
+  });
 
   // makes sure the accepted user exists
 
@@ -189,7 +209,11 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
   // user variable is the user logged in / person accepting the request.
   // The req.userId comes from the auth middleware which attaches the logged in usersId if they are logged in using jwt.
 
-  const user = await User.findById(req.userId);
+  const user = await User.findById(req.userId).populate({
+    path: 'friends',
+    model: 'user',
+    populate: { path: 'friends', model: 'user' },
+  });
 
   // find the user, and remove the requested userId from the requestedUser friendRequests array
 
@@ -204,10 +228,21 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
 
   // Save both the accepted user, and the user that accepted the request
 
-  await requestedUser.save();
+  await requestedUser.save().then((user) =>
+    user.populate({
+      path: 'friends',
+      model: 'user',
+      populate: { path: 'friends', model: 'user' },
+    })
+  );
   const updatedUser = await user.save().then((post) =>
     post.populate([
-      { path: 'friends', model: 'user', select: ['-password', '-posts'] },
+      {
+        path: 'friends',
+        model: 'user',
+        select: ['-password', '-posts'],
+        populate: { path: 'friends', model: 'user' },
+      },
       {
         path: 'friendRequests',
         model: 'user',
@@ -215,16 +250,8 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
       },
     ])
   );
-
-  console.log(updatedUser);
-
-  if (updatedUser) {
-    const { name, email, bio, friends, friendRequests, photo, _id } =
-      updatedUser;
-    res
-      .status(200)
-      .json({ name, email, bio, friends, friendRequests, photo, _id });
-  }
+  // Get the logged in user after it's mutualFriends array has been updated
+  res.json(updatedUser);
 });
 
 const getLoggedInUser = asyncHandler(async (req, res) => {
@@ -249,31 +276,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  const {
-    name,
-    email,
-    bio,
-    friends,
-    friendRequests,
-    _id,
-    photo,
-    posts,
-    createdAt,
-    updatedAt,
-  } = user;
-
-  res.status(200).json({
-    name,
-    email,
-    bio,
-    friends,
-    friendRequests,
-    photo,
-    posts,
-    _id,
-    createdAt,
-    updatedAt,
-  });
+  res.status(200).json({ user, mutualFriends });
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
@@ -316,7 +319,9 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const { bio, currentPassword, newPassword, confirmPassword } = req.body;
+  const { bio, currentPassword, newPassword, confirmPassword, photoType } =
+    req.body;
+  // photoType specifies if the user is updating their profile picture or cover photo when attatching a file to the request.
   const user = await User.findById(req.userId);
 
   // First check if the user is updating their avatar, and if so update the avatar and return
@@ -333,7 +338,9 @@ const updateUser = asyncHandler(async (req, res) => {
       console.log(error);
     }
 
-    user.photo = avatar;
+    photoType === 'coverPhoto'
+      ? (user.coverPhoto = avatar)
+      : (user.photo = avatar);
     const updatedUser = await user.save();
     const {
       name,
@@ -345,6 +352,8 @@ const updateUser = asyncHandler(async (req, res) => {
       photo,
       createdAt,
       updatedAt,
+      mutualFriends,
+      coverPhoto,
     } = updatedUser;
 
     return res.status(200).json({
@@ -353,7 +362,9 @@ const updateUser = asyncHandler(async (req, res) => {
       bio,
       friends,
       friendRequests,
+      mutualFriends,
       photo,
+      coverPhoto,
       _id,
       createdAt,
       updatedAt,
@@ -411,7 +422,7 @@ const removeFriend = asyncHandler(async (req, res) => {
   );
 
   await friend.save();
-  const { friends } = await loggedInUser.save().then((post) =>
+  const { friends, mutualFriends } = await loggedInUser.save().then((post) =>
     post.populate([
       { path: 'friends', model: 'user', select: ['-password', '-posts'] },
       {
@@ -422,7 +433,7 @@ const removeFriend = asyncHandler(async (req, res) => {
     ])
   );
 
-  res.status(200).json({ friends });
+  res.status(200).json({ friends, mutualFriends });
 });
 
 module.exports = {

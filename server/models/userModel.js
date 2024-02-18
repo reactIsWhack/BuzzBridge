@@ -30,6 +30,10 @@ const userSchema = new Schema(
       type: String,
       default: '',
     },
+    coverPhoto: {
+      type: String,
+      default: '',
+    },
     bio: {
       type: String,
       default: '',
@@ -42,7 +46,7 @@ const userSchema = new Schema(
     // Each user will have their own posts array, which will be an array of ObjectId's refrencing the post model.
     isFake: Boolean,
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 // Before saving user to the database, hash the password
