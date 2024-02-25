@@ -32,13 +32,13 @@ const userSchema = new Schema(
     },
     coverPhoto: {
       type: String,
-      default: '',
+      default: 'https://i.ibb.co/4pDNDk1/avatar.png',
     },
     bio: {
       type: String,
       default: '',
     },
-    friendRequests: [{ type: Schema.Types.ObjectId, ref: 'user' }],
+    friendRequests: [{ type: mongoose.Types.ObjectId, ref: 'user' }],
     // When a user makes a friend request, their id will be added to the requested users friendRequest array.
     // If the user accepts the friend request, the id of the accepted user is removed from the friendRequests and added to the friends array.
     friends: [{ type: Schema.Types.ObjectId, ref: 'user' }],

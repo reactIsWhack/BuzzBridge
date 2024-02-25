@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const initializeMongoDB = async (app) => {
+const initializeMongoDB = async () => {
   await mongoose.connect(
     process.env.NODE_ENV === 'test'
       ? process.env.TEST_MONGO_URI
@@ -10,4 +11,6 @@ const initializeMongoDB = async (app) => {
   return true;
 };
 
-module.exports = initializeMongoDB;
+const disconnectMongoDB = async () => await mongoose.connection.close();
+
+module.exports = { initializeMongoDB, disconnectMongoDB };

@@ -12,7 +12,7 @@ const postSchema = new Schema(
     likes: Object,
     // Auther refrences to the user, where the logged in user id will be the author id
     author: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'user',
     },
     img: {
@@ -22,7 +22,7 @@ const postSchema = new Schema(
     // Each post will have an array of comments.
     // When a comment is created, the post being commented will be queryed and the id of the created comment will be added to the queryed post.
     comments: {
-      type: [{ type: Schema.ObjectId, ref: 'comment' }],
+      type: [{ type: Schema.Types.ObjectId, ref: 'comment' }],
     },
   },
   { timestamps: true }

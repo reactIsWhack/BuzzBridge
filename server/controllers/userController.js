@@ -18,8 +18,6 @@ const generateToken = (id) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
-  // testingUser for this controller sends a registered user a friendRequest every time they create an account (for testing)
-  const testingUser = await User.findOne({ email: 'packer.slacker@gmail.com' });
 
   if (!confirmPassword) {
     res.status(400);
@@ -31,19 +29,11 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error('Passwords do not match');
   }
 
-  // Create the user and add the testingUser id to the friendRequests
   const user = await User.create({
     name,
     email,
     password,
-    friendRequests: [testingUser._id],
-  }).then((user) =>
-    user.populate({
-      path: 'friendRequests',
-      model: 'user',
-      select: ['-password'],
-    })
-  );
+  });
   const token = generateToken(user._id);
 
   // sends jwt as a cookie to the browser, using generated token
@@ -59,7 +49,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({
       name: user.name,
       email: user.email,
-      friendRequests: user.friendRequests,
       _id: user._id,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -280,7 +269,8 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find();
+  const { userAmount } = req.params;
+  const users = await User.find().limit(userAmount);
 
   if (!users) {
     throw new Error('Failed to get users');
