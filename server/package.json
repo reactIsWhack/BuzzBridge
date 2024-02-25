@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js NODE_ENV=deploy",
-    "test": "jest --watchAll --verbose --testPathPattern=tests/users.test.js NODE_ENV=test",
+    "test": "jest --watchAll --verbose --testPathPattern=tests/users.test.js NODE_ENV=test --runInBand",
     "coverage": "jest --coverage"
   },
   "author": "",

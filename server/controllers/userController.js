@@ -65,11 +65,20 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({ email }).populate([
-    { path: 'friends', model: 'user', select: ['-password', '-posts'] },
+    {
+      path: 'friends',
+      model: 'user',
+      select: ['-password'],
+      populate: {
+        path: 'friends',
+        model: 'user',
+        select: '-password',
+      },
+    },
     {
       path: 'friendRequests',
       model: 'user',
-      select: ['-password', '-posts'],
+      select: ['-password'],
     },
   ]);
 
@@ -97,16 +106,7 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
     });
 
-    const {
-      name,
-      bio,
-      friends,
-      friendRequests,
-      _id,
-      photo,
-      posts,
-      mutualFriends,
-    } = user;
+    const { name, bio, friends, friendRequests, _id, photo, posts } = user;
 
     res.status(200).json({
       name,
@@ -114,7 +114,6 @@ const loginUser = asyncHandler(async (req, res) => {
       bio,
       friends,
       friendRequests,
-      mutualFriends,
       _id,
       photo,
       posts,
@@ -224,22 +223,21 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
       populate: { path: 'friends', model: 'user' },
     })
   );
-  const updatedUser = await user.save().then((post) =>
-    post.populate([
+  const updatedUser = await user.save().then((user) =>
+    user.populate([
       {
         path: 'friends',
         model: 'user',
-        select: ['-password', '-posts'],
+        select: ['-password'],
         populate: { path: 'friends', model: 'user' },
       },
       {
         path: 'friendRequests',
         model: 'user',
-        select: ['-password', '-posts'],
+        select: ['-password'],
       },
     ])
   );
-  // Get the logged in user after it's mutualFriends array has been updated
   res.json(updatedUser);
 });
 
@@ -252,7 +250,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
         populate: {
           path: 'author',
           model: 'user',
-          select: ['-password', '-posts'],
+          select: ['-password'],
         },
       },
       { path: 'friendRequests', model: 'user', select: '-password' },
@@ -265,12 +263,11 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  res.status(200).json({ user, mutualFriends });
+  res.status(200).json(user);
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const { userAmount } = req.params;
-  const users = await User.find().limit(userAmount);
+  const users = await User.find().limit(Number(req.params.limit));
 
   if (!users) {
     throw new Error('Failed to get users');
@@ -342,7 +339,6 @@ const updateUser = asyncHandler(async (req, res) => {
       photo,
       createdAt,
       updatedAt,
-      mutualFriends,
       coverPhoto,
     } = updatedUser;
 
@@ -352,7 +348,6 @@ const updateUser = asyncHandler(async (req, res) => {
       bio,
       friends,
       friendRequests,
-      mutualFriends,
       photo,
       coverPhoto,
       _id,

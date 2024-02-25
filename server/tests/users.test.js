@@ -12,6 +12,14 @@ beforeAll(async () => {
   await generateFakeUsers();
 });
 
+const userOutline = {
+  name: expect.any(String),
+  email: expect.any(String),
+  bio: expect.any(String),
+  friends: expect.any(Array),
+  coverPhoto: expect.any(String),
+};
+
 describe('POST /users', () => {
   it('Should register a new user', async () => {
     const response = await request(app)
@@ -32,6 +40,7 @@ describe('POST /users', () => {
       })
     );
     expect(response.body._id).toBeTruthy();
+    expect(response.header['set-cookie']).toBeTruthy();
   });
 });
 
@@ -67,7 +76,7 @@ describe('PATCH /users', () => {
     }
   });
 
-  it('Should accept the friendRequest of the user who sent the request', async () => {
+  it('Should accept the three friendRequests to the test user', async () => {
     // Login the randomUser that was sent the request and accept the friendRequest
     for (let i = 0; i < randomUsers.length; i++) {
       const randomUser = randomUsers[i];
@@ -121,6 +130,75 @@ describe('PATCH /users', () => {
 
     expect(response.body.bio).toBeTruthy();
     expect(response.body.bio).toBe('Life Long Cheesehead');
+  });
+
+  it('Should remove one friend from the test user', async () => {
+    const removedFriend = user.friends[2];
+    const response = await request(app)
+      .patch(`/api/users/removefriend/${removedFriend._id}`)
+      .set('Cookie', [...token])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // test user friends should no longer include the user who was just removed
+    expect(response.body.friends.length).toBe(2);
+    expect(response.body.friends).not.toContain(removedFriend);
+    expect(response.body.friends).toEqual(
+      expect.arrayContaining([expect.objectContaining(userOutline)])
+    );
+  });
+});
+
+describe('GET /users', () => {
+  let token;
+  let user;
+
+  beforeEach(async () => {
+    const userData = await loginTestUser('test@gmail.com', 'test1234');
+    token = userData.token;
+    user = userData.user;
+  });
+
+  it('Should get the profile of the logged in test user', async () => {
+    const response = await request(app)
+      .get('/api/users/user')
+      .set('Cookie', [...token])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        name: 'test',
+        email: 'test@gmail.com',
+        photo: expect.any(String),
+        friends: expect.arrayContaining([expect.objectContaining(userOutline)]),
+        bio: 'Life Long Cheesehead',
+      })
+    );
+  });
+
+  it('Should get the profile of a friend of the test user', async () => {
+    const friend = user.friends[0];
+    const response = await request(app)
+      .get(`/api/users/userprofile/${friend._id}`)
+      .set('Cookie', [...token])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body).toEqual(friend);
+  });
+
+  it('Should get 5 users', async () => {
+    const response = await request(app)
+      .get('/api/users/allusers/5')
+      .set('Cookie', [...token])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.length).toBe(5);
+    expect(response.body).toEqual(
+      expect.arrayContaining([expect.objectContaining(userOutline)])
+    );
   });
 });
 
