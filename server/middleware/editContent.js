@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
+const cloudinary = require('cloudinary').v2;
 
 const editContent = asyncHandler(async (req, res) => {
   const { contentId } = req.params;
@@ -15,6 +16,15 @@ const editContent = asyncHandler(async (req, res) => {
   if (contentType === 'post') {
     queryedContent = await Post.findById(contentId);
     queryedContent.postMessage = contentMessage;
+
+    if (req.file) {
+      const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'NodeNet',
+        resource_type: 'image',
+      });
+      queryedContent.img = secure_url;
+    }
+
     await queryedContent.save().then((post) =>
       post.populate([
         {
@@ -32,15 +42,13 @@ const editContent = asyncHandler(async (req, res) => {
   } else if (contentType === 'comment') {
     queryedContent = await Comment.findById(contentId);
     queryedContent.commentMessage = contentMessage;
-    await queryedContent
-      .save()
-      .then((comment) =>
-        comment.populate({
-          path: 'author',
-          model: 'user',
-          select: ['-password', '-posts'],
-        })
-      );
+    await queryedContent.save().then((comment) =>
+      comment.populate({
+        path: 'author',
+        model: 'user',
+        select: ['-password', '-posts'],
+      })
+    );
   }
 
   res.status(200).json(queryedContent);

@@ -3,8 +3,8 @@ const User = require('../models/userModel');
 const { faker } = require('@faker-js/faker');
 require('dotenv').config;
 
-const generateFakeUsers = async () => {
-  for (let i = 0; i < 5; i++) {
+const generateFakeUsers = async (seeds) => {
+  for (let i = 0; i < 10; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
 
@@ -21,16 +21,15 @@ const generateFakeUsers = async () => {
 
     await User.create(fakeUser);
   }
-
-  const fakeUsers = await User.find({ isFake: true });
-  return fakeUsers;
 };
 
 const populateFakeUserFriends = async () => {
   const allFakeUsers = await User.find({ isFake: true });
+  const testUser = await User.findOne({ email: 'test@gmail.com' });
 
   for (const fakeUser of allFakeUsers) {
     const friends = new Set();
+    testUser && friends.add(testUser._id);
     const randomFriendCount = Math.floor(Math.random() * (5 - 1 + 1) + 1);
 
     // Generate random friends for the current fake user
@@ -74,7 +73,12 @@ const generateFakePosts = async () => {
   // Generates 6 fake posts for 12 users
   for (const user of allFakeUsers) {
     const fakePosts = [];
-    for (let fakePostIndex = 0; fakePostIndex < 6; fakePostIndex++) {
+    const fakePostCount = Math.floor(Math.random() * (7 - 3 + 1) + 3);
+    for (
+      let fakePostIndex = 0;
+      fakePostIndex < fakePostCount;
+      fakePostIndex++
+    ) {
       const generateImage = [false, true, false, false, true, false];
       const fakePost = {
         postMessage: '',

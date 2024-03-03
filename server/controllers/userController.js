@@ -10,10 +10,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const generateToken = (id) => {
+const generateToken = (id, isTesting) => {
   // Generates a json web token using the id of the registered or logged in user
-
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+  const time = isTesting ? '-10s' : '1d';
+  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: time,
+  });
+  return token;
 };
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -40,7 +43,6 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     res.cookie('token', token, {
       path: '/',
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       sameSite: 'none',
       secure: true,
       httpOnly: true,
@@ -57,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, isTesting } = req.body;
 
   if (!email || !password) {
     res.status(400);
@@ -69,11 +71,18 @@ const loginUser = asyncHandler(async (req, res) => {
       path: 'friends',
       model: 'user',
       select: ['-password'],
-      populate: {
-        path: 'friends',
-        model: 'user',
-        select: '-password',
-      },
+      populate: [
+        {
+          path: 'friends',
+          model: 'user',
+          select: '-password',
+        },
+        {
+          path: 'posts',
+          model: 'post',
+          populate: { path: 'author', model: 'user', select: '-password' },
+        },
+      ],
     },
     {
       path: 'friendRequests',
@@ -95,9 +104,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // If the password is correct and the user is registered, then send cookies to the browser and return the users data
 
-  const token = generateToken(user._id);
-
   if (user && passwordIsCorrect) {
+    const token = generateToken(user._id, isTesting);
+
     res.cookie('token', token, {
       path: '/',
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day,
@@ -294,6 +303,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       populate: {
         path: 'author',
         model: 'user',
+        select: '-password',
       },
     });
 
@@ -321,9 +331,7 @@ const updateUser = asyncHandler(async (req, res) => {
         folder: 'NodeNet',
       });
       avatar = secure_url;
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
 
     photoType === 'coverPhoto'
       ? (user.coverPhoto = avatar)

@@ -52,16 +52,16 @@ const createPost = asyncHandler(async (req, res) => {
 const getUserPosts = asyncHandler(async (req, res) => {
   // Find the logged in user by id from protect middleware and populate their posts array.
   // Since each post also has an array of comments, populate the comments within the posts too.
-  const user = await User.findById(req.userId)
-    .populate({
+  const user = await User.findById(req.userId).populate([
+    {
       path: 'posts',
       populate: {
         path: 'author',
         model: 'user',
         select: ['-password', '-posts'],
       },
-    })
-    .populate({
+    },
+    {
       path: 'posts',
       populate: {
         path: 'comments',
@@ -72,14 +72,15 @@ const getUserPosts = asyncHandler(async (req, res) => {
           select: ['-password', '-posts'],
         },
       },
-    });
+    },
+  ]);
 
   res.status(200).json(user.posts);
 });
 
 const getAllPosts = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.userId)
-    .populate({
+  const user = await User.findById(req.userId).populate([
+    {
       path: 'friends',
       populate: {
         path: 'posts',
@@ -90,35 +91,30 @@ const getAllPosts = asyncHandler(async (req, res) => {
           select: ['-password', '-posts'],
         },
       },
-    })
-    .populate({
+    },
+    {
       path: 'posts',
-      populate: {
-        path: 'author',
-        model: 'user',
-        select: ['-password', '-posts'],
-      },
-    })
-    .populate({
-      path: 'posts',
-      populate: {
-        path: 'comments',
-        model: 'comment',
-        populate: {
+      populate: [
+        {
           path: 'author',
           model: 'user',
           select: ['-password', '-posts'],
         },
-      },
-    });
+        {
+          path: 'comments',
+          model: 'comment',
+          populate: {
+            path: 'author',
+            model: 'user',
+            select: ['-password', '-posts'],
+          },
+        },
+      ],
+    },
+  ]);
 
-  const friendPosts = user.friends.reduce((acc, friend) => {
-    if (friend.posts.length) {
-      acc = [...acc, ...friend.posts];
-    }
-
-    return acc;
-  }, []);
+  const friendPosts = [];
+  user.friends.forEach((friend) => friendPosts.push(...friend.posts));
 
   //   Sort by input function sorts an array (first arguement) either by its oldest or latest dates depnding on the sortMethod (second arguement)
 

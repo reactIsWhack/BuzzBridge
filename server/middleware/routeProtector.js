@@ -4,8 +4,9 @@ const asyncHandler = require('express-async-handler');
 
 const protect = asyncHandler(async (req, res, next) => {
   const { token } = req.cookies;
+  const decodedToken = jwt.decode(token);
 
-  if (!token) {
+  if (!token || new Date(decodedToken.exp * 1000) < new Date(Date.now())) {
     res.status(401);
     throw new Error('Not authorized, please login');
   }

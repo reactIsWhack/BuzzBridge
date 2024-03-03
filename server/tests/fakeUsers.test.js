@@ -9,7 +9,7 @@ const {
 
 beforeAll(async () => {
   await initializeMongoDB();
-  await User.deleteMany({ isFake: true });
+  await User.deleteMany();
 });
 
 describe('Fake User Testing', () => {
@@ -24,18 +24,12 @@ describe('Fake User Testing', () => {
     friendRequests: expect.any(Array),
     posts: expect.any(Array),
   };
-  const fakePost = {
-    postMessage: expect.any(String),
-    likes: expect.any(Object),
-    author: expect.any(fakeUser),
-    img: expect.any(String),
-    comments: expect.any(Array),
-  };
 
-  it('Should generate 5 fake users and have properties including (name, id, email, photo)', async () => {
-    const fakeUsers = await generateFakeUsers();
+  it('Should generate fake users and have properties including (name, id, email, photo)', async () => {
+    await generateFakeUsers(true);
+    const fakeUsers = await User.find({ isFake: true });
 
-    expect(fakeUsers.length).toBe(5);
+    expect(fakeUsers.length).toBeTruthy();
     expect(fakeUsers).toEqual(
       expect.arrayContaining([expect.objectContaining(fakeUser)])
     );

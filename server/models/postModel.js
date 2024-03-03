@@ -5,7 +5,7 @@ const postSchema = new Schema(
   {
     postMessage: {
       type: String,
-      required: [true, 'Please enter a messsage'],
+      required: [true, 'Please enter a message'],
     },
     // The likes object will have two properties, one is the total which represents how many likes a post has.
     // The other property will be usersLikedPost which is an array of ObjectId's of users that liked the post.

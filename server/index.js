@@ -13,7 +13,7 @@ const commentRouter = require('./routes/commentRoute');
 const { initializeMongoDB } = require('./utils/config');
 
 const app = express();
-const PORT = 5000;
+const PORT = 3000;
 
 // Middleware
 
@@ -30,9 +30,9 @@ app.use('/api/comments', commentRouter, postErrorHandler);
 
 // Connect to MongoDB
 
-const connectedSuccessfully = initializeMongoDB();
+initializeMongoDB();
 
-if (connectedSuccessfully) {
+if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 }
 

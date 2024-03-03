@@ -97,13 +97,13 @@ describe('PATCH /users', () => {
       // Ensure three friends were added to the testingUser and the randomUser also has the testingUser in their friends array, and vice versa
       i === 3 && expect(updatedTestingUser.friends.length).toBe(3);
       expect(updatedTestingUser.friends).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ _id: randomUser._id }),
-        ])
+        expect.arrayContaining([randomUser._id])
       );
-      expect(String(response.body.friends[0]._id)).toBe(
-        String(updatedTestingUser._id)
-      );
+      expect(
+        response.body.friends.some(
+          (friend) => String(friend._id) === String(updatedTestingUser._id)
+        )
+      ).toBeTruthy();
     }
   });
 

@@ -17,6 +17,11 @@ router.get('/userposts', protect, getUserPosts);
 router.get('/allposts', protect, getAllPosts);
 router.delete('/:id', protect, deletePost);
 router.patch('/likepost/:id', protect, likeOrRemovelike);
-router.patch('/editpost/:contentId', protect, editContent);
+router.patch(
+  '/editpost/:contentId',
+  protect,
+  uploader.single('photo'),
+  editContent
+);
 
 module.exports = router;
