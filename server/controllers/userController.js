@@ -81,6 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
           path: 'posts',
           model: 'post',
           populate: { path: 'author', model: 'user', select: '-password' },
+          options: { limit: 10 },
         },
       ],
     },
@@ -251,11 +252,16 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
 });
 
 const getLoggedInUser = asyncHandler(async (req, res) => {
+  const { skip } = req.params;
   const user = await User.findById(req.userId)
     .populate([
       {
         path: 'posts',
         model: 'post',
+        options: {
+          skip,
+          limit: 5,
+        },
         populate: {
           path: 'author',
           model: 'user',
@@ -293,19 +299,25 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  const { userId, skip } = req.params;
 
   const user = await User.findById(userId)
     .select('-password')
-    .populate({ path: 'friends', select: '-password' })
-    .populate({
-      path: 'posts',
-      populate: {
-        path: 'author',
-        model: 'user',
-        select: '-password',
+    .populate([
+      { path: 'friends', select: '-password' },
+      {
+        path: 'posts',
+        options: {
+          skip,
+          limit: 5,
+        },
+        populate: {
+          path: 'author',
+          model: 'user',
+          select: '-password',
+        },
       },
-    });
+    ]);
 
   if (!user) {
     res.status(404);

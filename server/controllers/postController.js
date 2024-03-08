@@ -43,7 +43,7 @@ const createPost = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.userId);
 
-  user.posts = [...user.posts, post];
+  user.posts = sortByInput([...user.posts, post], 'latest');
   await user.save();
 
   res.status(201).json(post);
@@ -79,47 +79,29 @@ const getUserPosts = asyncHandler(async (req, res) => {
 });
 
 const getAllPosts = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.userId).populate([
-    {
-      path: 'friends',
-      populate: {
-        path: 'posts',
-        model: 'post',
-        populate: {
-          path: 'author',
-          model: 'user',
-          select: ['-password', '-posts'],
-        },
-      },
-    },
-    {
-      path: 'posts',
-      populate: [
-        {
-          path: 'author',
-          model: 'user',
-          select: ['-password', '-posts'],
-        },
-        {
-          path: 'comments',
-          model: 'comment',
-          populate: {
-            path: 'author',
-            model: 'user',
-            select: ['-password', '-posts'],
-          },
-        },
-      ],
-    },
-  ]);
+  const { skip, userSkip } = req.params;
 
-  const friendPosts = [];
-  user.friends.forEach((friend) => friendPosts.push(...friend.posts));
+  const user = await User.findById(req.userId);
+  // The skip tells where the posts should start at to be queried. This is used for when the client reaches the bottom of the page and more posts need to be loaded.
+  // userSkip ensures
+  const userPosts = await Post.find({ author: req.userId })
+    .skip(userSkip)
+    .limit(5)
+    .populate([
+      { path: 'author', model: 'user', select: '-password' },
+      { path: 'comments', model: 'comment' },
+      { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
+    ]);
+  const friendPosts = await Post.find({ author: { $in: user.friends } })
+    .skip(skip)
+    .limit(25)
+    .populate([
+      { path: 'author', model: 'user', select: '-password' },
+      { path: 'comments', model: 'comment' },
+      { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
+    ]);
 
-  //   Sort by input function sorts an array (first arguement) either by its oldest or latest dates depnding on the sortMethod (second arguement)
-
-  const allPosts = sortByInput([...friendPosts, ...user.posts], 'latest');
-
+  const allPosts = sortByInput([...userPosts, ...friendPosts], 'latest');
   res.status(200).json(allPosts);
 });
 

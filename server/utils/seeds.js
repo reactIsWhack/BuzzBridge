@@ -1,9 +1,12 @@
 const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const { faker } = require('@faker-js/faker');
+const sortByInput = require('./sortByInput');
 require('dotenv').config;
 
-const generateFakeUsers = async (seeds) => {
+const generateFakeUsers = async () => {
+  console.log('Generating fake users...');
+  const testUser = await User.findOne({ email: 'test@gmail.com' });
   for (let i = 0; i < 10; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
@@ -13,23 +16,25 @@ const generateFakeUsers = async (seeds) => {
       email: faker.internet.email(),
       password: process.env.FAKE_USER_PASSWORD,
       bio: faker.lorem.paragraph(),
-      friends: [],
+      friends: testUser ? [testUser] : [],
       photo: faker.image.avatarLegacy(),
       coverPhoto: faker.image.urlLoremFlickr(),
       isFake: true,
     };
 
-    await User.create(fakeUser);
+    const user = await User.create(fakeUser);
+    if (testUser) {
+      testUser.friends = [...testUser.friends, user];
+      await testUser.save();
+    }
   }
 };
 
 const populateFakeUserFriends = async () => {
   const allFakeUsers = await User.find({ isFake: true });
-  const testUser = await User.findOne({ email: 'test@gmail.com' });
 
   for (const fakeUser of allFakeUsers) {
     const friends = new Set();
-    testUser && friends.add(testUser._id);
     const randomFriendCount = Math.floor(Math.random() * (5 - 1 + 1) + 1);
 
     // Generate random friends for the current fake user
@@ -88,6 +93,10 @@ const generateFakePosts = async () => {
         author: user._id,
         comments: [],
         likes: { total: 0, usersLiked: [] },
+        createdAt: faker.date.between({
+          from: '2022-01-01T00:00:00.000Z',
+          to: Date.now(),
+        }),
       };
       for (let i = 0; i < 25; i++) {
         fakePost.postMessage += faker.word.sample() + ' ';
@@ -97,7 +106,7 @@ const generateFakePosts = async () => {
       fakePosts.push(fakePost);
     }
 
-    user.posts = fakePosts;
+    user.posts = sortByInput(fakePosts, 'latest');
     await user.save();
   }
 

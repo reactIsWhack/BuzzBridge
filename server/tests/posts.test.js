@@ -2,13 +2,10 @@ const request = require('supertest');
 const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const { initializeMongoDB, disconnectMongoDB } = require('../utils/config');
-const app = require('..');
+const app = require('../index');
 const { loginTestUser } = require('./userHelper');
-const {
-  generateFakeUsers,
-  populateFakeUserFriends,
-  generateFakePosts,
-} = require('../utils/seeds');
+const { generateFakeUsers, generateFakePosts } = require('../utils/seeds');
+const arrayHasDuplicates = require('../utils/checkDuplicates');
 
 let jwt;
 let testUser;
@@ -23,7 +20,6 @@ beforeAll(async () => {
     password: 'test1234',
   });
   await generateFakeUsers();
-  await populateFakeUserFriends();
   await generateFakePosts();
   const { token, user } = await loginTestUser('test@gmail.com', 'test1234');
   jwt = token;
@@ -66,29 +62,46 @@ describe('POST /api/posts', () => {
 let randomPosts;
 
 describe('GET /api/posts', () => {
+  const allPosts = [];
   it('Should get the test user posts and their friends posts', async () => {
     const response = await request(app)
-      .get('/api/posts/allposts')
+      .get('/api/posts/allposts/0/0')
       .set('Cookie', [...jwt])
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.length).toBeGreaterThan(30);
-    expect(response.body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ _id: testUser.posts[0]._id }),
-      ])
-    );
+    allPosts.push(...response.body);
+    expect(response.body.length).toBe(26);
     expect(response.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
+          author: expect.objectContaining({ _id: testUser._id }),
           postMessage: expect.any(String),
           likes: { total: 0, usersLiked: [] },
-          author: expect.any(Object),
+          comments: [],
+          img: expect.any(String),
         }),
       ])
     );
+    // Ensure the test user's post is first since it created the first post.
     randomPosts = [response.body[3], response.body[5]];
+  });
+
+  // The client should be able to view more posts when they scroll to the bottom of the page, so this test ensures that more unique posts can be loaded.
+
+  it('Should get the remaining test user posts and their friends posts', async () => {
+    const response = await request(app)
+      .get('/api/posts/allposts/25/1')
+      .set('Cookie', [...jwt])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    allPosts.push(...response.body);
+    // Ensures the newly loaded posts and the previous posts do not have duplicate values, and it is sorted by latest
+    expect(arrayHasDuplicates(allPosts.map((post) => post._id))).toBeFalsy();
+    expect(allPosts).toEqual(
+      allPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    );
   });
 
   it('Should get the posts of the test user', async () => {

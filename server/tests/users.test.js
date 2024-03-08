@@ -161,7 +161,7 @@ describe('GET /users', () => {
 
   it('Should get the profile of the logged in test user', async () => {
     const response = await request(app)
-      .get('/api/users/user')
+      .get('/api/users/user/0')
       .set('Cookie', [...token])
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -179,8 +179,10 @@ describe('GET /users', () => {
 
   it('Should get the profile of a friend of the test user', async () => {
     const friend = user.friends[0];
+    console.log(user.friends);
+    console.log(friend);
     const response = await request(app)
-      .get(`/api/users/userprofile/${friend._id}`)
+      .get(`/api/users/userprofile/${friend._id}/0`)
       .set('Cookie', [...token])
       .expect(200)
       .expect('Content-Type', /application\/json/);

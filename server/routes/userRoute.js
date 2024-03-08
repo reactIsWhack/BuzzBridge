@@ -22,9 +22,9 @@ router.get('/logoutuser', logoutUser);
 router.get('/getloginstatus', getLoginStatus);
 router.patch('/friendrequest/:friendId', protect, friendRequest);
 router.patch('/acceptfriendrequest/:userId', protect, acceptFriendRequest);
-router.get('/user', protect, getLoggedInUser);
+router.get('/user/:skip', protect, getLoggedInUser);
 router.get('/allusers/:limit', protect, getAllUsers);
-router.get('/userprofile/:userId', protect, getUserProfile);
+router.get('/userprofile/:userId/:skip', protect, getUserProfile);
 router.patch('/update', protect, uploader.single('avatar'), updateUser);
 router.patch('/removefriend/:friendId', protect, removeFriend);
 

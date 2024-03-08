@@ -76,8 +76,9 @@ describe('POST /users auth', () => {
 
 describe('Invalid tokens sent to api routes', () => {
   it('Should block api route when sending an expired token', async () => {
+    console.log(jwt);
     const response = await request(app)
-      .get('/api/users/user')
+      .get('/api/users/user/0')
       .set('Cookie', [...jwt])
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -87,7 +88,7 @@ describe('Invalid tokens sent to api routes', () => {
 
   it('Should block api route when a token is missing in the request', async () => {
     const response = await request(app)
-      .get('/api/users/user')
+      .get('/api/users/user/0')
       .expect(401)
       .expect('Content-Type', /application\/json/);
 
@@ -112,7 +113,7 @@ describe('Logout Users', () => {
 
   it('Should block api routes when a user logs out', async () => {
     const response = await request(app)
-      .get('/api/users/user')
+      .get('/api/users/user/0')
       .set('Cookie', [...jwt])
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -132,5 +133,4 @@ describe('Logout Users', () => {
 
 afterAll(async () => {
   await disconnectMongoDB();
-  await User.deleteOne({ email: 'test@gmail.com' });
 });
