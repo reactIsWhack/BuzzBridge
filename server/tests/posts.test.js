@@ -12,8 +12,8 @@ let testUser;
 
 beforeAll(async () => {
   await initializeMongoDB();
-  await Post.deleteMany();
-  await User.deleteMany();
+  await User.deleteMany({});
+  await Post.deleteMany({});
   await User.create({
     name: 'test',
     email: 'test@gmail.com',
@@ -35,6 +35,7 @@ describe('POST /api/posts', () => {
       .field({ postMessage: 'Jordan Love!' })
       .expect(201)
       .expect('Content-Type', /application\/json/);
+    console.log(response.statusCode);
 
     expect(response.body).toEqual(
       expect.objectContaining({

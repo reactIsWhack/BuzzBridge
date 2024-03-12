@@ -22,11 +22,6 @@ const generateToken = (id, isTesting) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
 
-  if (!confirmPassword) {
-    res.status(400);
-    throw new Error('All fields are required');
-  }
-
   if (password !== confirmPassword) {
     res.status(400);
     throw new Error('Passwords do not match');
@@ -282,7 +277,7 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find().limit(Number(req.params.limit));
+  const users = await User.find().skip(req.params.skip).limit(15);
 
   if (!users) {
     throw new Error('Failed to get users');

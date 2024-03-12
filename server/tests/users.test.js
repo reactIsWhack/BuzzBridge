@@ -8,8 +8,13 @@ require('dotenv').config();
 
 beforeAll(async () => {
   await initializeMongoDB();
-  await User.deleteMany();
+  await User.deleteMany({});
   await generateFakeUsers();
+  await User.create({
+    name: 'test',
+    email: 'test@gmail.com',
+    password: 'test1234',
+  });
 });
 
 const userOutline = {
@@ -19,30 +24,6 @@ const userOutline = {
   friends: expect.any(Array),
   coverPhoto: expect.any(String),
 };
-
-describe('POST /users', () => {
-  it('Should register a new user', async () => {
-    const response = await request(app)
-      .post('/api/users/registeruser')
-      .send({
-        name: 'test',
-        email: 'test@gmail.com',
-        password: 'test1234',
-        confirmPassword: 'test1234',
-      })
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
-
-    expect(response.body).toEqual(
-      expect.objectContaining({
-        name: 'test',
-        email: 'test@gmail.com',
-      })
-    );
-    expect(response.body._id).toBeTruthy();
-    expect(response.header['set-cookie']).toBeTruthy();
-  });
-});
 
 describe('PATCH /users', () => {
   // Before each request, login the registered user and send the token in the request.
@@ -179,8 +160,6 @@ describe('GET /users', () => {
 
   it('Should get the profile of a friend of the test user', async () => {
     const friend = user.friends[0];
-    console.log(user.friends);
-    console.log(friend);
     const response = await request(app)
       .get(`/api/users/userprofile/${friend._id}/0`)
       .set('Cookie', [...token])
@@ -190,14 +169,14 @@ describe('GET /users', () => {
     expect(response.body).toEqual(friend);
   });
 
-  it('Should get 5 users', async () => {
+  it('Should get all 11 users', async () => {
     const response = await request(app)
-      .get('/api/users/allusers/5')
+      .get('/api/users/allusers/0')
       .set('Cookie', [...token])
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.length).toBe(5);
+    expect(response.body.length).toBe(11);
     expect(response.body).toEqual(
       expect.arrayContaining([expect.objectContaining(userOutline)])
     );

@@ -7,7 +7,7 @@ const createComment = asyncHandler(async (req, res) => {
   const { postId } = req.params;
   const { commentMessage } = req.body;
 
-  const post = await Post.findById(postId);
+  const post = await Post.findById(postId.toString());
 
   if (!post) {
     res.status(404);
@@ -27,8 +27,8 @@ const createComment = asyncHandler(async (req, res) => {
 
   post.comments = [...post.comments, comment._id];
   await post.save().then((post) =>
-    post
-      .populate({
+    post.populate([
+      {
         path: 'comments',
         model: 'comment',
         populate: {
@@ -36,18 +36,16 @@ const createComment = asyncHandler(async (req, res) => {
           model: 'user',
           select: ['-password', '-posts'],
         },
-      })
-      .then((post) =>
-        post.populate({ path: 'author', select: ['-password', '-posts'] })
-      )
+      },
+      { path: 'author', select: ['-password', '-posts'] },
+    ])
   );
 
   // Return the post with the new comment
-  res.status(200).json(post);
+  res.status(201).json(post);
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
-  console.log(req.params);
   const { postId, commentId } = req.params;
 
   // To delete a comment, find the post it was created in and delete the specified comment from the array and collection
@@ -65,23 +63,22 @@ const deleteComment = asyncHandler(async (req, res) => {
   await Comment.findByIdAndDelete(commentId);
 
   const updatedPost = await post.save().then((post) =>
-    post
-      .populate({
+    post.populate([
+      {
         path: 'author',
         model: 'user',
         select: ['-password', '-posts'],
-      })
-      .then((post) =>
-        post.populate({
-          path: 'comments',
-          model: 'comment',
-          populate: {
-            path: 'author',
-            model: 'user',
-            select: ['-password', '-posts'],
-          },
-        })
-      )
+      },
+      {
+        path: 'comments',
+        model: 'comment',
+        populate: {
+          path: 'author',
+          model: 'user',
+          select: ['-password', '-posts'],
+        },
+      },
+    ])
   );
 
   res.status(200).json(updatedPost);

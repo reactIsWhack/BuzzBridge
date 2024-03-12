@@ -32,9 +32,14 @@ const generateFakeUsers = async () => {
 
 const populateFakeUserFriends = async () => {
   const allFakeUsers = await User.find({ isFake: true });
+  // The clientTestingUser is created to recieve posts on the home page feed on the frontend from fakeUsers.
+  const clientTestingUser = await User.findOne({
+    email: 'client.tester@gmail.com',
+  });
 
-  for (const fakeUser of allFakeUsers) {
-    const friends = new Set();
+  for (let j = 0; j < allFakeUsers.length; j++) {
+    const fakeUser = allFakeUsers[j];
+    const friends = new Set(j > 12 ? [String(clientTestingUser._id)] : []);
     const randomFriendCount = Math.floor(Math.random() * (5 - 1 + 1) + 1);
 
     // Generate random friends for the current fake user
@@ -55,6 +60,7 @@ const populateFakeUserFriends = async () => {
       .save()
       .then((user) => user.populate('friends'));
 
+    // Adds the fakeUser to the friends array of the user the fakeUser friended
     updatedFakeUser.friends.forEach(async (friend) => {
       const friendsOfFriend = new Set(
         friend.friends.map((friendId) => friendId.toString())

@@ -10,7 +10,7 @@ const {
 } = require('./middleware/errorHandler');
 const postRouter = require('./routes/postRoute');
 const commentRouter = require('./routes/commentRoute');
-const { initializeMongoDB } = require('./utils/config');
+const { initializeMongoDB, connectMongoDBClient } = require('./utils/config');
 
 const app = express();
 const PORT = 3000;
@@ -30,10 +30,10 @@ app.use('/api/comments', commentRouter, postErrorHandler);
 
 // Connect to MongoDB
 
-initializeMongoDB();
-
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  connectMongoDBClient().then(() =>
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
+  );
 }
 
 if (process.env.NODE_ENV === 'test') {

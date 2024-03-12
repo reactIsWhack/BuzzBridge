@@ -23,44 +23,41 @@ const likeOrRemovelike = asyncHandler(async (req, res) => {
       ));
 
   likedContent.markModified('likes');
-  const updatedContent = await likedContent
-    .save()
-    .then((likedContent) =>
-      content === 'post'
-        ? likedContent.populate([
-            {
-              path: 'comments',
-              model: 'comment',
-              populate: {
-                path: 'author',
-                model: 'user',
-                select: ['-password', '-posts'],
-              },
+  const updatedContent = await likedContent.save().then((likedContent) =>
+    content === 'post'
+      ? likedContent.populate([
+          {
+            path: 'comments',
+            model: 'comment',
+            populate: {
+              path: 'author',
+              model: 'user',
+              select: ['-password', '-posts'],
             },
-            {
-              path: 'likes',
-              populate: {
-                path: 'usersLiked',
-                model: 'user',
-                select: ['-password', '-posts'],
-              },
+          },
+          {
+            path: 'likes',
+            populate: {
+              path: 'usersLiked',
+              model: 'user',
+              select: ['-password', '-posts'],
             },
-          ])
-        : likedContent.populate([
-            { path: 'author', model: 'user', select: ['-password', '-posts'] },
-            {
-              path: 'likes',
-              populate: {
-                path: 'usersLiked',
-                model: 'user',
-                select: ['-password', '-posts'],
-              },
+          },
+          { path: 'author', select: ['-password', '-posts'] },
+        ])
+      : likedContent.populate([
+          { path: 'author', model: 'user', select: ['-password', '-posts'] },
+          {
+            path: 'likes',
+            populate: {
+              path: 'usersLiked',
+              model: 'user',
+              select: ['-password', '-posts'],
             },
-          ])
-    )
-    .then((likedContent) =>
-      likedContent.populate({ path: 'author', select: ['-password', '-posts'] })
-    );
+          },
+          { path: 'author', select: ['-password', '-posts'] },
+        ])
+  );
 
   res.status(200).json(updatedContent);
 });

@@ -23,7 +23,7 @@ router.get('/getloginstatus', getLoginStatus);
 router.patch('/friendrequest/:friendId', protect, friendRequest);
 router.patch('/acceptfriendrequest/:userId', protect, acceptFriendRequest);
 router.get('/user/:skip', protect, getLoggedInUser);
-router.get('/allusers/:limit', protect, getAllUsers);
+router.get('/allusers/:skip', protect, getAllUsers);
 router.get('/userprofile/:userId/:skip', protect, getUserProfile);
 router.patch('/update', protect, uploader.single('avatar'), updateUser);
 router.patch('/removefriend/:friendId', protect, removeFriend);

@@ -7,7 +7,7 @@ const {
 } = require('../controllers/postController');
 const protect = require('../middleware/routeProtector');
 const uploader = require('../utils/fileUpload');
-const likeOrRemovelike = require('../middleware/likePost');
+const likeOrRemovelike = require('../middleware/likeContent');
 const editContent = require('../middleware/editContent');
 
 const router = Router();

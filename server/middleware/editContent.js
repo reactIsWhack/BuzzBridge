@@ -39,7 +39,7 @@ const editContent = asyncHandler(async (req, res) => {
         { path: 'author', model: 'user', select: ['-password', '-posts'] },
       ])
     );
-  } else if (contentType === 'comment') {
+  } else {
     queryedContent = await Comment.findById(contentId);
     queryedContent.commentMessage = contentMessage;
     await queryedContent.save().then((comment) =>
