@@ -25,7 +25,7 @@ const disconnectMongoDB = async () => {
 // connectMongoDBClient is used in production
 
 const connectMongoDBClient = async () => {
-  await mongoose.connect(process.env.NODE_ENV);
+  await mongoose.connect(process.env.MONGO_URI);
 
   mongoose.connection.on('connected', () => {
     console.log('Connected to MongoDB');

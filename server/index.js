@@ -20,7 +20,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors([{ origin: ['http://localhost:5173'], credentials: true }]));
 
 // Routes Middleware
 
@@ -30,7 +30,7 @@ app.use('/api/comments', commentRouter, postErrorHandler);
 
 // Connect to MongoDB
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV === 'deploy') {
   connectMongoDBClient().then(() =>
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
   );

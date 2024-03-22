@@ -1,0 +1,112 @@
+.site-info {
+  text-align: center;
+  margin-bottom: 1.5em;
+  padding: 0 1.2em;
+}
+
+.site-info h1 {
+  background: linear-gradient(to right, #013242, #1e637e, #add8e6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2.5rem;
+  margin-bottom: 0.2em;
+}
+
+.site-info p {
+  font-weight: 500;
+  font-size: 1.4rem;
+}
+
+.site-info p {
+  margin: 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 1.25em;
+  width: 100%;
+  max-width: 425px;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  box-shadow: 2px 2px 16px rgba(0, 0, 0, 0.15);
+}
+
+.auth-col {
+  margin: 0.5em 0;
+}
+
+.auth-form input {
+  padding: 1em;
+  font-size: 1rem;
+  border: 1px solid #d3d3d3;
+  border-radius: 0.3rem;
+  font-weight: 200;
+  letter-spacing: 0.005rem;
+}
+
+.auth-form input::placeholder {
+  color: #aca4a4;
+  font-size: 1rem;
+}
+
+.login-btn,
+.demo-btn {
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  padding: 0.55em;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  margin-bottom: 0.25em;
+}
+
+.login-btn {
+  background: #1877f2;
+}
+
+.demo-btn {
+  background: #282e35;
+}
+
+.register-btn-container {
+  margin-top: 1em;
+  border-top: 1px solid #d3d3d3;
+  display: flex;
+  justify-content: center;
+}
+
+.register-btn-container button {
+  margin-top: 1.5em;
+  border: none;
+  background: #282e35;
+  color: white;
+  padding: 0.75em 1em;
+  font-size: 1rem;
+  border-radius: 0.35rem;
+  cursor: pointer;
+}
+
+@media (min-width: 800px) {
+  .landing-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 7em 0;
+  }
+
+  .site-info {
+    text-align: left;
+    padding: 0;
+    margin: 0 3em;
+  }
+
+  .site-info p {
+    max-width: 480px;
+  }
+
+  .auth-form {
+    margin: 0;
+  }
+}
