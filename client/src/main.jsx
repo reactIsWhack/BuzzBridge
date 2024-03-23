@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import './styles/General.css';
 import './styles/Login.css';
+import './styles/Modal.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -7,3 +7,16 @@ body {
   margin: 0;
   background: #f0f2f5;
 }
+
+.shadow-div {
+  box-shadow: 2px 2px 16px rgba(0, 0, 0, 0.15);
+}
+
+.modal {
+  width: 100%;
+}
+
+.close-icon {
+  height: 25px;
+  cursor: pointer;
+}
