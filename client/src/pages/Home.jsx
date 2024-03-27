@@ -1,14 +1,27 @@
-import React, { useDebugValue, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../app/features/user/userSlice';
+import {
+  getLoggedInUserProfile,
+  selectUser,
+} from '../app/features/user/userSlice';
 import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
-import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const Home = () => {
   useRedirectLoggedOutUser();
-  const user = useSelector(selectUser);
+  const { isLoggedIn } = useSelector(selectUser);
+  const dispatch = useDispatch();
 
-  return <h1>Home</h1>;
+  useEffect(() => {
+    isLoggedIn && dispatch(getLoggedInUserProfile());
+  }, [isLoggedIn]);
+
+  return (
+    <>
+      <Navbar />
+      <h1>Home</h1>
+    </>
+  );
 };
 
 export default Home;

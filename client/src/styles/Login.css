@@ -150,7 +150,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 7em 0;
+    margin: 7em auto;
   }
 
   .site-info {
@@ -164,7 +164,7 @@
   }
 
   .auth-form {
-    margin: 0;
+    margin: 0 4em 0 0;
   }
 
   .register-form div {

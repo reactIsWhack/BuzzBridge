@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../components/Modal';
 import RegisterForm from '../components/RegisterForm';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../app/features/user/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
 
 const Login = () => {
   const [renderModal, setRenderModal] = useState(false);
+  const { isLoggedIn } = useSelector(selectUser);
+  const navigate = useNavigate();
+  useRedirectLoggedOutUser();
 
   const toggleModal = () => {
     setRenderModal((prevRenderModal) => !prevRenderModal);
   };
-
-  useEffect(() => {
-    renderModal && document.body.classList.add('bg-modal');
-
-    return () => {
-      document.body.classList.remove('bg-modal');
-    };
-  }, [renderModal]);
 
   const buttonStyles = {
     cursor: renderModal ? 'default' : 'pointer',
@@ -36,11 +35,8 @@ const Login = () => {
         }`}
       >
         <div className="site-info">
-          <h1>NodeNet</h1>
-          <p>
-            Connect, share, and explore your world with the ultimate social hub,
-            NodeNet.
-          </p>
+          <h1>BuzzBridge</h1>
+          <p>Meet with friends across the world with BuzzBridge.</p>
         </div>
         <div className="auth-form shadow-div">
           <form>

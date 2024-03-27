@@ -7,6 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import './styles/General.css';
 import './styles/Login.css';
 import './styles/Modal.css';
+import './styles/Navbar.css';
+import './styles/UserOptions.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

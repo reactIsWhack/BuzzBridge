@@ -1,0 +1,134 @@
+.container-nav {
+  display: flex;
+  align-items: center;
+  background: white;
+  height: 60px;
+  padding: 1em;
+  position: relative;
+  justify-content: space-between;
+}
+
+.left-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.middle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4em;
+  flex: 1;
+}
+
+@media screen and (min-width: 1100px) {
+  .middle-container {
+    gap: 6em;
+  }
+}
+
+.active {
+  display: flex;
+  justify-content: center;
+}
+
+.active .nav-icon {
+  fill: #1877f2;
+  stroke: none;
+}
+
+.right-container {
+  flex: 1;
+  display: flex;
+  justify-content: right;
+}
+
+.active > .active-border {
+  border: 1.5px solid #1877f2;
+  position: absolute;
+  bottom: 0;
+  width: 10%;
+  max-width: 160px;
+  min-width: 60px;
+}
+
+.nav-icon {
+  fill: none;
+  stroke: black;
+  stroke-width: 15;
+  width: 100%;
+  max-width: 120px;
+  min-width: 60px;
+}
+
+.right-container img {
+  height: 40px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.site-icon {
+  height: 50px;
+  cursor: pointer;
+}
+
+.search-container img {
+  height: 25px;
+}
+
+.search-container {
+  background: #f0f2f5;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75em;
+  margin: 0 1em;
+}
+
+.search-container input {
+  border: none;
+  background: transparent;
+  width: 200px;
+  transition: width 1.5s;
+}
+
+.search-container input::placeholder {
+  letter-spacing: 0.0075rem;
+  font-weight: 350;
+  color: #6f6b6b;
+  font-family: Montserrat;
+  font-size: 0.9rem;
+}
+
+.search-container input:focus {
+  outline: none;
+}
+
+@media screen and (max-width: 700px) {
+  .search-container input {
+    width: 150px;
+    transition: width 1.5s;
+  }
+
+  .middle-container {
+    gap: 0.5em;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .search-container input {
+    visibility: hidden;
+    width: 0;
+  }
+
+  .search-container {
+    width: 42px;
+  }
+
+  .search-container img {
+    width: 26px;
+  }
+}

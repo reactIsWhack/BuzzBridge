@@ -39,6 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.cookie('token', token, {
       path: '/',
       sameSite: 'none',
+      expires: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
       secure: true,
       httpOnly: true,
     });
@@ -149,8 +150,12 @@ const getLoginStatus = asyncHandler(async (req, res) => {
   }
 
   const verified = jwt.verify(token, process.env.JWT_SECRET);
+  console.log(verified);
 
-  if (verified) {
+  // Ensure the user is registered
+  const user = await User.findById(verified.id);
+
+  if (verified && user) {
     return res.json(true);
   } else {
     return res.json(false);
