@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { createUser, getPersonalProfile, logout } from './userService';
+import { createUser, getPersonalProfile, login, logout } from './userService';
 import { toast } from 'react-toastify';
 import defaultProfile from '../../../assets/defaultProfile.png';
 
@@ -9,8 +9,10 @@ const initialState = {
   userId: '',
   profilePicture: defaultProfile,
   coverPhoto: '',
+  bio: '',
   posts: [],
   friends: [],
+  friendRequests: [],
   mutualFriends: [],
   createdAt: '',
   isLoggedIn: false,
@@ -38,7 +40,25 @@ export const getLoggedInUserProfile = createAsyncThunk(
       const { data } = await getPersonalProfile();
       return data;
     } catch (error) {
-      thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const loginUser = createAsyncThunk(
+  'user/loginUser',
+  async ({ formData, navigate }, thunkAPI) => {
+    try {
+      const response = await login(formData);
+      console.log(response);
+      if (response.status === 200) {
+        navigate('/');
+      }
+
+      return response.data;
+    } catch (error) {
+      console.log(error.response.data.message);
+      return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -48,12 +68,10 @@ export const logoutUser = createAsyncThunk(
   async (navigate, thunkAPI) => {
     try {
       const response = await logout();
-      console.log(response);
       response.status === 200 && navigate('/login');
-
       return response.data.message;
     } catch (error) {
-      thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -86,7 +104,9 @@ const userSlice = createSlice({
         state.userId = action.payload._id;
         state.name = action.payload.name;
         state.email = action.payload.email;
+        state.bio = action.payload.bio;
         state.friends = action.payload.friends;
+        state.friendRequests = action.payload.friendRequests;
         state.posts = action.payload.posts;
         state.profilePicture = action.payload.photo || defaultProfile;
         state.coverPhoto = action.payload.coverPhoto;
@@ -100,7 +120,26 @@ const userSlice = createSlice({
       })
       .addCase(logoutUser.rejected, (state, action) =>
         toast.error(action.payload)
-      );
+      )
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        console.log(action.payload);
+        state.name = action.payload.name;
+        state.email = action.payload.email;
+        state.friends = action.payload.friends;
+        state.friendRequests = action.payload.friendRequests;
+        state.bio = action.payload.bio;
+        state.photo = action.payload.photo || defaultProfile;
+        state.posts = action.payload.posts;
+        state.coverPhoto = action.payload.coverPhoto;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        toast.error(action.payload);
+      });
   },
 });
 

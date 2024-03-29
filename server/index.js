@@ -13,7 +13,7 @@ const commentRouter = require('./routes/commentRoute');
 const { initializeMongoDB, connectMongoDBClient } = require('./utils/config');
 
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
 // Middleware
 

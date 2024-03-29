@@ -10,6 +10,11 @@ export const getPersonalProfile = async () => {
   return response;
 };
 
+export const login = async (formData) => {
+  const response = await axios.post('/api/users/loginuser', formData);
+  return response;
+};
+
 export const logout = async () => {
   const response = await axios.get('/api/users/logoutuser');
   return response;

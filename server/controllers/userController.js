@@ -112,7 +112,8 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
     });
 
-    const { name, bio, friends, friendRequests, _id, photo, posts } = user;
+    const { name, bio, friends, friendRequests, _id, photo, posts, createdAt } =
+      user;
 
     res.status(200).json({
       name,
@@ -123,6 +124,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id,
       photo,
       posts,
+      createdAt,
     });
   } else {
     res.status(400);

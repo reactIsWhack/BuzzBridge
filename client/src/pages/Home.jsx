@@ -8,7 +8,7 @@ import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
 import Navbar from '../components/Navbar';
 
 const Home = () => {
-  useRedirectLoggedOutUser();
+  useRedirectLoggedOutUser('/');
   const { isLoggedIn } = useSelector(selectUser);
   const dispatch = useDispatch();
 

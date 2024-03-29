@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../components/Modal';
 import RegisterForm from '../components/RegisterForm';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../app/features/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, selectUser } from '../app/features/user/userSlice';
 
 const Login = () => {
   const [renderModal, setRenderModal] = useState(false);
-  const { isLoggedIn } = useSelector(selectUser);
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const { isLoading } = useSelector(selectUser);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useRedirectLoggedOutUser();
+  const { email, password } = formData;
 
   const toggleModal = () => {
     setRenderModal((prevRenderModal) => !prevRenderModal);
@@ -18,6 +21,24 @@ const Login = () => {
 
   const buttonStyles = {
     cursor: renderModal ? 'default' : 'pointer',
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    dispatch(loginUser({ formData, navigate }));
+  };
+
+  const formStyles = {
+    opacity: isLoading ? 0.5 : 1,
   };
 
   return (
@@ -38,8 +59,8 @@ const Login = () => {
           <h1>BuzzBridge</h1>
           <p>Meet with friends across the world with BuzzBridge.</p>
         </div>
-        <div className="auth-form shadow-div">
-          <form>
+        <div className="auth-form shadow-div" style={formStyles}>
+          <form onSubmit={handleSubmit}>
             <fieldset disabled={renderModal}>
               <input
                 type="email"
@@ -47,6 +68,8 @@ const Login = () => {
                 name="email"
                 required
                 className="auth-col"
+                value={email}
+                onChange={handleChange}
               />
               <input
                 type="password"
@@ -54,6 +77,8 @@ const Login = () => {
                 name="password"
                 required
                 className="auth-col"
+                value={password}
+                onChange={handleChange}
               />
               <button className="auth-col login-btn" style={buttonStyles}>
                 Login
