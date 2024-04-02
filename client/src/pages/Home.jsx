@@ -9,17 +9,10 @@ import Navbar from '../components/Navbar';
 
 const Home = () => {
   useRedirectLoggedOutUser('/');
-  const { isLoggedIn } = useSelector(selectUser);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    isLoggedIn && dispatch(getLoggedInUserProfile());
-  }, [isLoggedIn]);
 
   return (
     <>
       <Navbar />
-      <h1>Home</h1>
     </>
   );
 };

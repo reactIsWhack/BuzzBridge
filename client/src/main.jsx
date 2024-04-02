@@ -9,6 +9,7 @@ import './styles/Login.css';
 import './styles/Modal.css';
 import './styles/Navbar.css';
 import './styles/UserOptions.css';
+import './styles/FriendResults.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

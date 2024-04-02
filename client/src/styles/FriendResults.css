@@ -1,0 +1,13 @@
+.friend-results {
+  position: absolute;
+  bottom: 0;
+  background: white;
+  right: 0;
+  left: 0;
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+}

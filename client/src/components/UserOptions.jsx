@@ -13,9 +13,11 @@ const UserOptions = () => {
 
   return (
     <div className="options-container">
-      <div className="profile-card-box shadow-div">
-        <img src={profilePicture} />
-        <div>{name}</div>
+      <div className="hover-container">
+        <div className="profile-card-box shadow-div">
+          <img src={profilePicture} />
+          <div>{name}</div>
+        </div>
       </div>
       <div className="logout-container" onClick={logout}>
         <div className="logout-icon">

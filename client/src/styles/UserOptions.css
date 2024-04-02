@@ -6,7 +6,7 @@
 
 .options-container {
   background: white;
-  padding: 1em;
+  padding: 0.2em 0;
   border-radius: 0.5em;
   width: 360px;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.282);
@@ -25,6 +25,7 @@
   border-radius: 0.5em;
   padding: 0.75em;
   cursor: pointer;
+  margin: 10px 14px;
 }
 
 .profile-card-box > div {
@@ -39,6 +40,13 @@
   display: flex;
   align-items: center;
   border-radius: 0.5em;
+  padding: 6px 8px;
+  margin: 4px 8px 8px;
+}
+
+.logout-container:hover,
+.profile-card-box:hover {
+  background: rgb(241, 240, 240);
 }
 
 .logout-container span {
