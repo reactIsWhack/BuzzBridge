@@ -1,5 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { createUser, getPersonalProfile, login, logout } from './userService';
+import {
+  createUser,
+  getPersonalProfile,
+  getUsers,
+  login,
+  logout,
+} from './userService';
 import { toast } from 'react-toastify';
 import defaultProfile from '../../../assets/defaultProfile.png';
 
@@ -17,6 +23,7 @@ const initialState = {
   createdAt: '',
   isLoggedIn: false,
   isLoading: false,
+  unknownUsers: [],
 };
 
 export const registerUser = createAsyncThunk(
@@ -57,7 +64,7 @@ export const loginUser = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(error, 'error');
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
@@ -70,6 +77,18 @@ export const logoutUser = createAsyncThunk(
       const response = await logout();
       response.status === 200 && navigate('/login');
       return response.data.message;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const getUnkownUsers = createAsyncThunk(
+  'user/getUnkownUsers',
+  async (_, thunkAPI) => {
+    try {
+      const response = await getUsers();
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
@@ -95,6 +114,7 @@ const userSlice = createSlice({
         state.email = action.payload.email;
         state.createdAt = action.payload.createdAt;
         state.userId = action.payload._id;
+        state.isLoggedIn = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -126,7 +146,6 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log(action.payload);
         state.name = action.payload.name;
         state.email = action.payload.email;
         state.friends = action.payload.friends;
@@ -135,11 +154,18 @@ const userSlice = createSlice({
         state.photo = action.payload.photo || defaultProfile;
         state.posts = action.payload.posts;
         state.coverPhoto = action.payload.coverPhoto;
+        state.isLoggedIn = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         toast.error(action.payload);
-      });
+      })
+      .addCase(getUnkownUsers.fulfilled, (state, action) => {
+        state.unknownUsers = action.payload;
+      })
+      .addCase(getUnkownUsers.rejected, (state, action) =>
+        toast.error(action.payload)
+      );
   },
 });
 

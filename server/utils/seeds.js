@@ -2,14 +2,40 @@ const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const { faker } = require('@faker-js/faker');
 const sortByInput = require('./sortByInput');
-require('dotenv').config;
+require('dotenv').config();
+
+const nodeEnv = process.env.NODE_ENV;
 
 const generateFakeUsers = async () => {
   console.log('Generating fake users...');
   const testUser = await User.findOne({ email: 'test@gmail.com' });
-  for (let i = 0; i < 10; i++) {
+  const generatedImages = new Set();
+  for (let i = 0; nodeEnv === 'test' ? i < 10 : i < 100; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
+    faker.seed(i);
+
+    function generateUniqueImageUrl(category) {
+      let imageUrl;
+      do {
+        imageUrl = faker.image.urlLoremFlickr({ category });
+      } while (generatedImages.has(imageUrl));
+
+      generatedImages.add(imageUrl);
+      return imageUrl;
+    }
+
+    let photoCategory = '';
+
+    if (i % 3 === 0) {
+      photoCategory = 'cats';
+    } else if (i % 5 === 0) {
+      photoCategory = 'nature';
+    } else if (i % 8 === 0) {
+      photoCategory = 'birds';
+    } else {
+      photoCategory = 'dogs';
+    }
 
     const fakeUser = {
       name: firstName + ' ' + lastName,
@@ -17,7 +43,7 @@ const generateFakeUsers = async () => {
       password: process.env.FAKE_USER_PASSWORD,
       bio: faker.lorem.paragraph(),
       friends: testUser ? [testUser] : [],
-      photo: faker.image.avatarLegacy(),
+      photo: generateUniqueImageUrl(photoCategory),
       coverPhoto: faker.image.urlLoremFlickr(),
       isFake: true,
     };
@@ -31,15 +57,17 @@ const generateFakeUsers = async () => {
 };
 
 const populateFakeUserFriends = async () => {
+  console.log('Generating friends...');
   const allFakeUsers = await User.find({ isFake: true });
   // The clientTestingUser is created to recieve posts on the home page feed on the frontend from fakeUsers.
   const clientTestingUser = await User.findOne({
-    email: 'client.tester@gmail.com',
+    email: 'packer.slacker@gmail.com',
   });
 
   for (let j = 0; j < allFakeUsers.length; j++) {
     const fakeUser = allFakeUsers[j];
-    const friends = new Set(j > 12 ? [String(clientTestingUser._id)] : []);
+    // Ensures not all fakeUsers have the clientTesting user as a friend
+    const friends = new Set(j > 75 ? [String(clientTestingUser._id)] : []);
     const randomFriendCount = Math.floor(Math.random() * (5 - 1 + 1) + 1);
 
     // Generate random friends for the current fake user
@@ -75,10 +103,12 @@ const populateFakeUserFriends = async () => {
   const updatedFakeUsers = await User.find({ isFake: true }).populate(
     'friends'
   );
+
   return updatedFakeUsers;
 };
 
 const generateFakePosts = async () => {
+  console.log('Generating posts...');
   const allFakeUsers = await User.find({ isFake: true });
 
   // Generates 6 fake posts for 12 users
@@ -99,6 +129,7 @@ const generateFakePosts = async () => {
         author: user._id,
         comments: [],
         likes: { total: 0, usersLiked: [] },
+        isFake: true,
         createdAt: faker.date.between({
           from: '2022-01-01T00:00:00.000Z',
           to: Date.now(),
@@ -124,8 +155,29 @@ const generateFakePosts = async () => {
   return updatedFakeUsers;
 };
 
+const generateFakeDataForClient = async () => {
+  const fakeUsers = await User.find({ isFake: true });
+  if (fakeUsers.length < 100) {
+    await generateFakeUsers();
+    console.log('✅');
+
+    await populateFakeUserFriends();
+    console.log('✅');
+
+    await generateFakePosts();
+    console.log('✅');
+  } else {
+    await User.deleteMany({ isFake: true });
+    const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
+    user.friends = [];
+    await user.save();
+    await Post.deleteMany({ isFake: true });
+  }
+};
+
 module.exports = {
   generateFakeUsers,
   populateFakeUserFriends,
   generateFakePosts,
+  generateFakeDataForClient,
 };

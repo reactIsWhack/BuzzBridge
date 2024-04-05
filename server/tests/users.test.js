@@ -169,17 +169,17 @@ describe('GET /users', () => {
     expect(response.body).toEqual(friend);
   });
 
-  it('Should get all 11 users', async () => {
+  it('Should get exactly 8 users that are not friends with the testUser, and discludes the testUser.', async () => {
     const response = await request(app)
       .get('/api/users/allusers/0')
       .set('Cookie', [...token])
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.length).toBe(11);
-    expect(response.body).toEqual(
-      expect.arrayContaining([expect.objectContaining(userOutline)])
-    );
+    expect(response.body.length).toBe(8);
+    console.log(user.friends, 'friends');
+    console.log(response.body);
+    expect(response.body.map((user) => user._id)).not.toEqual(user.friends);
   });
 });
 

@@ -284,7 +284,13 @@ const getLoggedInUser = asyncHandler(async (req, res) => {
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find().skip(req.params.skip).limit(15);
+  const loggedInUser = await User.findById(req.userId);
+  // Finds all users (max of 15) that the loggedInUser is not friends with, discluding themselves
+  const users = await User.find({
+    _id: { $nin: [...loggedInUser.friends, loggedInUser._id] },
+  })
+    .skip(req.params.skip)
+    .limit(15);
 
   if (!users) {
     throw new Error('Failed to get users');

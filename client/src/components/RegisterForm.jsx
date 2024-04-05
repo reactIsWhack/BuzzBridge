@@ -61,6 +61,7 @@ const RegisterForm = ({ setRenderModal }) => {
           required
           value={name}
           onChange={handleChange}
+          maxLength={25}
         />
         <input
           type="email"
@@ -69,6 +70,7 @@ const RegisterForm = ({ setRenderModal }) => {
           required
           value={email}
           onChange={handleChange}
+          maxLength={35}
         />
         <div>
           <input
@@ -78,6 +80,7 @@ const RegisterForm = ({ setRenderModal }) => {
             required
             value={password}
             onChange={handleChange}
+            maxLength={25}
           />
           <input
             type="password"

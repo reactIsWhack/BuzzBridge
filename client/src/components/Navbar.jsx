@@ -13,6 +13,7 @@ import UserOptions from './UserOptions';
 import useClickOutside from '../hooks/useClickOutside';
 import backArrow from '../assets/backArrow.svg';
 import FriendResults from '../components/FriendResults';
+import '../styles/Navbar.css';
 
 const Navbar = () => {
   const { profilePicture, isLoggedIn } = useSelector(selectUser);
@@ -32,10 +33,8 @@ const Navbar = () => {
   const [expandSearchBar, setExpandSearchBar] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(getLoggedInUserProfile());
-    }
-  }, [isLoggedIn]);
+    dispatch(getLoggedInUserProfile());
+  }, []);
 
   // When the user clicks outside of their profile icon, close the UserOptions
   useClickOutside({ parentRef: profileRef, childRef: userOptionsRef }, () =>

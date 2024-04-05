@@ -24,6 +24,7 @@ const postSchema = new Schema(
     comments: {
       type: [{ type: Schema.Types.ObjectId, ref: 'comment' }],
     },
+    isFake: Boolean,
   },
   { timestamps: true }
 );

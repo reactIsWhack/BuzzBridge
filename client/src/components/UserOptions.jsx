@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, selectUser } from '../app/features/user/userSlice';
 import { FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import '../styles/UserOptions.css';
 
 const UserOptions = () => {
   const { name, profilePicture } = useSelector(selectUser);

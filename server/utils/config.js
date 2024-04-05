@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { generateFakeDataForClient } = require('./seeds');
 require('dotenv').config();
 
 // intializeMongoDB is used for testing
@@ -27,7 +28,7 @@ const disconnectMongoDB = async () => {
 const connectMongoDBClient = async () => {
   await mongoose.connect(process.env.MONGO_URI);
 
-  mongoose.connection.on('connected', () => {
+  mongoose.connection.on('connected', async () => {
     console.log('Connected to MongoDB');
   });
 

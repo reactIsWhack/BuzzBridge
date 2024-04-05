@@ -5,14 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, selectUser } from '../app/features/user/userSlice';
+import '../styles/Login.css';
 
 const Login = () => {
+  useRedirectLoggedOutUser('/');
   const [renderModal, setRenderModal] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const { isLoading } = useSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useRedirectLoggedOutUser();
   const { email, password } = formData;
 
   const toggleModal = () => {

@@ -11,6 +11,10 @@ const {
 const postRouter = require('./routes/postRoute');
 const commentRouter = require('./routes/commentRoute');
 const { initializeMongoDB, connectMongoDBClient } = require('./utils/config');
+const {
+  generateFakeDataForClient,
+  generateFakeUsers,
+} = require('./utils/seeds');
 
 const app = express();
 const PORT = 5000;
@@ -31,9 +35,12 @@ app.use('/api/comments', commentRouter, postErrorHandler);
 // Connect to MongoDB
 
 if (process.env.NODE_ENV === 'deploy') {
-  connectMongoDBClient().then(() =>
-    app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
-  );
+  connectMongoDBClient().then(() => {
+    app.listen(PORT, async () => {
+      console.log(`Server started on port ${PORT}`);
+      await generateFakeDataForClient();
+    });
+  });
 }
 
 if (process.env.NODE_ENV === 'test') {
