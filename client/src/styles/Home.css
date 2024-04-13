@@ -1,30 +1,102 @@
 .home {
   padding: 0 0.55em;
+  display: flex;
+  justify-content: space-between;
 }
 
 h3 {
-  margin: 1em 0;
-  padding: 0 0.5em;
+  margin: 1em 0 0.7em;
+  padding-left: 0.35em;
   color: #65676b;
   font-size: 1rem;
-  letter-spacing: 0.2px;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .home-left {
-  width: 23.5%;
-  position: fixed;
-  top: 4.2em;
-  height: calc(100vh - 4.8em);
-  padding: 0.7em 0 0 0;
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  min-width: 240px;
+  width: 320px;
+  overflow-y: hidden;
+  padding: 0.75em 0 0 0;
 }
 
-.home-left:hover {
+.home-left:hover,
+.home-right:hover {
   overflow-y: scroll;
+}
+
+.home-middle {
+  min-width: 680px;
+  padding: 1.95em 1.35em 0;
+  flex: 1;
+}
+
+.home-right {
+  min-width: 240px;
+  width: 360px;
+  padding: 1.3em 0 0;
+  position: sticky;
+  top: 70px;
+  height: calc(100vh - 70px);
+  overflow-y: hidden;
+}
+
+.friends {
+  margin-top: 0.6em;
+}
+
+.home-right span {
+  color: #65676b;
+  font-weight: 600;
+  padding-left: 0.5em;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.175);
+  border-radius: 8px;
 }
 
 @media screen and (max-width: 1195px) {
   .home-left {
     display: none;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .home-right {
+    display: none;
+  }
+
+  .home-middle {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .home-middle {
+    min-width: 460px;
+  }
+
+  .home-right {
+    min-width: 200px;
+    width: 220px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .home {
+    padding: 0;
+  }
+
+  .home-middle {
+    min-width: 0;
+    width: 100%;
+    padding: 2em 0 0;
   }
 }

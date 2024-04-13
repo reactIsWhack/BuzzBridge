@@ -5,6 +5,7 @@
   padding: 0.35em 0.5em;
   border-radius: 0.5em;
   margin-right: 2em;
+  gap: 0.5em;
 }
 
 .user-card:hover {
@@ -12,24 +13,18 @@
 }
 
 .user-card img {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 0.5em;
 }
 
 .user-card div {
   letter-spacing: -0.01em;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 450;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.175);
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
+.loggedin-user {
+  padding-top: 0;
 }

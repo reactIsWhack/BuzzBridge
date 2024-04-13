@@ -4,9 +4,11 @@
   background: white;
   height: 60px;
   padding: 1em;
-  position: relative;
   justify-content: space-between;
   z-index: 5;
+  position: sticky;
+  top: 0;
+  right: 0;
 }
 
 .left-container {
@@ -245,5 +247,8 @@
   }
 }
 
-@media screen and (max-width: 290px) {
+@media screen and (max-width: 330px) {
+  .middle-container {
+    gap: 0;
+  }
 }

@@ -33,8 +33,10 @@ const Navbar = () => {
   const [expandSearchBar, setExpandSearchBar] = useState(false);
 
   useEffect(() => {
-    dispatch(getLoggedInUserProfile());
-  }, []);
+    if (isLoggedIn) {
+      dispatch(getLoggedInUserProfile());
+    }
+  }, [isLoggedIn]);
 
   // When the user clicks outside of their profile icon, close the UserOptions
   useClickOutside({ parentRef: profileRef, childRef: userOptionsRef }, () =>

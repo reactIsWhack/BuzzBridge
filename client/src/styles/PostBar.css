@@ -1,0 +1,33 @@
+.post-form {
+  background: white;
+  margin-bottom: 1em;
+  border-radius: 0.5em;
+  padding: 0.75em 1em;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.263);
+}
+
+.post-form img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 0.75em;
+}
+
+.post-form div {
+  background-color: #f0f2f5;
+  flex: 1;
+  border-radius: 20px;
+  padding: 0.7em 1em;
+  cursor: pointer;
+  color: #535356;
+  font-weight: 360;
+  font-size: 0.97rem;
+  transition: background-color 0.2s;
+}
+
+.post-form div:hover {
+  background-color: #e5e6e9;
+}

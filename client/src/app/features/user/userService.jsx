@@ -21,7 +21,7 @@ export const logout = async () => {
 };
 
 export const getUsers = async () => {
-  const skip = Math.floor(Math.random() * (61 - 0) + 0);
+  const skip = Math.floor(Math.random() * (41 - 0) + 0);
   const response = await axios.get(`/api/users/allusers/${skip}`);
   return response;
 };

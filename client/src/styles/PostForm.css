@@ -1,0 +1,56 @@
+.post-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 500px;
+  z-index: 20;
+}
+
+.post-modal-container {
+  position: relative;
+}
+
+.post-close-icon {
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.post-close-icon img {
+  height: 25px;
+}
+
+.post-close-icon:hover {
+  background-color: #f2f2f3;
+}
+
+.post-modal-container h2 {
+  font-size: 1.3rem;
+  font-weight: 580;
+}
+
+.post-modal-top {
+  text-align: center;
+  padding: 0.75em 0;
+}
+
+.post-form-section {
+  padding: 0.8em;
+}
+
+.post-form-photo {
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
