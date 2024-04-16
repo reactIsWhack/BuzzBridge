@@ -5,10 +5,28 @@ const storage = multer.diskStorage({
     cb(null, file.originalname + '--' + Date.now());
   },
   destination: (req, file, cb) => {
-    cb(null, 'images');
+    cb(null, 'uploads');
   },
 });
 
-const uploader = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg' ||
+    file.mimetype === 'image/gif' ||
+    file.mimetype === 'video/mp4'
+  ) {
+    return cb(null, true);
+  }
+
+  return cb(null, false);
+};
+
+const uploader = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 10000000 },
+});
 
 module.exports = uploader;

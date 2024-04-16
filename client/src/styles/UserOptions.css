@@ -32,6 +32,7 @@
   font-weight: 600;
   font-size: 0.9rem;
   margin-left: 0.65em;
+  text-transform: capitalize;
 }
 
 .logout-container {

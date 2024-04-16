@@ -40,7 +40,7 @@ const Post = ({
           <div className="author-info">
             <img src={author.photo} className="author-post-profile" />
             <div>
-              <div>{author.name}</div>
+              <div>{author.firstName + ' ' + author.lastName}</div>
               <span>{`${month} ${formattedDay}${formattedYear} at ${time} ${daytime}`}</span>
             </div>
           </div>

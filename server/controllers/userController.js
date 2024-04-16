@@ -20,7 +20,7 @@ const generateToken = (id, isTesting) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { firstName, lastName, email, password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
     res.status(400);
@@ -28,7 +28,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    name,
+    firstName,
+    lastName,
     email,
     password,
   });
@@ -45,7 +46,8 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 
     res.status(201).json({
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       _id: user._id,
       createdAt: user.createdAt,
@@ -112,11 +114,21 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
     });
 
-    const { name, bio, friends, friendRequests, _id, photo, posts, createdAt } =
-      user;
+    const {
+      firstName,
+      lastName,
+      bio,
+      friends,
+      friendRequests,
+      _id,
+      photo,
+      posts,
+      createdAt,
+    } = user;
 
     res.status(200).json({
-      name,
+      firstName,
+      lastName,
       email: user.email,
       bio,
       friends,
@@ -358,7 +370,8 @@ const updateUser = asyncHandler(async (req, res) => {
       : (user.photo = avatar);
     const updatedUser = await user.save();
     const {
-      name,
+      firstName,
+      lastName,
       email,
       bio,
       friends,
@@ -371,7 +384,8 @@ const updateUser = asyncHandler(async (req, res) => {
     } = updatedUser;
 
     return res.status(200).json({
-      name,
+      firstName,
+      lastName,
       email,
       bio,
       friends,

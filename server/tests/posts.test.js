@@ -6,6 +6,8 @@ const app = require('../index');
 const { loginTestUser } = require('./userHelper');
 const { generateFakeUsers, generateFakePosts } = require('../utils/seeds');
 const arrayHasDuplicates = require('../utils/checkDuplicates');
+const fs = require('fs');
+const removeAllImagesFromUploads = require('../utils/wipeUploadsFolder');
 
 let jwt;
 let testUser;
@@ -15,7 +17,8 @@ beforeAll(async () => {
   await User.deleteMany({});
   await Post.deleteMany({});
   await User.create({
-    name: 'test',
+    firstName: 'test',
+    lastName: 'jest',
     email: 'test@gmail.com',
     password: 'test1234',
   });
@@ -49,6 +52,27 @@ describe('POST /api/posts', () => {
     testUser.posts = [...testUser.posts, response.body];
   });
 
+  it('Should create a new post with a video', async () => {
+    const response = await request(app)
+      .post('/api/posts')
+      .set('Cookie', [...jwt])
+      .attach('photo', `${__dirname}/testVideo.mp4`)
+      .field({ postMessage: 'Cool Cat!' })
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        postMessage: 'Cool Cat!',
+        img: expect.any(String),
+        comments: [],
+        likes: { total: 0, usersLiked: [] },
+      })
+    );
+    expect(String(response.body.author._id)).toBe(String(testUser._id));
+    testUser.posts = [...testUser.posts, response.body];
+  });
+
   it('Should fail to create a post if a postMessage is not sent in the request', async () => {
     const response = await request(app)
       .post('/api/posts')
@@ -72,7 +96,7 @@ describe('GET /api/posts', () => {
       .expect('Content-Type', /application\/json/);
 
     allPosts.push(...response.body);
-    expect(response.body.length).toBe(26);
+    expect(response.body.length).toBe(27);
     expect(response.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -92,7 +116,7 @@ describe('GET /api/posts', () => {
 
   it('Should get the remaining test user posts and their friends posts', async () => {
     const response = await request(app)
-      .get('/api/posts/allposts/25/1')
+      .get('/api/posts/allposts/25/2')
       .set('Cookie', [...jwt])
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -180,8 +204,12 @@ describe('DELETE /api/posts', () => {
 
     const updatedTestUser = await User.findById(testUser._id);
     expect(response.body.message).toBe('Post Deleted!');
-    expect(updatedTestUser.posts.length).toBeFalsy();
+    expect(updatedTestUser.posts.length).toBe(1);
   });
 });
 
-afterAll(async () => disconnectMongoDB());
+afterAll(async () => {
+  await disconnectMongoDB();
+  // Removes test images created from the test post
+  await removeAllImagesFromUploads('uploads');
+});

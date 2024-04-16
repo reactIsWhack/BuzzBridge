@@ -11,14 +11,15 @@ beforeAll(async () => {
   await User.deleteMany({});
   await generateFakeUsers();
   await User.create({
-    name: 'test',
+    firstName: 'test',
+    lastName: 'jest',
     email: 'test@gmail.com',
     password: 'test1234',
   });
 });
 
 const userOutline = {
-  name: expect.any(String),
+  firstName: expect.any(String),
   email: expect.any(String),
   bio: expect.any(String),
   friends: expect.any(Array),
@@ -149,7 +150,8 @@ describe('GET /users', () => {
 
     expect(response.body).toEqual(
       expect.objectContaining({
-        name: 'test',
+        firstName: 'test',
+        lastName: 'jest',
         email: 'test@gmail.com',
         photo: expect.any(String),
         friends: expect.arrayContaining([expect.objectContaining(userOutline)]),
@@ -177,8 +179,6 @@ describe('GET /users', () => {
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.length).toBe(8);
-    console.log(user.friends, 'friends');
-    console.log(response.body);
     expect(response.body.map((user) => user._id)).not.toEqual(user.friends);
   });
 });

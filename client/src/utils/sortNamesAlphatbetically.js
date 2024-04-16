@@ -1,10 +1,12 @@
 const sortNamesAlphabetically = (array) => {
   const sortingArray = [...array];
   return sortingArray.sort((a, b) => {
-    if (a.name < b.name) {
+    const aName = a.firstName + ' ' + a.lastName;
+    const bName = b.firstName + ' ' + b.lastName;
+    if (aName < bName) {
       return -1;
     }
-    if (a.name > b.name) {
+    if (aName > bName) {
       return 1;
     }
     return 0;

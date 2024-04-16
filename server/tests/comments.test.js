@@ -19,7 +19,8 @@ beforeAll(async () => {
   await Post.deleteMany({});
   await Comment.deleteMany({});
   await User.create({
-    name: 'test',
+    firstName: 'test',
+    lastName: 'jest',
     email: 'test@gmail.com',
     password: 'test1234',
   });

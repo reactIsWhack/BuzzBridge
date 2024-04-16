@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/UserOptions.css';
 
 const UserOptions = () => {
-  const { name, profilePicture } = useSelector(selectUser);
+  const { firstName, lastName, profilePicture } = useSelector(selectUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ const UserOptions = () => {
       <div className="hover-container">
         <div className="profile-card-box shadow-div">
           <img src={profilePicture} />
-          <div>{name}</div>
+          <div>{firstName + ' ' + lastName}</div>
         </div>
       </div>
       <div className="logout-container" onClick={logout}>

@@ -17,7 +17,8 @@ describe('POST /users auth', () => {
     const response = await request(app)
       .post('/api/users/registeruser')
       .send({
-        name: 'test',
+        firstName: 'test',
+        lastName: 'jest',
         email: 'test@gmail.com',
         password: 'test1234',
         confirmPassword: 'test123',
@@ -42,17 +43,20 @@ describe('POST /users auth', () => {
     const response = await request(app)
       .post('/api/users/registeruser')
       .send({
-        name: 'test',
+        firstName: 'test',
+        lastName: 'jest',
         email: 'test@gmail.com',
         password: 'test1234',
         confirmPassword: 'test1234',
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
+    console.log(response.body);
 
     expect(response.body).toEqual(
       expect.objectContaining({
-        name: 'test',
+        firstName: 'test',
+        lastName: 'jest',
         email: 'test@gmail.com',
       })
     );
@@ -69,7 +73,8 @@ describe('POST /users auth', () => {
 
     expect(response.body).toEqual(
       expect.objectContaining({
-        name: 'test',
+        firstName: 'test',
+        lastName: 'jest',
         email: 'test@gmail.com',
         friends: [],
         friendRequests: [],
@@ -112,7 +117,8 @@ describe('POST /users auth', () => {
     const response = await request(app)
       .post('/api/users/registeruser')
       .send({
-        name: 'test',
+        firstName: 'test',
+        lastName: 'jest',
         email: 'test@gmail.com',
         password: 'test1234',
         confirmPassword: 'test1234',

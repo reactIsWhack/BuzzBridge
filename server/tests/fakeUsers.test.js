@@ -15,7 +15,8 @@ beforeAll(async () => {
 describe('Fake User Testing', () => {
   // fakeUser specifies the structure of a fake generated user, so it can check for certian properties
   const fakeUser = {
-    name: expect.any(String),
+    firstName: expect.any(String),
+    lastName: expect.any(String),
     email: expect.any(String),
     password: expect.any(String),
     photo: expect.any(String),

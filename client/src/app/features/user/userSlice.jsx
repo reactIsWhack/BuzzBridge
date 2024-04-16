@@ -10,7 +10,8 @@ import { toast } from 'react-toastify';
 import defaultProfile from '../../../assets/defaultProfile.png';
 
 const initialState = {
-  name: '',
+  firstName: '',
+  lastName: '',
   email: '',
   userId: '',
   profilePicture: defaultProfile,
@@ -110,7 +111,8 @@ const userSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.name = action.payload.name;
+        state.firstName = action.payload.firstName;
+        state.lastName = action.payload.lastName;
         state.email = action.payload.email;
         state.createdAt = action.payload.createdAt;
         state.userId = action.payload._id;
@@ -122,7 +124,8 @@ const userSlice = createSlice({
       })
       .addCase(getLoggedInUserProfile.fulfilled, (state, action) => {
         state.userId = action.payload._id;
-        state.name = action.payload.name;
+        state.firstName = action.payload.firstName;
+        state.lastName = action.payload.lastName;
         state.email = action.payload.email;
         state.bio = action.payload.bio;
         state.friends = action.payload.friends;
@@ -146,7 +149,8 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.name = action.payload.name;
+        state.firstName = action.payload.firstName;
+        state.lastName = action.payload.lastName;
         state.email = action.payload.email;
         state.friends = action.payload.friends;
         state.friendRequests = action.payload.friendRequests;

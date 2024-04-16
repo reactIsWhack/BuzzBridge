@@ -6,7 +6,7 @@ import Modal from './Modal';
 import PostForm from './PostForm';
 
 const PostBar = () => {
-  const { name, profilePicture } = useSelector(selectUser);
+  const { firstName, profilePicture } = useSelector(selectUser);
   const [renderModal, setRenderModal] = useState(false);
 
   const toggleModal = () =>
@@ -23,7 +23,9 @@ const PostBar = () => {
       )}
       <div className="post-form" onClick={toggleModal}>
         <img src={profilePicture} alt="profile-picture" />
-        <div>{`What's on your mind, ${name}?`}</div>
+        <div>
+          What's on your mind, <span>{firstName}</span>?
+        </div>
       </div>
     </>
   );

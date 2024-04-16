@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 const RegisterForm = ({ setRenderModal }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
-  const { name, email, password, confirmPassword } = formData;
+  const { firstName, lastName, email, password, confirmPassword } = formData;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading } = useSelector(selectUser);
@@ -54,15 +55,26 @@ const RegisterForm = ({ setRenderModal }) => {
         onSubmit={handleSubmit}
         style={registerFormStyles}
       >
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          required
-          value={name}
-          onChange={handleChange}
-          maxLength={25}
-        />
+        <div>
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            required
+            value={firstName}
+            onChange={handleChange}
+            maxLength={25}
+          />
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            required
+            value={lastName}
+            onChange={handleChange}
+            maxLength={25}
+          />
+        </div>
         <input
           type="email"
           name="email"
@@ -72,25 +84,23 @@ const RegisterForm = ({ setRenderModal }) => {
           onChange={handleChange}
           maxLength={35}
         />
-        <div>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            value={password}
-            onChange={handleChange}
-            maxLength={25}
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            required
-            value={confirmPassword}
-            onChange={handleChange}
-          />
-        </div>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={handleChange}
+          maxLength={25}
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          required
+          value={confirmPassword}
+          onChange={handleChange}
+        />
         <button disabled={isLoading}>Sign Up</button>
       </form>
     </>

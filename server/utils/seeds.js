@@ -2,6 +2,7 @@ const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const { faker } = require('@faker-js/faker');
 const sortByInput = require('./sortByInput');
+const profilePictures = require('../fakeUserData');
 require('dotenv').config();
 
 const nodeEnv = process.env.NODE_ENV;
@@ -9,41 +10,18 @@ const nodeEnv = process.env.NODE_ENV;
 const generateFakeUsers = async () => {
   console.log('Generating fake users...');
   const testUser = await User.findOne({ email: 'test@gmail.com' });
-  const generatedImages = new Set();
-  for (let i = 0; nodeEnv === 'test' ? i < 10 : i < 100; i++) {
+  for (let i = 0; nodeEnv === 'test' ? i < 10 : i < 80; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
-    faker.seed(i);
-
-    function generateUniqueImageUrl(category) {
-      let imageUrl;
-      do {
-        imageUrl = faker.image.urlLoremFlickr({ category });
-      } while (generatedImages.has(imageUrl));
-
-      generatedImages.add(imageUrl);
-      return imageUrl;
-    }
-
-    let photoCategory = '';
-
-    if (i % 3 === 0) {
-      photoCategory = 'cats';
-    } else if (i % 5 === 0) {
-      photoCategory = 'nature';
-    } else if (i % 8 === 0) {
-      photoCategory = 'birds';
-    } else {
-      photoCategory = 'dogs';
-    }
 
     const fakeUser = {
-      name: firstName + ' ' + lastName,
+      firstName,
+      lastName,
       email: faker.internet.email(),
       password: process.env.FAKE_USER_PASSWORD,
       bio: faker.lorem.paragraph(),
       friends: testUser ? [testUser] : [],
-      photo: generateUniqueImageUrl(photoCategory),
+      photo: profilePictures[i],
       coverPhoto: faker.image.urlLoremFlickr(),
       isFake: true,
     };
@@ -67,7 +45,7 @@ const populateFakeUserFriends = async () => {
   for (let j = 0; j < allFakeUsers.length; j++) {
     const fakeUser = allFakeUsers[j];
     // Ensures not all fakeUsers have the clientTesting user as a friend
-    const friends = new Set(j > 75 ? [String(clientTestingUser._id)] : []);
+    const friends = new Set(j > 55 ? [String(clientTestingUser._id)] : []);
     const randomFriendCount = Math.floor(Math.random() * (5 - 1 + 1) + 1);
 
     // Generate random friends for the current fake user
@@ -103,7 +81,6 @@ const populateFakeUserFriends = async () => {
   const updatedFakeUsers = await User.find({ isFake: true }).populate(
     'friends'
   );
-
   return updatedFakeUsers;
 };
 
@@ -136,8 +113,14 @@ const generateFakePosts = async () => {
         }),
       };
       for (let i = 0; i < 25; i++) {
-        fakePost.postMessage += faker.word.sample() + ' ';
+        const word = faker.word.sample();
+        fakePost.postMessage += !i
+          ? word[0].toUpperCase() + word.slice(1, word.length) + ' '
+          : word + ' ';
       }
+      fakePost.postMessage =
+        fakePost.postMessage.slice(0, fakePost.postMessage.lastIndexOf(' ')) +
+        '.';
       const generatedPost = await Post.create(fakePost);
       fakePost._id = generatedPost._id;
       fakePosts.push(fakePost);
@@ -152,12 +135,13 @@ const generateFakePosts = async () => {
     model: 'post',
     populate: { path: 'author', model: 'user' },
   });
+
   return updatedFakeUsers;
 };
 
 const generateFakeDataForClient = async () => {
   const fakeUsers = await User.find({ isFake: true });
-  if (fakeUsers.length < 100) {
+  if (fakeUsers.length < 80) {
     await generateFakeUsers();
     console.log('✅');
 
@@ -166,13 +150,14 @@ const generateFakeDataForClient = async () => {
 
     await generateFakePosts();
     console.log('✅');
-  } else {
-    await User.deleteMany({ isFake: true });
-    const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
-    user.friends = [];
-    await user.save();
-    await Post.deleteMany({ isFake: true });
   }
+  //  else {
+  //   await User.deleteMany({ isFake: true });
+  //   const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
+  //   user.friends = [];
+  //   await user.save();
+  //   await Post.deleteMany({ isFake: true });
+  // }
 };
 
 module.exports = {

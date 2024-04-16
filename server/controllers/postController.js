@@ -17,11 +17,15 @@ const createPost = asyncHandler(async (req, res) => {
   // If the user adds a photo to the post, upload it to cloudinary
 
   if (req.file) {
-    const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'NodeNet',
-      resource_type: 'image',
-    });
-    postImg = secure_url;
+    try {
+      const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'NodeNet',
+        resource_type: req.file.mimetype === 'video/mp4' ? 'video' : 'image',
+      });
+      postImg = secure_url;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // The logged in user's id is recieved from the protect middleware, and used as the author of the post.
@@ -83,7 +87,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.userId);
   // The skip tells where the posts should start at to be queried. This is used for when the client reaches the bottom of the page and more posts need to be loaded.
-  // userSkip ensures
+  // userSkip manages the logged in user's posts by stating where the posts should be queried from
   const userPosts = await Post.find({ author: req.userId })
     .skip(userSkip)
     .limit(5)
