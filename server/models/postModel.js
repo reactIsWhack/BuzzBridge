@@ -16,8 +16,11 @@ const postSchema = new Schema(
       ref: 'user',
     },
     img: {
-      type: String,
-      default: '',
+      type: Object,
+      default: {
+        src: '',
+        fileType: '',
+      },
     },
     // Each post will have an array of comments.
     // When a comment is created, the post being commented will be queryed and the id of the created comment will be added to the queryed post.
@@ -28,6 +31,9 @@ const postSchema = new Schema(
   },
   { timestamps: true }
 );
+
+postSchema.set('toObject', { sort: { createdAt: -1 } });
+postSchema.set('toJSON', { sort: { createdAt: -1 } });
 
 const Post = mongoose.model('post', postSchema);
 module.exports = Post;

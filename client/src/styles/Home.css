@@ -53,11 +53,13 @@ h3 {
   padding-left: 0.5em;
 }
 
-::-webkit-scrollbar {
+.home-right::-webkit-scrollbar,
+.home-left::-webkit-scrollbar {
   width: 7px;
 }
 
-::-webkit-scrollbar-thumb {
+.home-right::-webkit-scrollbar-thumb,
+.home-left::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.175);
   border-radius: 8px;
 }

@@ -66,7 +66,8 @@ describe('Fake User Testing', () => {
     expect(post.postMessage).toEqual(expect.any(String));
     expect(post.likes).toEqual(expect.any(Object));
     expect(post.author).toEqual(expect.objectContaining(fakeUser)); // Assuming fakeUser is a constructor function
-    expect(post.img).toEqual(expect.any(String));
+    expect(post.img.src).toEqual(expect.any(String));
+    expect(post.img.fileType).toEqual(expect.any(String));
     expect(post.comments).toEqual(expect.any(Array));
   }, 9000);
 });

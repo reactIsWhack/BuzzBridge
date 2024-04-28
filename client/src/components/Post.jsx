@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import '../styles/Post.css';
 import { SlOptions } from 'react-icons/sl';
 import { useSelector } from 'react-redux';
@@ -34,7 +34,7 @@ const Post = ({
   const { userId } = useSelector(selectUser);
 
   return (
-    <div className="post-card">
+    <div className="post-card" id={_id}>
       <div className="post-top-container">
         <div className="author-section">
           <div className="author-info">
@@ -48,7 +48,17 @@ const Post = ({
         </div>
         <div className="post-message">{postMessage}</div>
       </div>
-      {img && <img src={img} className="post-img" />}
+      {img.src &&
+        (img.fileType === 'video/mp4' ? (
+          <video controls width="100%" className="post-img">
+            <source src={img.src} type="video/mp4" />
+          </video>
+        ) : (
+          <img src={img.src} className="post-img" />
+        ))}
+      <div className="post-bottom-container">
+        <div className="post-actions"></div>
+      </div>
     </div>
   );
 };

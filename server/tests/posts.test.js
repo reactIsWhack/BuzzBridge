@@ -38,12 +38,14 @@ describe('POST /api/posts', () => {
       .field({ postMessage: 'Jordan Love!' })
       .expect(201)
       .expect('Content-Type', /application\/json/);
-    console.log(response.statusCode);
 
     expect(response.body).toEqual(
       expect.objectContaining({
         postMessage: 'Jordan Love!',
-        img: expect.any(String),
+        img: expect.objectContaining({
+          src: expect.any(String),
+          fileType: 'image/jpeg',
+        }),
         comments: [],
         likes: { total: 0, usersLiked: [] },
       })
@@ -64,7 +66,10 @@ describe('POST /api/posts', () => {
     expect(response.body).toEqual(
       expect.objectContaining({
         postMessage: 'Cool Cat!',
-        img: expect.any(String),
+        img: expect.objectContaining({
+          src: expect.any(String),
+          fileType: 'video/mp4',
+        }),
         comments: [],
         likes: { total: 0, usersLiked: [] },
       })
@@ -104,7 +109,7 @@ describe('GET /api/posts', () => {
           postMessage: expect.any(String),
           likes: { total: 0, usersLiked: [] },
           comments: [],
-          img: expect.any(String),
+          img: expect.any(Object),
         }),
       ])
     );
@@ -141,7 +146,7 @@ describe('GET /api/posts', () => {
       expect.arrayContaining([
         expect.objectContaining({
           postMessage: 'Jordan Love!',
-          img: expect.any(String),
+          img: expect.any(Object),
           likes: expect.any(Object),
           author: expect.objectContaining({ _id: testUser._id }),
         }),
@@ -184,13 +189,19 @@ describe('PATCH /api/posts', () => {
     const response = await request(app)
       .patch(`/api/posts/editpost/${testUser.posts[0]._id}`)
       .set('Cookie', [...jwt])
-      .attach('photo', `${__dirname}/test3.jpg`)
-      .field({ contentMessage: "I'm lovin this year!", contentType: 'post' })
+      .attach('photo', `${__dirname}/testVideo.mp4`)
+      .field({ contentMessage: 'Meow Meme', contentType: 'post' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.postMessage).toBe("I'm lovin this year!");
-    expect(response.body.img).toBeTruthy();
+    console.log(response.body);
+    expect(response.body.postMessage).toBe('Meow Meme');
+    expect(response.body.img).toEqual(
+      expect.objectContaining({
+        src: expect.any(String),
+        fileType: 'video/mp4',
+      })
+    );
   });
 });
 

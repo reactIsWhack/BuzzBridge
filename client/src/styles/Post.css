@@ -7,6 +7,10 @@
 }
 
 .post-top-container {
+  padding: 0.75em 1em 0 1em;
+}
+
+.post-bottom-container {
   padding: 0.75em 1em;
 }
 
@@ -26,6 +30,11 @@
 .author-info div {
   font-weight: 500;
   font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.author-info div div:hover {
+  text-decoration: underline;
 }
 
 .author-info span {
@@ -42,5 +51,11 @@
 
 .post-img {
   width: 100%;
-  object-fit: contain;
+  margin-top: 0.75em;
+}
+
+.post-actions {
+  border-top: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+  height: 40px;
 }

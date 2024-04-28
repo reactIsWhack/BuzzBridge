@@ -14,7 +14,7 @@ const router = Router();
 
 router.post('/', protect, uploader.single('photo'), createPost);
 router.get('/userposts', protect, getUserPosts);
-router.get('/allposts/:skip/:userSkip', protect, getAllPosts);
+router.get('/allposts/:dateQuery', protect, getAllPosts);
 router.delete('/:id', protect, deletePost);
 router.patch('/likepost/:id', protect, likeOrRemovelike);
 router.patch(

@@ -20,9 +20,10 @@ const editContent = asyncHandler(async (req, res) => {
     if (req.file) {
       const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
         folder: 'NodeNet',
-        resource_type: 'image',
+        resource_type: req.file.mimetype === 'video/mp4' ? 'video' : 'image',
       });
-      queryedContent.img = secure_url;
+      queryedContent.img.src = secure_url;
+      queryedContent.img.fileType = req.file.mimetype;
     }
 
     await queryedContent.save().then((post) =>

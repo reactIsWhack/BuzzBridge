@@ -46,6 +46,7 @@ export const getLoggedInUserProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const { data } = await getPersonalProfile();
+      console.log(data);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
@@ -89,6 +90,7 @@ export const getUnkownUsers = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await getUsers();
+      console.log(response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);

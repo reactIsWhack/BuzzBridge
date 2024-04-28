@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import Login from './pages/Login';
@@ -8,19 +8,46 @@ import 'react-toastify/dist/ReactToastify.css';
 import Friends from './pages/Friends';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUnkownUsers, selectUser } from './app/features/user/userSlice';
-import { getAllPosts } from './app/features/posts/postsSlice';
+import { getAllPosts, selectPosts } from './app/features/posts/postsSlice';
 
 axios.defaults.withCredentials = true;
 
 const App = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector(selectUser);
+  const { postsIsLoading, noMorePosts } = useSelector(selectPosts);
+  console.log(noMorePosts);
+
+  const handleScroll = async () => {
+    const bottom =
+      Math.ceil(window.innerHeight + window.scrollY) >=
+      document.documentElement.scrollHeight;
+
+    if (bottom) {
+      window.removeEventListener('scroll', handleScroll);
+
+      await dispatch(getAllPosts());
+      if (!postsIsLoading) {
+        window.addEventListener('scroll', handleScroll, {
+          passive: true,
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (isLoggedIn) {
       dispatch(getUnkownUsers());
       dispatch(getAllPosts());
     }
+
+    window.addEventListener('scroll', handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [dispatch, isLoggedIn]);
 
   return (

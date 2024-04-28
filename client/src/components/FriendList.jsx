@@ -15,7 +15,7 @@ const FriendList = () => {
 
   return (
     <div className="friend-list">
-      <span>Contacts</span>
+      <span>Contacts {`(${friends.length})`}</span>
       <div className="friends">{friendCard}</div>
     </div>
   );

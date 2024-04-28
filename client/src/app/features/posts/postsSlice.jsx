@@ -5,14 +5,28 @@ import { toast } from 'react-toastify';
 const initialState = {
   posts: [],
   postsIsLoading: false,
+  queryDates: [],
+  noMorePosts: false,
 };
 
 export const getAllPosts = createAsyncThunk(
   'posts/getAllPosts',
   async (_, thunkAPI) => {
+    const { posts } = thunkAPI.getState();
+
+    if (posts.noMorePosts) return;
+
     try {
-      const { user, posts } = thunkAPI.getState();
-      const response = await getPosts(user.posts.length, posts.posts.length);
+      const response = await getPosts(
+        !posts.posts.length
+          ? new Date(Date.now())
+          : posts.posts[posts.posts.length - 1].createdAt
+      );
+
+      if (response.status === 204) {
+        thunkAPI.dispatch(setNoMorePosts(true));
+      }
+
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -23,15 +37,27 @@ export const getAllPosts = createAsyncThunk(
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    setNoMorePosts(state, action) {
+      state.noMorePosts = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllPosts.pending, (state) => {
-        state.postsIsLoading = true;
+        if (!state.noMorePosts) {
+          state.postsIsLoading = true;
+        }
       })
       .addCase(getAllPosts.fulfilled, (state, action) => {
         state.postsIsLoading = false;
-        state.posts = action.payload;
+        state.loadingMorePosts = false;
+        if (action.payload.length) {
+          state.posts = [...state.posts, ...action.payload];
+          state.queryDates.push(
+            action.payload[action.payload.length - 1].createdAt
+          );
+        }
       })
       .addCase(getAllPosts.rejected, (state, action) => {
         state.postsIsLoading = false;
@@ -41,5 +67,7 @@ const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
+
+export const { setNoMorePosts } = postsSlice.actions;
 
 export const selectPosts = (state) => state.posts;
