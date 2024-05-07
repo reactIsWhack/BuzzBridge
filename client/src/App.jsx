@@ -16,7 +16,6 @@ const App = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector(selectUser);
   const { postsIsLoading, noMorePosts } = useSelector(selectPosts);
-  console.log(noMorePosts);
 
   const handleScroll = async () => {
     const bottom =

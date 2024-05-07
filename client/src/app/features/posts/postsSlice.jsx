@@ -41,6 +41,9 @@ const postsSlice = createSlice({
     setNoMorePosts(state, action) {
       state.noMorePosts = action.payload;
     },
+    resetPosts(state, action) {
+      return initialState;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -68,6 +71,6 @@ const postsSlice = createSlice({
 
 export default postsSlice.reducer;
 
-export const { setNoMorePosts } = postsSlice.actions;
+export const { setNoMorePosts, resetPosts } = postsSlice.actions;
 
 export const selectPosts = (state) => state.posts;

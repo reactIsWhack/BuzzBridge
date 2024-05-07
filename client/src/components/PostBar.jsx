@@ -9,19 +9,20 @@ const PostBar = () => {
   const { firstName, profilePicture } = useSelector(selectUser);
   const [renderModal, setRenderModal] = useState(false);
 
-  const toggleModal = () =>
-    setRenderModal((prevRenderModal) => !prevRenderModal);
-
   return (
     <>
-      {renderModal && (
-        <div className="post-modal">
+      <div className="post-modal">
+        {renderModal && (
           <Modal>
-            <PostForm toggleModal={toggleModal} renderModal={renderModal} />
+            <PostForm
+              setRenderModal={setRenderModal}
+              renderModal={renderModal}
+            />
           </Modal>
-        </div>
-      )}
-      <div className="post-form" onClick={toggleModal}>
+        )}
+      </div>
+
+      <div className="post-form" onClick={() => setRenderModal(true)}>
         <img src={profilePicture} alt="profile-picture" />
         <div>
           What's on your mind, <span>{firstName}</span>?

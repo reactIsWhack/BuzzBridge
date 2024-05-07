@@ -8,6 +8,20 @@ body {
   background: #f0f2f5;
 }
 
+@media screen and (max-width: 700px) {
+  ::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}
+
+.body-disabled-scroll {
+  overflow: hidden;
+}
+
+.body-disabled-scroll .container-nav {
+  opacity: 0.5;
+}
+
 .shadow-div {
   box-shadow: 2px 2px 16px rgba(0, 0, 0, 0.15);
 }

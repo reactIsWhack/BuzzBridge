@@ -10,7 +10,7 @@ const Home = () => {
   useRedirectLoggedOutUser('/');
 
   return (
-    <>
+    <div className="main-page">
       <Navbar />
       <div className="home">
         <div className="home-left">
@@ -23,7 +23,7 @@ const Home = () => {
           <FriendList />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -6,6 +6,7 @@ import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, selectUser } from '../app/features/user/userSlice';
 import '../styles/Login.css';
+import { resetPosts } from '../app/features/posts/postsSlice';
 
 const Login = () => {
   useRedirectLoggedOutUser('/');
@@ -15,6 +16,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { email, password } = formData;
+  const { isLoggedIn } = useSelector(selectUser);
 
   const toggleModal = () => {
     setRenderModal((prevRenderModal) => !prevRenderModal);
@@ -41,6 +43,10 @@ const Login = () => {
   const formStyles = {
     opacity: isLoading ? 0.5 : 1,
   };
+
+  useEffect(() => {
+    if (!isLoggedIn) dispatch(resetPosts());
+  }, []);
 
   return (
     <>
