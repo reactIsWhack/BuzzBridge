@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getPosts } from './postsService';
+import { addPost, getPosts } from './postsService';
 import { toast } from 'react-toastify';
 
 const initialState = {
@@ -34,6 +34,19 @@ export const getAllPosts = createAsyncThunk(
   }
 );
 
+export const createPost = createAsyncThunk(
+  'posts/createPost',
+  async (formData, thunkAPI) => {
+    try {
+      const response = await addPost(formData);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -64,6 +77,12 @@ const postsSlice = createSlice({
       })
       .addCase(getAllPosts.rejected, (state, action) => {
         state.postsIsLoading = false;
+        toast.error(action.payload);
+      })
+      .addCase(createPost.fulfilled, (state, action) => {
+        state.posts = [action.payload, ...state.posts];
+      })
+      .addCase(createPost.rejected, (state, action) => {
         toast.error(action.payload);
       });
   },

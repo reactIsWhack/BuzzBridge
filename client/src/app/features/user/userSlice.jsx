@@ -7,14 +7,13 @@ import {
   logout,
 } from './userService';
 import { toast } from 'react-toastify';
-import defaultProfile from '../../../assets/defaultProfile.png';
 
 const initialState = {
   firstName: '',
   lastName: '',
   email: '',
   userId: '',
-  profilePicture: defaultProfile,
+  profilePicture: '',
   coverPhoto: '',
   bio: '',
   posts: [],
@@ -119,6 +118,7 @@ const userSlice = createSlice({
         state.createdAt = action.payload.createdAt;
         state.userId = action.payload._id;
         state.isLoggedIn = true;
+        state.profilePicture = action.payload.photo;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -133,7 +133,7 @@ const userSlice = createSlice({
         state.friends = action.payload.friends;
         state.friendRequests = action.payload.friendRequests;
         state.posts = action.payload.posts;
-        state.profilePicture = action.payload.photo || defaultProfile;
+        state.profilePicture = action.payload.photo;
         state.coverPhoto = action.payload.coverPhoto;
       })
       .addCase(getLoggedInUserProfile.rejected, (state, action) =>
@@ -157,7 +157,7 @@ const userSlice = createSlice({
         state.friends = action.payload.friends;
         state.friendRequests = action.payload.friendRequests;
         state.bio = action.payload.bio;
-        state.photo = action.payload.photo || defaultProfile;
+        state.photo = action.payload.photo;
         state.posts = action.payload.posts;
         state.coverPhoto = action.payload.coverPhoto;
         state.isLoggedIn = true;

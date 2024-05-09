@@ -44,7 +44,11 @@ const Post = ({
               <span>{`${month} ${formattedDay}${formattedYear} at ${time} ${daytime}`}</span>
             </div>
           </div>
-          {String(userId) === String(_id) && <SlOptions />}
+          <div className="post-options">
+            {String(userId) === String(author._id) && (
+              <SlOptions fill="#606770" size={18} cursor="pointer" />
+            )}
+          </div>
         </div>
         <div className="post-message">{postMessage}</div>
       </div>

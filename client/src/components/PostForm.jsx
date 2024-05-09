@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/PostForm.css';
 import closeIcon from '../assets/closeIcon.svg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
 import imageIcon from '../assets/imageIcon.svg';
+import { createPost } from '../app/features/posts/postsSlice';
 
 const PostForm = ({ setRenderModal, renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
@@ -11,22 +12,29 @@ const PostForm = ({ setRenderModal, renderModal }) => {
   const [postMessage, setPostMessage] = useState('');
   const [enterTotal, setEnterTotal] = useState(0);
   const fileUploadRef = useRef(null);
-  const [fileLoading, setFileLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const previewFile = async (e) => {
     const file = e.target.files[0];
     const url = URL.createObjectURL(file);
     setImagePreview(url);
   };
+  let requestCount = 0;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    requestCount++;
+    if (requestCount > 1) {
+      return;
+    }
     const formData = new FormData();
 
     const photo = fileUploadRef.current && fileUploadRef.current.files[0];
     formData.append('photo', photo);
     formData.append('postMessage', postMessage);
     console.log(formData.get('postMessage'), formData.get('photo'));
+    await dispatch(createPost(formData));
+    setRenderModal(false);
   };
 
   const handleOnKeyDown = async (e) => {

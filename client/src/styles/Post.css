@@ -22,6 +22,12 @@
   margin-right: 0.75em;
 }
 
+.author-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .author-info {
   display: flex;
   align-items: center;
