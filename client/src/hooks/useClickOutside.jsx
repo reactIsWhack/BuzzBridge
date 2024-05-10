@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 const useClickOutside = (ref, callback) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // If the user clicks outside of the parent of the div element and that element is not the child ref,
+      // then close the div.
       if (
         ref.parentRef.current &&
         !ref.parentRef.current.contains(event.target) &&
@@ -11,7 +13,7 @@ const useClickOutside = (ref, callback) => {
       ) {
         callback();
 
-        // If the user was interacting with the expanded search bar and then closed it, animate the search icon to fade in
+        // If the user was interacting with the expanded search bar and then close it, animate the search icon to fade in
         if (ref.parentRef.current.id === 'search-bar') {
           document
             .getElementById('search-icon')

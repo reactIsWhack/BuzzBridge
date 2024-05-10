@@ -1,8 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import '../styles/Post.css';
 import { SlOptions } from 'react-icons/sl';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
+import PostOptions from './PostOptions';
+import useClickOutside from '../hooks/useClickOutside';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -32,6 +34,17 @@ const Post = ({
   const formattedDay = day.slice(0, day.indexOf(','));
   const formattedYear = currentYear !== year ? `, ${year}` : '';
   const { userId } = useSelector(selectUser);
+  const [renderPostOptions, setRenderPostOptions] = useState(false);
+  const menuRef = useRef(null);
+  const optionsRef = useRef(null);
+
+  const handleClick = () => {
+    setRenderPostOptions(true);
+  };
+
+  useClickOutside({ parentRef: menuRef, childRef: optionsRef }, () =>
+    setRenderPostOptions(false)
+  );
 
   return (
     <div className="post-card" id={_id}>
@@ -44,9 +57,14 @@ const Post = ({
               <span>{`${month} ${formattedDay}${formattedYear} at ${time} ${daytime}`}</span>
             </div>
           </div>
-          <div className="post-options">
+          <div className="post-options" onClick={handleClick} ref={menuRef}>
             {String(userId) === String(author._id) && (
               <SlOptions fill="#606770" size={18} cursor="pointer" />
+            )}
+            {renderPostOptions && (
+              <div ref={optionsRef} className="post-options-container">
+                <PostOptions />
+              </div>
             )}
           </div>
         </div>
