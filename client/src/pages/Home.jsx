@@ -5,9 +5,16 @@ import UnknownContacts from '../components/UnknownContacts';
 import '../styles/Home.css';
 import PostFeed from '../components/PostFeed';
 import FriendList from '../components/FriendList';
+import { useSelector } from 'react-redux';
+import { selectPopup } from '../app/features/popup/popupSlice';
+import DeletePostPopup from '../components/DeletePostPopup';
+import useDisableBackground from '../hooks/useDisableBackground';
 
 const Home = () => {
   useRedirectLoggedOutUser('/');
+  const { renderDeletePostPopup } = useSelector(selectPopup);
+
+  useDisableBackground(renderDeletePostPopup, null);
 
   return (
     <div className="main-page">
@@ -23,6 +30,7 @@ const Home = () => {
           <FriendList />
         </div>
       </div>
+      {renderDeletePostPopup && <DeletePostPopup />}
     </div>
   );
 };

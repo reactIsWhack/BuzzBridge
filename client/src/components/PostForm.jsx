@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
 import imageIcon from '../assets/imageIcon.svg';
 import { createPost } from '../app/features/posts/postsSlice';
+import useDisableBackground from '../hooks/useDisableBackground';
 
 const PostForm = ({ setRenderModal, renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
@@ -87,25 +88,12 @@ const PostForm = ({ setRenderModal, renderModal }) => {
     }
   };
 
-  useEffect(() => {
-    if (renderModal) {
-      document.body.classList.add('body-disabled-scroll');
-      document.querySelector('.home').classList.add('home-backdrop');
-      document
-        .querySelector('.main-page')
-        .append(document.querySelector('.post-modal'));
-    }
-
-    return () => {
-      document.body.classList.remove('body-disabled-scroll');
-      document.querySelector('.home').classList.remove('home-backdrop');
-    };
-  }, []);
+  useDisableBackground(renderModal, 'postModal');
 
   return (
     <div className="post-modal-container">
-      <div className="post-modal-top">
-        <div className="post-close-icon">
+      <div className="modal-top">
+        <div className="modal-close-icon">
           <img src={closeIcon} onClick={() => setRenderModal(false)} />
         </div>
         <h2>Create Post</h2>

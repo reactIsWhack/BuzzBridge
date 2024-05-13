@@ -39,7 +39,9 @@ const Post = ({
   const optionsRef = useRef(null);
 
   const handleClick = () => {
-    setRenderPostOptions(true);
+    if (!renderPostOptions) {
+      setRenderPostOptions(true);
+    }
   };
 
   useClickOutside({ parentRef: menuRef, childRef: optionsRef }, () =>
@@ -63,7 +65,10 @@ const Post = ({
             )}
             {renderPostOptions && (
               <div ref={optionsRef} className="post-options-container">
-                <PostOptions />
+                <PostOptions
+                  setRenderPostOptions={setRenderPostOptions}
+                  renderPostOptions={renderPostOptions}
+                />
               </div>
             )}
           </div>

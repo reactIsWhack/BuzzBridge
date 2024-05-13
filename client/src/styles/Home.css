@@ -6,6 +6,8 @@
 
 .home-backdrop {
   opacity: 0.5;
+  position: relative;
+  z-index: -1;
 }
 
 .post-modal-main-container {

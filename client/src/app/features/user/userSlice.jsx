@@ -7,13 +7,14 @@ import {
   logout,
 } from './userService';
 import { toast } from 'react-toastify';
+import defaultProfile from '../../../assets/defaultProfile.png';
 
 const initialState = {
   firstName: '',
   lastName: '',
   email: '',
   userId: '',
-  profilePicture: '',
+  profilePicture: 'https://i.ibb.co/4pDNDk1/avatar.png',
   coverPhoto: '',
   bio: '',
   posts: [],

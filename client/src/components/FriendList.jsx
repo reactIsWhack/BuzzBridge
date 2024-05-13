@@ -7,7 +7,6 @@ import sortNamesAlphabetically from '../utils/sortNamesAlphatbetically';
 const FriendList = () => {
   const { friends } = useSelector(selectUser);
   const sortedFriends = sortNamesAlphabetically(friends);
-  // console.log(sortedFriends);
 
   const friendCard = sortedFriends.map((friend) => (
     <UserCard key={friend._id} {...friend} />
@@ -15,7 +14,7 @@ const FriendList = () => {
 
   return (
     <div className="friend-list">
-      <span>Contacts {`(${friends.length})`}</span>
+      <span>Contacts </span>
       <div className="friends">{friendCard}</div>
     </div>
   );
