@@ -11,6 +11,7 @@ const PostOptions = ({ setRenderPostOptions, renderPostOptions }) => {
   const toggleDeletePopup = async () => {
     setRenderPostOptions(false);
     dispatch(setDeletePostPopup(true));
+    // window.scrollTo(0, 0);
   };
 
   return (

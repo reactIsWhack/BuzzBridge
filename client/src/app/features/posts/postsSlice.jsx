@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addPost, getPosts } from './postsService';
+import { addPost, deleteContent, getPosts } from './postsService';
 import { toast } from 'react-toastify';
 
 const initialState = {
@@ -7,6 +7,7 @@ const initialState = {
   postsIsLoading: false,
   queryDates: [],
   noMorePosts: false,
+  deletePostId: '', // keeps track of the id being used to delete a given post
 };
 
 export const getAllPosts = createAsyncThunk(
@@ -39,7 +40,19 @@ export const createPost = createAsyncThunk(
   async (formData, thunkAPI) => {
     try {
       const response = await addPost(formData);
-      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  'posts/deletePost',
+  async (_, thunkAPI) => {
+    try {
+      const { posts } = thunkAPI.getState();
+      const response = await deleteContent(posts.deletePostId);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
@@ -53,6 +66,14 @@ const postsSlice = createSlice({
   reducers: {
     setNoMorePosts(state, action) {
       state.noMorePosts = action.payload;
+    },
+    removePost(state, action) {
+      state.posts = state.posts.filter(
+        (post) => String(post._id) !== String(state.deletePostId)
+      );
+    },
+    setDeletedPostId(state, action) {
+      state.deletePostId = action.payload;
     },
     resetPosts(state, action) {
       return initialState;
@@ -90,6 +111,7 @@ const postsSlice = createSlice({
 
 export default postsSlice.reducer;
 
-export const { setNoMorePosts, resetPosts } = postsSlice.actions;
+export const { setNoMorePosts, removePost, setDeletedPostId, resetPosts } =
+  postsSlice.actions;
 
 export const selectPosts = (state) => state.posts;

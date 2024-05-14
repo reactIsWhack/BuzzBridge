@@ -67,7 +67,7 @@ p {
 }
 
 .delete-post-modal {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -106,5 +106,6 @@ p {
   background: #f21877;
   padding: 0.55em 2em;
   border-radius: 6px;
+  cursor: pointer;
   font-size: 0.9rem;
 }

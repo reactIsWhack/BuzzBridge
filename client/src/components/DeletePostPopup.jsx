@@ -3,11 +3,19 @@ import Modal from './Modal';
 import closeIcon from '../assets/closeIcon.svg';
 import { useDispatch } from 'react-redux';
 import { setDeletePostPopup } from '../app/features/popup/popupSlice';
+import { deletePost, removePost } from '../app/features/posts/postsSlice';
 
 const DeletePostPopup = () => {
   const dispatch = useDispatch();
 
   const handleClick = () => dispatch(setDeletePostPopup(false));
+
+  const handleDelete = () => {
+    dispatch(setDeletePostPopup(false));
+    // Remove the post from the posts array immediately first rather than waiting for the api call to finish to improve user experience.
+    dispatch(removePost());
+    dispatch(deletePost());
+  };
 
   return (
     <div className="delete-post-modal">
@@ -29,7 +37,9 @@ const DeletePostPopup = () => {
               <button className="cancel-btn" onClick={handleClick}>
                 Cancel
               </button>
-              <button className="delete-btn">Delete</button>
+              <button className="delete-btn" onClick={handleDelete}>
+                Delete
+              </button>
             </div>
           </div>
         </>

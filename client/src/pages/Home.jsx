@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectPopup } from '../app/features/popup/popupSlice';
 import DeletePostPopup from '../components/DeletePostPopup';
 import useDisableBackground from '../hooks/useDisableBackground';
+import { useLocation } from 'react-router-dom';
 
 const Home = () => {
   useRedirectLoggedOutUser('/');
@@ -18,7 +19,9 @@ const Home = () => {
 
   return (
     <div className="main-page">
-      <Navbar />
+      <div className="parent-nav">
+        <Navbar />
+      </div>
       <div className="home">
         <div className="home-left">
           <UnknownContacts />

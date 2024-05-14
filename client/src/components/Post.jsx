@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
 import '../styles/Post.css';
 import { SlOptions } from 'react-icons/sl';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
 import PostOptions from './PostOptions';
 import useClickOutside from '../hooks/useClickOutside';
+import { setDeletedPostId } from '../app/features/posts/postsSlice';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -37,10 +38,13 @@ const Post = ({
   const [renderPostOptions, setRenderPostOptions] = useState(false);
   const menuRef = useRef(null);
   const optionsRef = useRef(null);
+  const dispatch = useDispatch();
 
   const handleClick = () => {
     if (!renderPostOptions) {
       setRenderPostOptions(true);
+      // Each time a user chooses to delete a post in the post menu, set the id of the post intended to be deleted.
+      dispatch(setDeletedPostId(_id));
     }
   };
 

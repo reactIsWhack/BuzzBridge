@@ -9,3 +9,8 @@ export const addPost = async (formData) => {
   const response = await axios.post('/api/posts', formData);
   return response;
 };
+
+export const deleteContent = async (id) => {
+  const response = await axios.delete(`/api/posts/${id}`);
+  return response;
+};
