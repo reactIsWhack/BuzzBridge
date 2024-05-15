@@ -14,7 +14,9 @@ const useDisableBackground = (isRendered, stateName) => {
 
     return () => {
       document.body.classList.remove('body-disabled-scroll');
-      document.querySelector('.home').classList.remove('home-backdrop');
+      if (document.querySelector('.home')) {
+        document.querySelector('.home').classList.remove('home-backdrop');
+      }
     };
   }, [isRendered]);
 };
