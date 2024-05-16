@@ -1,0 +1,29 @@
+.post-actions {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.like-action-container,
+.comment-action-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  gap: 0.5em;
+  cursor: pointer;
+  padding: 0.4em 0;
+  color: #65676b;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.like-action-container:hover,
+.comment-action-container:hover {
+  background: #f2f2f2;
+  border-radius: 4px;
+}
+
+.post-actions img {
+  height: 22px;
+}

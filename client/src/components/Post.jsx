@@ -6,6 +6,7 @@ import { selectUser } from '../app/features/user/userSlice';
 import PostOptions from './PostOptions';
 import useClickOutside from '../hooks/useClickOutside';
 import { setDeletedPostId } from '../app/features/posts/postsSlice';
+import { PostActions } from './PostActions';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -88,7 +89,9 @@ const Post = ({
           <img src={img.src} className="post-img" />
         ))}
       <div className="post-bottom-container">
-        <div className="post-actions"></div>
+        <div className="post-actions-container">
+          <PostActions />
+        </div>
       </div>
     </div>
   );
