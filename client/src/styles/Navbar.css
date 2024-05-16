@@ -6,9 +6,19 @@
   padding: 1em;
   justify-content: space-between;
   z-index: 5;
-  position: sticky;
+  position: fixed;
   top: 0;
   right: 0;
+  left: 0;
+}
+
+.nav-below {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  background: white;
+  height: 60px;
 }
 
 .left-container {

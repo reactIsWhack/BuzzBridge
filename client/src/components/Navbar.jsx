@@ -153,6 +153,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
+      <div className="nav-below"></div>
     </>
   );
 };
