@@ -106,6 +106,7 @@
 .right-container img {
   height: 40px;
   border-radius: 20px;
+  width: 40px;
   cursor: pointer;
 }
 
