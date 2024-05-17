@@ -90,7 +90,7 @@ const Post = ({
         ))}
       <div className="post-bottom-container">
         <div className="post-actions-container">
-          <PostActions />
+          <PostActions likes={likes} id={_id} />
         </div>
       </div>
     </div>

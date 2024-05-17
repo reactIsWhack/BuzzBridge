@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addPost, deleteContent, getPosts } from './postsService';
+import { addPost, deleteContent, getPosts, likeContent } from './postsService';
 import { toast } from 'react-toastify';
 
 const initialState = {
@@ -60,6 +60,19 @@ export const deletePost = createAsyncThunk(
   }
 );
 
+export const likePost = createAsyncThunk(
+  'posts/likePost',
+  async ({ id, contentData }, thunkAPI) => {
+    try {
+      const response = await likeContent(id, contentData);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -105,6 +118,13 @@ const postsSlice = createSlice({
       })
       .addCase(createPost.rejected, (state, action) => {
         toast.error(action.payload);
+      })
+      .addCase(likePost.fulfilled, (state, action) => {
+        const likedId = action.payload.data._id;
+        const likedPost = state.posts.find(
+          (post) => String(post._id) === String(likedId)
+        );
+        likedPost.likes = action.payload.data.likes;
       });
   },
 });
