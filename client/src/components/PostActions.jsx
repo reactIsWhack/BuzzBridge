@@ -10,14 +10,21 @@ import likedIconFilled from '../assets/likeIconFilled.svg';
 export const PostActions = ({ likes, id }) => {
   const dispatch = useDispatch();
   const { userId } = useSelector(selectUser);
-  const like = () => {
-    dispatch(
-      likePost({ id, contentData: { isLiking: true, content: 'post' } })
-    );
-  };
   const userInLikedUsers = likes.usersLiked.find(
     (user) => String(user._id) === String(userId)
   );
+
+  const editLike = () => {
+    dispatch(
+      likePost({
+        id,
+        contentData: {
+          isLiking: userInLikedUsers ? false : true,
+          content: 'post',
+        },
+      })
+    );
+  };
 
   const likeTextStyles = {
     color: userInLikedUsers ? '#2078f4' : '#65676b',
@@ -25,7 +32,7 @@ export const PostActions = ({ likes, id }) => {
 
   return (
     <div className="post-actions">
-      <div className="like-action-container" onClick={like}>
+      <div className="like-action-container" onClick={editLike}>
         {userInLikedUsers ? (
           <img src={likedIconFilled} />
         ) : (
