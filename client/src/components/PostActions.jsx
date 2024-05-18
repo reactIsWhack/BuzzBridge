@@ -18,7 +18,6 @@ export const PostActions = ({ likes, id }) => {
   const userInLikedUsers = likes.usersLiked.find(
     (user) => String(user._id) === String(userId)
   );
-  console.log(userInLikedUsers);
 
   const likeTextStyles = {
     color: userInLikedUsers ? '#2078f4' : '#65676b',

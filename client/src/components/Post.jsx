@@ -7,6 +7,7 @@ import PostOptions from './PostOptions';
 import useClickOutside from '../hooks/useClickOutside';
 import { setDeletedPostId } from '../app/features/posts/postsSlice';
 import { PostActions } from './PostActions';
+import UsersLikedList from './UsersLikedList';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -88,6 +89,8 @@ const Post = ({
         ) : (
           <img src={img.src} className="post-img" />
         ))}
+      {likes.total > 0 && <UsersLikedList likes={likes} />}
+
       <div className="post-bottom-container">
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
