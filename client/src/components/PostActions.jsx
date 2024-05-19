@@ -15,6 +15,19 @@ export const PostActions = ({ likes, id }) => {
   );
 
   const editLike = () => {
+    if (document.getElementById(id + 'like')) {
+      document.getElementById(id + 'like').animate(
+        [
+          { transform: 'rotate(0deg)', height: '22px' },
+          { transform: 'rotate(-10deg)', height: '26px' },
+        ],
+        {
+          duration: 400,
+          // fill: 'forwards',
+          easing: 'ease',
+        }
+      );
+    }
     dispatch(
       likePost({
         id,
@@ -36,7 +49,7 @@ export const PostActions = ({ likes, id }) => {
         {userInLikedUsers ? (
           <img src={likedIconFilled} />
         ) : (
-          <img src={likeIcon} />
+          <img src={likeIcon} id={id + 'like'} />
         )}
         <div style={likeTextStyles}>Like</div>
       </div>

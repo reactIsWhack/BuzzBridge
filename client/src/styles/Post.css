@@ -133,3 +133,7 @@
   flex: 1;
   margin-bottom: 0.15em;
 }
+
+#like-btn {
+  transition: all ease-in-out 5s;
+}
