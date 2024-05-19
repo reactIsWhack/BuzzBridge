@@ -16,6 +16,12 @@ const PostForm = ({ setRenderModal, renderModal }) => {
   const dispatch = useDispatch();
 
   const previewFile = async (e) => {
+    if (!postMessage) {
+      document
+        .getElementById('post-form-textarea')
+        .style.removeProperty('height');
+    }
+
     const file = e.target.files[0];
     const url = URL.createObjectURL(file);
     setImagePreview(url);
@@ -33,7 +39,6 @@ const PostForm = ({ setRenderModal, renderModal }) => {
     const photo = fileUploadRef.current && fileUploadRef.current.files[0];
     formData.append('photo', photo);
     formData.append('postMessage', postMessage);
-    console.log(formData.get('postMessage'), formData.get('photo'));
     await dispatch(createPost(formData));
     setRenderModal(false);
   };
@@ -71,6 +76,7 @@ const PostForm = ({ setRenderModal, renderModal }) => {
   };
 
   const handleInput = (e) => {
+    // allows new lines to be created when enter key is pressed
     if (postMessage.length > 630 || imagePreview) {
       e.target.style.height = e.target.style.minHeight = 'auto';
       e.target.style.minHeight = `${Math.min(
@@ -86,8 +92,14 @@ const PostForm = ({ setRenderModal, renderModal }) => {
     if (fileUploadRef.current) {
       fileUploadRef.current.value = '';
     }
+    if (postMessage.length < 630) {
+      document
+        .getElementById('post-form-textarea')
+        .style.removeProperty('height');
+    }
   };
 
+  console.log(imagePreview);
   useDisableBackground(renderModal, 'postModal');
 
   return (
@@ -119,6 +131,7 @@ const PostForm = ({ setRenderModal, renderModal }) => {
             rows={imagePreview ? 0 : 7}
             value={postMessage}
             onInput={handleInput}
+            id="post-form-textarea"
           ></textarea>
           {imagePreview && (
             <div className="image-preview-container">
