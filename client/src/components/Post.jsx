@@ -8,6 +8,7 @@ import useClickOutside from '../hooks/useClickOutside';
 import { setDeletedPostId } from '../app/features/posts/postsSlice';
 import { PostActions } from './PostActions';
 import UsersLikedList from './UsersLikedList';
+import CommentBar from './CommentBar';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -95,6 +96,7 @@ const Post = ({
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
         </div>
+        <CommentBar />
       </div>
     </div>
   );
