@@ -6,6 +6,7 @@ import { selectUser } from '../app/features/user/userSlice';
 import imageIcon from '../assets/imageIcon.svg';
 import { createPost } from '../app/features/posts/postsSlice';
 import useDisableBackground from '../hooks/useDisableBackground';
+import createNewLine from '../utils/createNewLine';
 
 const PostForm = ({ setRenderModal, renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
@@ -48,6 +49,7 @@ const PostForm = ({ setRenderModal, renderModal }) => {
       const selectionStart = e.target.selectionStart;
       const text = e.target.value;
       const previousChar = text[selectionStart - 1];
+
       if (previousChar === '\n') {
         setEnterTotal((prev) => prev - 1);
 
@@ -77,14 +79,10 @@ const PostForm = ({ setRenderModal, renderModal }) => {
 
   const handleInput = (e) => {
     // allows new lines to be created when enter key is pressed
-    if (postMessage.length > 630 || imagePreview) {
-      e.target.style.height = e.target.style.minHeight = 'auto';
-      e.target.style.minHeight = `${Math.min(
-        e.target.scrollHeight + 4,
-        parseInt(e.target.style.maxHeight)
-      )}px`;
-      e.target.style.height = `${e.target.scrollHeight + 4}px`;
-    }
+    createNewLine(
+      postMessage.length > 630 || imagePreview ? true : false,
+      e.target
+    );
   };
 
   const clearFileUpload = () => {
@@ -99,8 +97,16 @@ const PostForm = ({ setRenderModal, renderModal }) => {
     }
   };
 
-  console.log(imagePreview);
   useDisableBackground(renderModal, 'postModal');
+
+  useEffect(() => {
+    if (!postMessage) {
+      const textArea = document.getElementById('post-form-textarea');
+      textArea.rows = !imagePreview ? 7 : 2;
+      textArea.style.removeProperty('height');
+      setEnterTotal(0);
+    }
+  }, [postMessage, imagePreview]);
 
   return (
     <div className="post-modal-container">
