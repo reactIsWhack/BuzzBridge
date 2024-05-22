@@ -43,6 +43,11 @@ export const PostActions = ({ likes, id }) => {
     color: userInLikedUsers ? '#2078f4' : '#65676b',
   };
 
+  const handleClick = () => {
+    document.getElementById(`comment-textarea-${id}`).focus();
+    document.getElementById(`comment-textarea-${id}`).select();
+  };
+
   return (
     <div className="post-actions">
       <div className="like-action-container" onClick={editLike}>
@@ -53,7 +58,7 @@ export const PostActions = ({ likes, id }) => {
         )}
         <div style={likeTextStyles}>Like</div>
       </div>
-      <div className="comment-action-container">
+      <div className="comment-action-container" onClick={handleClick}>
         <img src={commentIcon} />
         <div>Comment</div>
       </div>

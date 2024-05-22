@@ -96,7 +96,7 @@ const Post = ({
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
         </div>
-        <CommentBar />
+        <CommentBar id={_id} />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
 import createNewLine from '../utils/createNewLine';
 
-const CommentBar = () => {
+const CommentBar = ({ id }) => {
   const { profilePicture } = useSelector(selectUser);
   const [commentMessage, setCommentMessage] = useState('');
 
@@ -29,7 +29,7 @@ const CommentBar = () => {
     if (!commentMessage) {
       console.log('ran');
       document
-        .getElementById('comment-textarea')
+        .getElementById(`comment-textarea-${id}`)
         .style.removeProperty('height');
     }
   }, [commentMessage]);
@@ -43,7 +43,7 @@ const CommentBar = () => {
         rows={1}
         onKeyDown={handleKeyDown}
         onInput={handleInput}
-        id="comment-textarea"
+        id={`comment-textarea-${id}`}
         onChange={handleChange}
       ></textarea>
     </div>
