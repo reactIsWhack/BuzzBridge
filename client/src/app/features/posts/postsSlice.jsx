@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addPost, deleteContent, getPosts, likeContent } from './postsService';
+import {
+  addPost,
+  createComment,
+  deleteContent,
+  getPosts,
+  likeContent,
+} from './postsService';
 import { toast } from 'react-toastify';
 
 const initialState = {
@@ -73,6 +79,20 @@ export const likePost = createAsyncThunk(
   }
 );
 
+export const addComment = createAsyncThunk(
+  'comments/createComment',
+  async ({ id, commentMessage }, thunkAPI) => {
+    try {
+      console.log(id);
+      const response = await createComment(id, commentMessage);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -125,6 +145,14 @@ const postsSlice = createSlice({
           (post) => String(post._id) === String(likedId)
         );
         likedPost.likes = action.payload.data.likes;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        const commentedPostId = action.payload.data._id;
+        const commentedPost = state.posts.find(
+          (post) => String(post._id) === String(commentedPostId)
+        );
+        console.log(commentedPost);
+        commentedPost.comments = action.payload.data.comments;
       });
   },
 });

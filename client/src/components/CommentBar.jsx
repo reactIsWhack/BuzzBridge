@@ -1,25 +1,38 @@
 import { useEffect, useState } from 'react';
 import '../styles/CommentBar.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
 import createNewLine from '../utils/createNewLine';
+import { addComment } from '../app/features/posts/postsSlice';
 
 const CommentBar = ({ id }) => {
   const { profilePicture } = useSelector(selectUser);
   const [commentMessage, setCommentMessage] = useState('');
+  const dispatch = useDispatch();
 
   // Prevent default textarea behavior of creating a scrollbar for text when enter kery is pressed
-  const handleKeyDown = (e) => {
+  const handleKeyDown = async (e) => {
+    let requestCount = 0;
     if (e.key === 'Enter') {
       e.preventDefault();
+      requestCount++;
+      if (commentMessage && requestCount === 1) {
+        dispatch(addComment({ id, commentMessage }));
+      }
+      await setCommentMessage('');
     }
   };
 
   const handleInput = (e) => {
-    createNewLine(true, e.target);
+    if (!e.key === 'Enter') {
+      createNewLine(true, e.target);
+    }
   };
 
   const handleChange = (e) => {
+    if (e.key === 'enter') {
+      return;
+    }
     setCommentMessage(e.target.value);
   };
 
@@ -27,7 +40,6 @@ const CommentBar = ({ id }) => {
 
   useEffect(() => {
     if (!commentMessage) {
-      console.log('ran');
       document
         .getElementById(`comment-textarea-${id}`)
         .style.removeProperty('height');
@@ -45,6 +57,7 @@ const CommentBar = ({ id }) => {
         onInput={handleInput}
         id={`comment-textarea-${id}`}
         onChange={handleChange}
+        value={commentMessage}
       ></textarea>
     </div>
   );

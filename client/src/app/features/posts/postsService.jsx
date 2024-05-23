@@ -19,3 +19,8 @@ export const likeContent = async (id, contentData) => {
   const response = await axios.patch(`/api/posts/likepost/${id}`, contentData);
   return response;
 };
+
+export const createComment = async (id, commentMessage) => {
+  const response = await axios.post(`/api/comments/${id}`, { commentMessage });
+  return response;
+};
