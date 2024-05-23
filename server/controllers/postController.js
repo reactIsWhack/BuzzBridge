@@ -84,7 +84,6 @@ const getUserPosts = asyncHandler(async (req, res) => {
 
 const getAllPosts = asyncHandler(async (req, res) => {
   const { dateQuery } = req.params;
-  console.log('GET /posts');
 
   const user = await User.findById(req.userId);
   const oldestPost = await Post.findOne({
@@ -107,7 +106,11 @@ const getAllPosts = asyncHandler(async (req, res) => {
     .limit(25)
     .populate([
       { path: 'author', model: 'user', select: '-password' },
-      { path: 'comments', model: 'comment' },
+      {
+        path: 'comments',
+        model: 'comment',
+        populate: { path: 'author', model: 'user' },
+      },
       { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
     ]);
 
