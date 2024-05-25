@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import '../styles/Post.css';
 import { SlOptions } from 'react-icons/sl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import { setDeletedPostId } from '../app/features/posts/postsSlice';
 import { PostActions } from './PostActions';
 import UsersLikedList from './UsersLikedList';
 import CommentBar from './CommentBar';
+import Comment from './Comment';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -51,9 +52,24 @@ const Post = ({
     }
   };
 
+  const commentCards = comments.map((comment) => {
+    return <Comment key={comment._id} {...comment} />;
+  });
+
   useClickOutside({ parentRef: menuRef, childRef: optionsRef }, () =>
     setRenderPostOptions(false)
   );
+
+  const alertUser = (e) => {
+    console.log('Reload page');
+  };
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', alertUser);
+    return () => {
+      window.removeEventListener('beforeunload', alertUser);
+    };
+  }, []);
 
   return (
     <div className="post-card" id={_id}>
@@ -96,6 +112,9 @@ const Post = ({
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
         </div>
+        {comments.length > 0 && (
+          <div className="comments-container">{commentCards}</div>
+        )}
         <CommentBar id={_id} />
       </div>
     </div>
