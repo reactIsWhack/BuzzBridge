@@ -44,6 +44,14 @@ const Post = ({
   const optionsRef = useRef(null);
   const dispatch = useDispatch();
   const [renderComments, setRenderComments] = useState(true);
+  const [renderOnlyLatestComments, setRenderOnlyLatestComments] =
+    useState(true);
+  const [latestComments, setLatestComments] = useState([]);
+  useEffect(() => {
+    if (comments.length) {
+      setLatestComments((prev) => [...prev, comments[comments.length - 1]]);
+    }
+  }, [comments]);
 
   const handleClick = () => {
     if (!renderPostOptions) {
@@ -53,7 +61,11 @@ const Post = ({
     }
   };
 
-  const commentCards = comments.map((comment) => {
+  const commentsToBeRendered = renderOnlyLatestComments
+    ? Array.from(new Set(latestComments)) // removes the duplicates as a result of useEffect
+    : comments;
+
+  const commentCards = commentsToBeRendered.map((comment) => {
     return <Comment key={comment._id} {...comment} />;
   });
 
@@ -61,19 +73,9 @@ const Post = ({
     setRenderPostOptions(false)
   );
 
-  const alertUser = (e) => {
-    console.log('Reload page');
-  };
+  const togglePreviousCommentsRender = () => setRenderOnlyLatestComments(false);
 
   const toggleRenderComments = () => setRenderComments((prev) => !prev);
-
-  useEffect(() => {
-    window.addEventListener('beforeunload', alertUser);
-    return () => {
-      window.removeEventListener('beforeunload', alertUser);
-    };
-  }, []);
-  console.log(renderComments);
 
   return (
     <div className="post-card" id={_id}>
@@ -121,13 +123,26 @@ const Post = ({
           }`}</div>
         )}
       </div>
-
       <div className="post-bottom-container">
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
         </div>
         {comments.length > 0 && renderComments && (
-          <div className="comments-container">{commentCards}</div>
+          <div className="comments-container">
+            {renderOnlyLatestComments &&
+              comments.length > 1 &&
+              comments.length !== new Set(latestComments).size && (
+                <div
+                  className="view-previous"
+                  onClick={togglePreviousCommentsRender}
+                >{`View ${
+                  comments.length - new Set(latestComments).size
+                } previous ${
+                  comments.length === 1 ? 'comment' : 'comments'
+                }`}</div>
+              )}
+            {commentCards}
+          </div>
         )}
         <CommentBar id={_id} />
       </div>

@@ -150,6 +150,15 @@
   cursor: pointer;
 }
 
-.post-comments-label:hover {
+.post-comments-label:hover,
+.view-previous:hover {
   text-decoration: underline;
+}
+
+.view-previous {
+  color: #65676b;
+  font-weight: 550;
+  font-size: 0.87rem;
+  margin-bottom: 1em;
+  cursor: pointer;
 }
