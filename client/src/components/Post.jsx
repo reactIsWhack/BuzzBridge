@@ -43,6 +43,7 @@ const Post = ({
   const menuRef = useRef(null);
   const optionsRef = useRef(null);
   const dispatch = useDispatch();
+  const [renderComments, setRenderComments] = useState(true);
 
   const handleClick = () => {
     if (!renderPostOptions) {
@@ -64,12 +65,15 @@ const Post = ({
     console.log('Reload page');
   };
 
+  const toggleRenderComments = () => setRenderComments((prev) => !prev);
+
   useEffect(() => {
     window.addEventListener('beforeunload', alertUser);
     return () => {
       window.removeEventListener('beforeunload', alertUser);
     };
   }, []);
+  console.log(renderComments);
 
   return (
     <div className="post-card" id={_id}>
@@ -106,13 +110,23 @@ const Post = ({
         ) : (
           <img src={img.src} className="post-img" />
         ))}
-      {likes.total > 0 && <UsersLikedList likes={likes} />}
+      <div className="post-labels-container">
+        <div>{likes.total > 0 && <UsersLikedList likes={likes} />}</div>
+        {comments.length > 0 && (
+          <div
+            className="post-comments-label"
+            onClick={toggleRenderComments}
+          >{`${comments.length} ${
+            comments.length === 1 ? 'Comment' : 'Comments'
+          }`}</div>
+        )}
+      </div>
 
       <div className="post-bottom-container">
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
         </div>
-        {comments.length > 0 && (
+        {comments.length > 0 && renderComments && (
           <div className="comments-container">{commentCards}</div>
         )}
         <CommentBar id={_id} />
