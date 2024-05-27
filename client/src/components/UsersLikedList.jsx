@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import whiteLikeIcon from '../assets/likeIconWhite.svg';
 import ExpandedUsersLikedList from './ExpandedUsersLikedList';
+import LikeGradientIcon from './LikeGradientIcon';
 
 const UsersLikedList = ({ likes: { usersLiked } }) => {
   const [firstUser, secondUser] = usersLiked;
@@ -46,9 +46,7 @@ const UsersLikedList = ({ likes: { usersLiked } }) => {
         onMouseOver={handleMouseOver}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="white-like-bg">
-          <img src={whiteLikeIcon} />
-        </div>
+        <LikeGradientIcon />
         <div className="list" style={userListStyles}>
           {renderList()}
         </div>
