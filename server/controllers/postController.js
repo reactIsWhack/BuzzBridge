@@ -109,7 +109,10 @@ const getAllPosts = asyncHandler(async (req, res) => {
       {
         path: 'comments',
         model: 'comment',
-        populate: { path: 'author', model: 'user' },
+        populate: [
+          { path: 'author', model: 'user' },
+          { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
+        ],
       },
       { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
     ]);
