@@ -47,6 +47,8 @@ const Post = ({
   const [renderOnlyLatestComments, setRenderOnlyLatestComments] =
     useState(true);
   const [latestComments, setLatestComments] = useState([]);
+  const [originalCommentLength, setOriginalCommentLength] = useState(0);
+
   useEffect(() => {
     if (comments.length) {
       setLatestComments((prev) => [...prev, comments[comments.length - 1]]);
@@ -61,12 +63,16 @@ const Post = ({
     }
   };
 
+  useEffect(() => {
+    setOriginalCommentLength(comments.length);
+  }, []);
+
   const commentsToBeRendered = renderOnlyLatestComments
     ? Array.from(new Set(latestComments)) // removes the duplicates as a result of useEffect
     : comments;
 
   const commentCards = commentsToBeRendered.map((comment) => {
-    return <Comment key={comment._id} {...comment} />;
+    return <Comment key={comment._id} {...comment} postId={_id} />;
   });
 
   useClickOutside({ parentRef: menuRef, childRef: optionsRef }, () =>
@@ -135,9 +141,7 @@ const Post = ({
                 <div
                   className="view-previous"
                   onClick={togglePreviousCommentsRender}
-                >{`View ${
-                  comments.length - new Set(latestComments).size
-                } previous ${
+                >{`View ${originalCommentLength - 1} previous ${
                   comments.length === 1 ? 'comment' : 'comments'
                 }`}</div>
               )}
