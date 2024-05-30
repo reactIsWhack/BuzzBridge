@@ -130,10 +130,16 @@ const Post = ({
           }`}</div>
         )}
       </div>
-      <div className="post-bottom-container">
+      <div
+        className={`post-bottom-container ${
+          !renderComments && 'bottom-no-padding'
+        }`}
+      >
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
         </div>
+        {renderComments && <div className="bottom-post-border"></div>}
+
         {comments.length > 0 && renderComments && (
           <div className="comments-container">
             {renderOnlyLatestComments &&
@@ -149,7 +155,7 @@ const Post = ({
             {commentCards}
           </div>
         )}
-        <CommentBar id={_id} />
+        {renderComments && <CommentBar id={_id} />}
       </div>
     </div>
   );
