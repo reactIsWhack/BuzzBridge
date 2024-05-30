@@ -15,7 +15,7 @@ export const deleteContent = async (id) => {
   return response;
 };
 
-export const likeContent = async (id, contentData) => {
+export const like = async (id, contentData) => {
   const response = await axios.patch(`/api/posts/likepost/${id}`, contentData);
   return response;
 };

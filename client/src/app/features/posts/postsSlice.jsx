@@ -4,7 +4,7 @@ import {
   createComment,
   deleteContent,
   getPosts,
-  likeContent,
+  like,
 } from './postsService';
 import { toast } from 'react-toastify';
 
@@ -66,13 +66,13 @@ export const deletePost = createAsyncThunk(
   }
 );
 
-export const likePost = createAsyncThunk(
-  'posts/likePost',
-  async ({ id, contentData }, thunkAPI) => {
+export const likeContent = createAsyncThunk(
+  'posts/likeContent',
+  async ({ id, contentData, postId }, thunkAPI) => {
     try {
-      const response = await likeContent(id, contentData);
+      const response = await like(id, contentData);
       console.log(response);
-      return response;
+      return { data: response.data, content: contentData.content, postId };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -83,9 +83,7 @@ export const addComment = createAsyncThunk(
   'comments/createComment',
   async ({ id, commentMessage }, thunkAPI) => {
     try {
-      console.log(id);
       const response = await createComment(id, commentMessage);
-      console.log(response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
@@ -139,12 +137,19 @@ const postsSlice = createSlice({
       .addCase(createPost.rejected, (state, action) => {
         toast.error(action.payload);
       })
-      .addCase(likePost.fulfilled, (state, action) => {
-        const likedId = action.payload.data._id;
+      .addCase(likeContent.fulfilled, (state, action) => {
+        const likedId = action.payload.postId;
         const likedPost = state.posts.find(
           (post) => String(post._id) === String(likedId)
         );
-        likedPost.likes = action.payload.data.likes;
+        if (action.payload.content === 'post') {
+          likedPost.likes = action.payload.data.likes;
+        } else {
+          const likedComment = likedPost.comments.find(
+            (comment) => String(comment._id) === String(action.payload.data._id)
+          );
+          likedComment.likes = action.payload.data.likes;
+        }
       })
       .addCase(addComment.fulfilled, (state, action) => {
         const commentedPostId = action.payload.data._id;

@@ -3,7 +3,7 @@ import likeIcon from '../assets/likeIcon.svg';
 import commentIcon from '../assets/commentIcon.svg';
 import '../styles/PostActions.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { likePost } from '../app/features/posts/postsSlice';
+import { likeContent } from '../app/features/posts/postsSlice';
 import { selectUser } from '../app/features/user/userSlice';
 import likedIconFilled from '../assets/likeIconFilled.svg';
 
@@ -29,11 +29,12 @@ export const PostActions = ({ likes, id }) => {
       );
     }
     dispatch(
-      likePost({
+      likeContent({
         id,
         contentData: {
           isLiking: userInLikedUsers ? false : true,
           content: 'post',
+          postId: null,
         },
       })
     );

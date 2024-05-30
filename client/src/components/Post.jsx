@@ -47,13 +47,8 @@ const Post = ({
   const [renderOnlyLatestComments, setRenderOnlyLatestComments] =
     useState(true);
   const [latestComments, setLatestComments] = useState([]);
+  // State is used to render the number of previous comments and if comments should be rendered
   const [originalCommentLength, setOriginalCommentLength] = useState(0);
-
-  useEffect(() => {
-    if (comments.length) {
-      setLatestComments((prev) => [...prev, comments[comments.length - 1]]);
-    }
-  }, [comments]);
 
   const handleClick = () => {
     if (!renderPostOptions) {
@@ -64,12 +59,18 @@ const Post = ({
   };
 
   useEffect(() => {
+    // Sets the length of the comments of a post when the page first loads
     setOriginalCommentLength(comments.length);
   }, []);
 
-  const commentsToBeRendered = renderOnlyLatestComments
-    ? Array.from(new Set(latestComments)) // removes the duplicates as a result of useEffect
-    : comments;
+  useEffect(() => {
+    setLatestComments(comments.slice(originalCommentLength - 1));
+  }, [comments]);
+
+  const commentsToBeRendered =
+    renderOnlyLatestComments && originalCommentLength !== 0
+      ? latestComments // removes the duplicates as a result of useEffect
+      : comments;
 
   const commentCards = commentsToBeRendered.map((comment) => {
     return <Comment key={comment._id} {...comment} postId={_id} />;
@@ -136,8 +137,8 @@ const Post = ({
         {comments.length > 0 && renderComments && (
           <div className="comments-container">
             {renderOnlyLatestComments &&
-              comments.length > 1 &&
-              comments.length !== new Set(latestComments).size && (
+              originalCommentLength !== 0 &&
+              comments.length > 1 && (
                 <div
                   className="view-previous"
                   onClick={togglePreviousCommentsRender}
