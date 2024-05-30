@@ -31,11 +31,14 @@ const createComment = asyncHandler(async (req, res) => {
       {
         path: 'comments',
         model: 'comment',
-        populate: {
-          path: 'author',
-          model: 'user',
-          select: ['-password', '-posts'],
-        },
+        populate: [
+          {
+            path: 'author',
+            model: 'user',
+            select: ['-password', '-posts'],
+          },
+          { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
+        ],
       },
       { path: 'author', select: ['-password', '-posts'] },
     ])
