@@ -139,6 +139,7 @@ const postsSlice = createSlice({
       })
       .addCase(likeContent.fulfilled, (state, action) => {
         const likedId = action.payload.postId;
+        console.log(likedId);
         const likedPost = state.posts.find(
           (post) => String(post._id) === String(likedId)
         );

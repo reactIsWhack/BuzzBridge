@@ -34,8 +34,8 @@ export const PostActions = ({ likes, id }) => {
         contentData: {
           isLiking: userInLikedUsers ? false : true,
           content: 'post',
-          postId: null,
         },
+        postId: id,
       })
     );
   };
