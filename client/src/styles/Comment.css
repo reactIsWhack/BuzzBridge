@@ -43,6 +43,7 @@
   padding: 0.55em 0.85em;
   border-radius: 20px;
   min-width: 150px;
+  position: relative;
 }
 
 .comment-content span {
@@ -51,7 +52,7 @@
   cursor: pointer;
 }
 
-.comment-content div {
+.comment-message {
   font-size: 0.8rem;
   padding-top: 0.2em;
 }

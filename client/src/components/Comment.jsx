@@ -3,6 +3,7 @@ import '../styles/Comment.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { likeContent } from '../app/features/posts/postsSlice';
 import { selectUser } from '../app/features/user/userSlice';
+import CommentLikesDesc from './CommentLikesDesc';
 
 const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const dispatch = useDispatch();
@@ -31,7 +32,8 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
         <img src={author.photo} />
         <div className="comment-content">
           <span>{author.firstName + ' ' + author.lastName}</span>
-          <div>{commentMessage}</div>
+          <div className="comment-message">{commentMessage}</div>
+          {likes.total > 0 && <CommentLikesDesc likes={likes} />}
         </div>
       </div>
       <div className="comment-actions">

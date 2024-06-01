@@ -1,0 +1,35 @@
+.comment-like-desc {
+  position: absolute;
+  background: white;
+  bottom: -15px;
+  display: flex;
+  align-items: center;
+  padding: 0.25em;
+  right: 5px;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  gap: 0.3em;
+  height: 22px;
+  cursor: pointer;
+  transition: background 0.5s;
+}
+
+.comment-like-desc:hover {
+  background: #f5f5f5;
+}
+
+.comment-like-desc .white-like-bg {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+}
+
+.comment-like-desc .white-like-bg img {
+  height: 10px;
+}
+
+.comment-like-total {
+  color: #65676b;
+  font-size: 0.75rem;
+  font-weight: 450;
+}
