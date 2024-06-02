@@ -16,7 +16,10 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
     dispatch(
       likeContent({
         id: _id,
-        contentData: { isLiking: true, content: 'comment' },
+        contentData: {
+          isLiking: userInLikedUsers ? false : true,
+          content: 'comment',
+        },
         postId,
       })
     );
