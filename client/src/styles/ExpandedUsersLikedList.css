@@ -1,0 +1,20 @@
+.expanded-users-liked-list {
+  position: absolute;
+  border-radius: 8px;
+  top: 2em;
+  margin: auto 0;
+  padding: 0.5em 0.9em;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #e4e4e4;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-list-item {
+  margin-bottom: 0.15em;
+  white-space: nowrap;
+  overflow: hidden;
+}

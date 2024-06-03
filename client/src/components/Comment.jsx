@@ -1,9 +1,10 @@
-import React from 'react';
+import { useState } from 'react';
 import '../styles/Comment.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { likeContent } from '../app/features/posts/postsSlice';
 import { selectUser } from '../app/features/user/userSlice';
 import CommentLikesDesc from './CommentLikesDesc';
+import ExpandedUsersLikedList from './ExpandedUsersLikedList';
 
 const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const dispatch = useDispatch();
@@ -11,6 +12,7 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const userInLikedUsers = likes.usersLiked.find(
     (user) => String(user._id) === String(userId)
   );
+  const [renderLikesList, setRenderLikesList] = useState(false);
 
   const likeComment = () => {
     dispatch(
@@ -29,6 +31,9 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
     color: userInLikedUsers ? '#2078f4' : '#65676b',
   };
 
+  const handleMouseOver = () => setRenderLikesList(true);
+  const handleMouseLeave = () => setRenderLikesList(false);
+
   return (
     <div className="comment">
       <div className="comment-top">
@@ -36,7 +41,24 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
         <div className="comment-content">
           <span>{author.firstName + ' ' + author.lastName}</span>
           <div className="comment-message">{commentMessage}</div>
-          {likes.total > 0 && <CommentLikesDesc likes={likes} />}
+          {likes.total > 0 && (
+            <div
+              className="comments-like-section"
+              onMouseOver={handleMouseOver}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div>
+                {' '}
+                <CommentLikesDesc likes={likes} />
+              </div>
+
+              <div>
+                {renderLikesList && (
+                  <ExpandedUsersLikedList userList={likes.usersLiked} />
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="comment-actions">

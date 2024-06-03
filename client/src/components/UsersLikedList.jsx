@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ExpandedUsersLikedList from './ExpandedUsersLikedList';
 import LikeGradientIcon from './LikeGradientIcon';
+import '../styles/ExpandedUsersLikedList.css';
 
 const UsersLikedList = ({ likes: { usersLiked } }) => {
   const [firstUser, secondUser] = usersLiked;

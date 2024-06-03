@@ -78,3 +78,15 @@
 .like-label:hover {
   text-decoration: underline;
 }
+
+.comments-like-section {
+  position: relative;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.comments-like-section .expanded-users-liked-list {
+  right: -35px;
+  margin-top: 0.2em;
+}

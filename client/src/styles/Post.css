@@ -123,23 +123,6 @@
   justify-content: center;
 }
 
-.expanded-users-liked-list {
-  position: absolute;
-  border-radius: 8px;
-  top: 2em;
-  margin: auto;
-  padding: 0.5em 0.9em;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #e4e4e4;
-  font-size: 0.75rem;
-  text-transform: capitalize;
-}
-
-.user-list-item {
-  flex: 1;
-  margin-bottom: 0.15em;
-}
-
 #like-btn {
   transition: all ease-in-out 5s;
 }
