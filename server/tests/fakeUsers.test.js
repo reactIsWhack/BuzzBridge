@@ -57,18 +57,31 @@ describe('Fake User Testing', () => {
     );
   });
 
-  it('Should generate 6 fake posts for all fake users', async () => {
+  it('Should generate a random number of posts for all fake users', async () => {
     const usersWithPosts = await generateFakePosts();
 
     // Ensure each user has 6 posts
-    expect(usersWithPosts[0].posts.length).toBeTruthy();
+    expect(usersWithPosts[1].posts.length).toBeTruthy();
     const post = usersWithPosts[0].posts[0];
     expect(post.postMessage).toEqual(expect.any(String));
     expect(post.likes).toEqual(expect.any(Object));
     expect(post.author).toEqual(expect.objectContaining(fakeUser)); // Assuming fakeUser is a constructor function
     expect(post.img.src).toEqual(expect.any(String));
     expect(post.img.fileType).toEqual(expect.any(String));
-    expect(post.comments).toEqual(expect.any(Array));
+    expect(post.comments.length).toBeTruthy();
+    const commentCreatedDate = new Date(post.comments[0].createdAt);
+    const currentDate = new Date(Date.now());
+    expect(post.comments[0]).toEqual(
+      expect.objectContaining({
+        author: expect.objectContaining({
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+        }),
+        commentMessage: expect.any(String),
+        likes: { total: 0, usersLiked: [] },
+      })
+    );
+    expect(commentCreatedDate.getTime()).toBeLessThan(currentDate.getTime());
   }, 9000);
 });
 

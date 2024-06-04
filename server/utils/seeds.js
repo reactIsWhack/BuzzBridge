@@ -1,5 +1,6 @@
 const Post = require('../models/postModel');
 const User = require('../models/userModel');
+const Comment = require('../models/commentModel');
 const { faker } = require('@faker-js/faker');
 const sortByInput = require('./sortByInput');
 const { profilePictures, postPhotos } = require('../fakeUserData');
@@ -85,6 +86,80 @@ const populateFakeUserFriends = async () => {
   return updatedFakeUsers;
 };
 
+const generatePostPhotoFileType = (generateImage, postPhotoIndex) => {
+  let fileType = '';
+  if (generateImage) {
+    const pathExtension = path.extname(postPhotos[postPhotoIndex]);
+    fileType =
+      pathExtension === '.mp4'
+        ? 'video/mp4'
+        : `image/${pathExtension.slice(1)}`;
+  }
+  return fileType;
+};
+
+const generatePostMessage = (fakePost) => {
+  for (let i = 0; i < 25; i++) {
+    const word = faker.word.sample();
+    fakePost.postMessage += !i
+      ? word[0].toUpperCase() + word.slice(1, word.length) + ' '
+      : word + ' ';
+  }
+
+  fakePost.postMessage =
+    fakePost.postMessage.slice(0, fakePost.postMessage.lastIndexOf(' ')) + '.';
+};
+
+const generateComments = async () => {
+  const comments = [];
+  const numOfComments = Math.floor(Math.random() * (3 - 1) + 1);
+  // Gets a random user
+  for (let i = 0; i < numOfComments; i++) {
+    const user = await User.aggregate([{ $sample: { size: 1 } }]);
+    let commentMessage = '';
+    const commentMessageLength = Math.floor(Math.random() * (10 - 4) + 4);
+
+    for (let j = 0; j < commentMessageLength; j++) {
+      commentMessage += faker.word.sample();
+    }
+    const fakeComment = {
+      commentMessage,
+      author: user[0]._id,
+      likes: { total: 0, usersLiked: [] },
+      createdAt: faker.date.between({
+        from: '2022-01-01T00:00:00.000Z',
+        to: Date.now(),
+      }),
+    };
+    const comment = await Comment.create(fakeComment);
+    comments.push(comment);
+  }
+
+  return comments;
+};
+
+const addCommentsToPost = async () => {
+  const testUser = await User.findOne({ email: 'packer.slacker@gmail.com' });
+  let fakePosts;
+
+  // When testing, ignore the testingUser on the client, else then make sure there are comments for the posts the testUser can see
+  if (testUser) {
+    fakePosts = await Post.find({
+      isFake: true,
+      author: { $in: [...testUser.friends, testUser._id] },
+    }).limit(30);
+  } else {
+    fakePosts = await Post.find({ isFake: true }).limit(30);
+  }
+
+  // For each post add the generated comments to it.
+  for (const post of fakePosts) {
+    const comments = await generateComments();
+    post.comments = comments;
+    await post.save();
+  }
+};
+
 const generateFakePosts = async () => {
   console.log('Generating posts...');
   const allFakeUsers = await User.find({ isFake: true });
@@ -99,14 +174,11 @@ const generateFakePosts = async () => {
       fakePostIndex++
     ) {
       const generateImage = [false, true, false, false, true, false];
-      let fileType = '';
-      if (generateImage[fakePostIndex]) {
-        const pathExtension = path.extname(postPhotos[postPhotoIndex]);
-        fileType =
-          pathExtension === '.mp4'
-            ? 'video/mp4'
-            : `image/${pathExtension.slice(1)}`;
-      }
+      const fileType = generatePostPhotoFileType(
+        generateImage[fakePostIndex],
+        postPhotoIndex
+      );
+
       const fakePost = {
         postMessage: '',
         img: {
@@ -122,15 +194,7 @@ const generateFakePosts = async () => {
           to: Date.now(),
         }),
       };
-      for (let i = 0; i < 25; i++) {
-        const word = faker.word.sample();
-        fakePost.postMessage += !i
-          ? word[0].toUpperCase() + word.slice(1, word.length) + ' '
-          : word + ' ';
-      }
-      fakePost.postMessage =
-        fakePost.postMessage.slice(0, fakePost.postMessage.lastIndexOf(' ')) +
-        '.';
+      generatePostMessage(fakePost);
       const generatedPost = await Post.create(fakePost);
       fakePost._id = generatedPost._id;
       fakePosts.push(fakePost);
@@ -142,12 +206,21 @@ const generateFakePosts = async () => {
     user.posts = sortByInput(fakePosts, 'latest');
     await user.save();
   }
+  await addCommentsToPost();
 
   const updatedFakeUsers = await User.find({ isFake: true }).populate({
     path: 'posts',
     model: 'post',
-    populate: { path: 'author', model: 'user' },
+    populate: [
+      {
+        path: 'comments',
+        model: 'comment',
+        populate: { path: 'author', model: 'user' },
+      },
+      { path: 'author', model: 'user' },
+    ],
   });
+  console.log(updatedFakeUsers[0].posts[0].comments);
 
   return updatedFakeUsers;
 };
@@ -163,14 +236,13 @@ const generateFakeDataForClient = async () => {
 
     await generateFakePosts();
     console.log('✅');
+  } else {
+    await User.deleteMany({ isFake: true });
+    const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
+    user.friends = [];
+    await user.save();
+    await Post.deleteMany({ isFake: true });
   }
-  // else {
-  //   await User.deleteMany({ isFake: true });
-  //   const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
-  //   user.friends = [];
-  //   await user.save();
-  //   await Post.deleteMany({ isFake: true });
-  // }
 };
 
 module.exports = {
