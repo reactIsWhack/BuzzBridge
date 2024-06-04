@@ -45,8 +45,14 @@ export const PostActions = ({ likes, id }) => {
   };
 
   const handleClick = () => {
-    document.getElementById(`comment-textarea-${id}`).focus();
-    document.getElementById(`comment-textarea-${id}`).select();
+    const element = document.getElementById(`comment-textarea-${id}`);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+      element.select();
+    }
   };
 
   return (
