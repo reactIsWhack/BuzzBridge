@@ -149,7 +149,7 @@ const Post = ({
                   className="view-previous"
                   onClick={togglePreviousCommentsRender}
                 >{`View ${originalCommentLength - 1} previous ${
-                  comments.length === 1 ? 'comment' : 'comments'
+                  originalCommentLength - 1 === 1 ? 'comment' : 'comments'
                 }`}</div>
               )}
             {commentCards}

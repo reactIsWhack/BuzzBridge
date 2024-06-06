@@ -16,9 +16,38 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const startDate = new Date(Date.now());
   // Do your operations
   const endDate = new Date(createdAt);
-  const timeSeperation = startDate.getTime() - endDate.getTime();
-  let timeStamp = Math.round(timeSeperation / (1000 * 3600 * 24));
-  console.log(timeStamp);
+
+  //  Gets time in days between the comment creation date and the current date
+  let timeAgo = Math.round(
+    (Date.parse(startDate) - Date.parse(endDate)) / (1000 * 60 * 60 * 24)
+  );
+
+  const renderTimeStamp = () => {
+    if (timeAgo === 0) {
+      const hours = Math.floor((startDate - endDate) / (60 * 60 * 1000));
+      if (hours < 1) {
+        return 'just now';
+      }
+      return `${hours}h`;
+    } else if (timeAgo < 7) {
+      // If the comment was made less than a week ago, render the timestamp in days.
+      return `${timeAgo}d`;
+    } else if (timeAgo > 7 && timeAgo <= 31) {
+      // If the comment was made less than a month ago, then render the timestamp in weeks.
+      return `${Math.floor(timeAgo / 7)}w`;
+    } else if (timeAgo > 31 && timeAgo < 365) {
+      // renders the timestamp in months if it was made over a month ago
+      let months;
+      months = (startDate.getFullYear() - endDate.getFullYear()) * 12;
+      months -= endDate.getMonth();
+      months += startDate.getMonth();
+      return `${months}m`;
+    } else {
+      const ageDifMs = startDate - endDate;
+      const ageDate = new Date(ageDifMs); // miliseconds from epoch
+      return `${Math.abs(ageDate.getUTCFullYear() - 1970)}y`;
+    }
+  };
 
   const likeComment = () => {
     dispatch(
@@ -75,6 +104,7 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
         >
           Like
         </div>
+        <div className="timestamp-label">{renderTimeStamp()}</div>
       </div>
     </div>
   );
