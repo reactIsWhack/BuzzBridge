@@ -13,6 +13,12 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
     (user) => String(user._id) === String(userId)
   );
   const [renderLikesList, setRenderLikesList] = useState(false);
+  const startDate = new Date(Date.now());
+  // Do your operations
+  const endDate = new Date(createdAt);
+  const timeSeperation = startDate.getTime() - endDate.getTime();
+  let timeStamp = Math.round(timeSeperation / (1000 * 3600 * 24));
+  console.log(timeStamp);
 
   const likeComment = () => {
     dispatch(
