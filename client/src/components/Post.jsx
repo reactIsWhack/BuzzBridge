@@ -10,6 +10,7 @@ import { PostActions } from './PostActions';
 import UsersLikedList from './UsersLikedList';
 import CommentBar from './CommentBar';
 import Comment from './Comment';
+import renderExactDate from '../utils/renderExactDate';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -23,21 +24,9 @@ const Post = ({
   _id,
 }) => {
   const postCreatedAtDate = new Date(createdAt);
-  // Puts the createdAt in formatted eastern time as an array
-  const formattedDateTime = postCreatedAtDate
-    .toLocaleString('en-US', {
-      timeZone: 'America/New_York',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-    })
-    .split(' ');
-  const [month, day, year, at, time, daytime] = formattedDateTime;
-  // Removes the comma after day
-  const formattedDay = day.slice(0, day.indexOf(','));
-  const formattedYear = currentYear !== year ? `, ${year}` : '';
+  const { month, formattedDay, year, at, time, daytime, dayName } =
+    renderExactDate(postCreatedAtDate);
+
   const { userId } = useSelector(selectUser);
   const [renderPostOptions, setRenderPostOptions] = useState(false);
   const menuRef = useRef(null);
@@ -94,7 +83,9 @@ const Post = ({
               <div className="post-author-name">
                 {author.firstName + ' ' + author.lastName}
               </div>
-              <span>{`${month} ${formattedDay}${formattedYear} at ${time} ${daytime}`}</span>
+              <span>{`${month} ${formattedDay}${
+                currentYear !== year ? year : ''
+              } at ${time} ${daytime}`}</span>
             </div>
           </div>
           <div className="post-options" onClick={handleClick} ref={menuRef}>
