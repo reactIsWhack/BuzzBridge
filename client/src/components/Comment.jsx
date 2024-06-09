@@ -5,6 +5,8 @@ import { likeContent } from '../app/features/posts/postsSlice';
 import { selectUser } from '../app/features/user/userSlice';
 import CommentLikesDesc from './CommentLikesDesc';
 import ExpandedUsersLikedList from './ExpandedUsersLikedList';
+import FullDateCreation from './FullDateCreation';
+import HoverInfo from './HoverInfo';
 
 const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const dispatch = useDispatch();
@@ -12,10 +14,11 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const userInLikedUsers = likes.usersLiked.find(
     (user) => String(user._id) === String(userId)
   );
-  const [renderLikesList, setRenderLikesList] = useState(false);
+  const [renderLikesList, setRenderLikesList] = useState(false); // determines if a list of users that liked a comment should be rendered.
   const startDate = new Date(Date.now());
-  // Do your operations
   const endDate = new Date(createdAt);
+  const [renderExactCreatedDate, setRenderExactCreatedDate] = useState(false); // determines if the full date of a comments createdAt should be rendered.
+  const [fullDateMounted, setFullDateMounted] = useState(false);
 
   //  Gets time in days between the comment creation date and the current date
   let timeAgo = Math.round(
@@ -24,9 +27,10 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
 
   const renderTimeStamp = () => {
     if (timeAgo === 0) {
+      // If the comment was made the day of the current date
       const hours = Math.floor((startDate - endDate) / (60 * 60 * 1000));
       if (hours < 1) {
-        return 'just now';
+        return 'just now'; // if the comment was just created
       }
       return `${hours}h`;
     } else if (timeAgo < 7) {
@@ -43,6 +47,7 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
       months += startDate.getMonth();
       return `${months}m`;
     } else {
+      // If the comment was made over a year ago, render the timestamp in years.
       const ageDifMs = startDate - endDate;
       const ageDate = new Date(ageDifMs); // miliseconds from epoch
       return `${Math.abs(ageDate.getUTCFullYear() - 1970)}y`;
@@ -66,8 +71,22 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
     color: userInLikedUsers ? '#2078f4' : '#65676b',
   };
 
-  const handleMouseOver = () => setRenderLikesList(true);
+  const handleMouseOver = () => setRenderLikesList(true); // These functions toggle the rendering of the users liked list when the like icon of a comment is hovered.
   const handleMouseLeave = () => setRenderLikesList(false);
+
+  const renderDate = async () => {
+    setRenderExactCreatedDate(true);
+    setFullDateMounted(true);
+  };
+  const hideDate = () => {
+    setFullDateMounted(false);
+  };
+
+  const mountedStyle = { animation: 'inAnimation 250ms ease-in' };
+  const unmountedStyle = {
+    animation: 'outAnimation 270ms ease-out',
+    animationFillMode: 'forwards',
+  };
 
   return (
     <div className="comment">
@@ -82,16 +101,12 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
               onMouseOver={handleMouseOver}
               onMouseLeave={handleMouseLeave}
             >
-              <div>
-                {' '}
-                <CommentLikesDesc likes={likes} />
-              </div>
-
-              <div>
-                {renderLikesList && (
-                  <ExpandedUsersLikedList userList={likes.usersLiked} />
-                )}
-              </div>
+              <CommentLikesDesc likes={likes} />
+              {/* renders an icon that displays the number of likes for a comment */}
+              {renderLikesList && (
+                <ExpandedUsersLikedList userList={likes.usersLiked} />
+              )}
+              {/* when the icon is hovered, this component renders a list of users that liked that comment */}
             </div>
           )}
         </div>
@@ -104,7 +119,22 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
         >
           Like
         </div>
-        <div className="timestamp-label">{renderTimeStamp()}</div>
+        <div
+          className="timestamp-label"
+          onMouseOver={renderDate}
+          onMouseLeave={hideDate}
+        >
+          {renderTimeStamp()}
+          {renderExactCreatedDate && (
+            <HoverInfo
+              isMounted={fullDateMounted}
+              setRenderHoverWindow={setRenderExactCreatedDate}
+              className="full-date"
+            >
+              <FullDateCreation createdAt={createdAt} />
+            </HoverInfo>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -73,6 +73,10 @@
 .timestamp-label {
   color: gray;
   font-size: 0.8rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .like-label {
@@ -97,4 +101,37 @@
 .comments-like-section .expanded-users-liked-list {
   right: -40px;
   margin-top: 0.2em;
+}
+
+@keyframes inAnimation {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes outAnimation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.full-date {
+  white-space: nowrap;
+  overflow: hidden;
+  position: absolute;
+  color: #e4e4e4;
+  font-size: 0.75rem;
+  padding: 0.5em 0.9em;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  top: 20px;
 }
