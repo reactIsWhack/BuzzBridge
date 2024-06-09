@@ -1,18 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import '../styles/Post.css';
-import { SlOptions } from 'react-icons/sl';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../app/features/user/userSlice';
-import PostOptions from './PostOptions';
-import useClickOutside from '../hooks/useClickOutside';
-import { setDeletedPostId } from '../app/features/posts/postsSlice';
 import { PostActions } from './PostActions';
 import UsersLikedList from './UsersLikedList';
 import CommentBar from './CommentBar';
 import Comment from './Comment';
-import renderExactDate from '../utils/renderExactDate';
-
-const currentYear = new Date().getFullYear().toString();
+import GeneralPostInfo from './GeneralPostInfo';
+import PostControls from './PostControls';
 
 const Post = ({
   author,
@@ -23,98 +16,62 @@ const Post = ({
   createdAt,
   _id,
 }) => {
-  const postCreatedAtDate = new Date(createdAt);
-  const { month, formattedDay, year, at, time, daytime, dayName } =
-    renderExactDate(postCreatedAtDate);
+  const [renderComments, setRenderComments] = useState(true); // allows the user to collapse or show all comments
 
-  const { userId } = useSelector(selectUser);
-  const [renderPostOptions, setRenderPostOptions] = useState(false);
-  const menuRef = useRef(null);
-  const optionsRef = useRef(null);
-  const dispatch = useDispatch();
-  const [renderComments, setRenderComments] = useState(true);
+  // When the page first loads, only render the latest comment
   const [renderOnlyLatestComments, setRenderOnlyLatestComments] =
     useState(true);
-  const [latestComments, setLatestComments] = useState([]);
-  // State is used to render the number of previous comments and if comments should be rendered
-  const [originalCommentLength, setOriginalCommentLength] = useState(0);
+  const [latestComments, setLatestComments] = useState([]); // Renders the latest comment when the component mounts and any new comments that are created
 
-  const handleClick = () => {
-    if (!renderPostOptions) {
-      setRenderPostOptions(true);
-      // Each time a user chooses to delete a post in the post menu, set the id of the post intended to be deleted.
-      dispatch(setDeletedPostId(_id));
-    }
-  };
+  // State is used to render the number of previous comments and if comments should be rendered. Number of previous comments refers to all the comments except for the latest one.
+  const [originalCommentLength, setOriginalCommentLength] = useState(0);
+  const previousCommentsLength = originalCommentLength - 1;
 
   useEffect(() => {
-    // Sets the length of the comments of a post when the page first loads
+    // Sets the length of the comments of a post when the page first loads. Used to keep track of the number of previous posts.
     setOriginalCommentLength(comments.length);
   }, []);
 
   useEffect(() => {
     setLatestComments(comments.slice(originalCommentLength - 1));
-  }, [comments]);
+  }, [comments]); // When new comments are added, update the latest comments to render the new comments.
 
   const commentsToBeRendered =
     renderOnlyLatestComments && originalCommentLength !== 0
-      ? latestComments // removes the duplicates as a result of useEffect
-      : comments;
+      ? latestComments // if the user only wants to view the LATEST comments
+      : comments; // if the user wants to view ALL the comments
 
   const commentCards = commentsToBeRendered.map((comment) => {
     return <Comment key={comment._id} {...comment} postId={_id} />;
   });
 
-  useClickOutside({ parentRef: menuRef, childRef: optionsRef }, () =>
-    setRenderPostOptions(false)
-  );
-
   const togglePreviousCommentsRender = () => setRenderOnlyLatestComments(false);
 
-  const toggleRenderComments = () => setRenderComments((prev) => !prev);
+  const toggleRenderComments = () => setRenderComments((prev) => !prev); // toggles between collapsing and rendering all comments
 
   return (
     <div className="post-card" id={_id}>
       <div className="post-top-container">
         <div className="author-section">
-          <div className="author-info">
-            <img src={author.photo} className="author-post-profile" />
-            <div>
-              <div className="post-author-name">
-                {author.firstName + ' ' + author.lastName}
-              </div>
-              <span>{`${month} ${formattedDay}${
-                currentYear !== year ? year : ''
-              } at ${time} ${daytime}`}</span>
-            </div>
-          </div>
-          <div className="post-options" onClick={handleClick} ref={menuRef}>
-            {String(userId) === String(author._id) && (
-              <SlOptions fill="#606770" size={18} cursor="pointer" />
-            )}
-            {renderPostOptions && (
-              <div ref={optionsRef} className="post-options-container">
-                <PostOptions
-                  setRenderPostOptions={setRenderPostOptions}
-                  renderPostOptions={renderPostOptions}
-                />
-              </div>
-            )}
-          </div>
+          <GeneralPostInfo author={author} createdAt={createdAt} />
+          <PostControls author={author} _id={_id} />
         </div>
         <div className="post-message">{postMessage}</div>
       </div>
-      {img.src &&
-        (img.fileType === 'video/mp4' ? (
-          <video controls width="100%" className="post-img">
-            <source src={img.src} type="video/mp4" />
-          </video>
-        ) : (
-          <img src={img.src} className="post-img" />
-        ))}
+      <div className="post-content">
+        {img.src &&
+          (img.fileType === 'video/mp4' ? (
+            <video controls width="100%" className="post-img">
+              <source src={img.src} type="video/mp4" />
+            </video>
+          ) : (
+            <img src={img.src} className="post-img" />
+          ))}
+      </div>
       <div className="post-labels-container">
-        <div>{likes.total > 0 && <UsersLikedList likes={likes} />}</div>
-        {comments.length > 0 && (
+        <div>{likes.total > 0 && <UsersLikedList likes={likes} />}</div>{' '}
+        {/* renders a list of users that liked a post (3 maximum) */}
+        {comments.length > 0 && ( // renders the number of comments for a post, and jsx is used to collapse or open all comments
           <div
             className="post-comments-label"
             onClick={toggleRenderComments}
@@ -125,26 +82,27 @@ const Post = ({
       </div>
       <div
         className={`post-bottom-container ${
-          !renderComments && 'bottom-no-padding'
+          !renderComments && 'bottom-no-padding' // removes padding from the bottom of post if comments are collapsed
         }`}
       >
         <div className="post-actions-container">
           <PostActions likes={likes} id={_id} />
+          {/* contains the like and comment buttons for a post */}
         </div>
         {renderComments && <div className="bottom-post-border"></div>}
+        {/* border between the comments and the rest of a post */}
 
         {comments.length > 0 && renderComments && (
           <div className="comments-container">
-            {renderOnlyLatestComments &&
-              originalCommentLength !== 0 &&
-              comments.length > 1 && (
-                <div
-                  className="view-previous"
-                  onClick={togglePreviousCommentsRender}
-                >{`View ${originalCommentLength - 1} previous ${
-                  originalCommentLength - 1 === 1 ? 'comment' : 'comments'
-                }`}</div>
-              )}
+            {renderOnlyLatestComments && comments.length > 1 && (
+              <div
+                className="view-previous"
+                onClick={togglePreviousCommentsRender}
+              >{`View ${previousCommentsLength} previous ${
+                previousCommentsLength === 1 ? 'comment' : 'comments'
+              }`}</div>
+            )}
+            {/* Displays the number of old comments for a post (all the comments except for the latest one). When the text is clicked, these old comments will be rendered */}
             {commentCards}
           </div>
         )}
