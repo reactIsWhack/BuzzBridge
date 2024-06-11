@@ -18,7 +18,8 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const startDate = new Date(Date.now());
   const endDate = new Date(createdAt);
   const [renderExactCreatedDate, setRenderExactCreatedDate] = useState(false); // determines if the full date of a comments createdAt should be rendered.
-  const [fullDateMounted, setFullDateMounted] = useState(false);
+  const [fullDateMounted, setFullDateMounted] = useState(false); // used for creating smooth transition when the full date is rendered
+  const [likedListMounted, setLikedListMounted] = useState(false);
 
   //  Gets time in days between the comment creation date and the current date
   let timeAgo = Math.round(
@@ -71,22 +72,23 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
     color: userInLikedUsers ? '#2078f4' : '#65676b',
   };
 
-  const handleMouseOver = () => setRenderLikesList(true); // These functions toggle the rendering of the users liked list when the like icon of a comment is hovered.
-  const handleMouseLeave = () => setRenderLikesList(false);
+  const handleMouseOver = (e) => {
+    setRenderLikesList(true);
+    setLikedListMounted(true);
+  }; // These functions toggle the rendering of the users liked list when the like icon of a comment is hovered.
+  const handleMouseLeave = async (e) => {
+    setLikedListMounted(false);
+  };
 
-  const renderDate = async () => {
+  const renderDate = async (e) => {
     setRenderExactCreatedDate(true);
     setFullDateMounted(true);
   };
-  const hideDate = () => {
+  const hideDate = (e) => {
     setFullDateMounted(false);
   };
 
-  const mountedStyle = { animation: 'inAnimation 250ms ease-in' };
-  const unmountedStyle = {
-    animation: 'outAnimation 270ms ease-out',
-    animationFillMode: 'forwards',
-  };
+  console.log(fullDateMounted);
 
   return (
     <div className="comment">
@@ -104,7 +106,13 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
               <CommentLikesDesc likes={likes} />
               {/* renders an icon that displays the number of likes for a comment */}
               {renderLikesList && (
-                <ExpandedUsersLikedList userList={likes.usersLiked} />
+                <HoverInfo
+                  setRenderHoverWindow={setRenderLikesList}
+                  className="expanded-users-liked-list"
+                  isMounted={likedListMounted}
+                >
+                  <ExpandedUsersLikedList userList={likes.usersLiked} />
+                </HoverInfo>
               )}
               {/* when the icon is hovered, this component renders a list of users that liked that comment */}
             </div>
@@ -130,10 +138,12 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
               isMounted={fullDateMounted}
               setRenderHoverWindow={setRenderExactCreatedDate}
               className="full-date"
+              setIsMounted={setFullDateMounted}
             >
               <FullDateCreation createdAt={createdAt} />
             </HoverInfo>
           )}
+          {/* HoverInfo is a  component that has the smooth transition of a div when conditionally rendered */}
         </div>
       </div>
     </div>

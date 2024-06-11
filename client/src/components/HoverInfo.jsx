@@ -5,6 +5,7 @@ const HoverInfo = ({
   setRenderHoverWindow,
   className,
   children,
+  setIsMounted,
 }) => {
   const mountedStyle = { animation: 'inAnimation 250ms ease-in' };
   const unmountedStyle = {

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import ExpandedUsersLikedList from './ExpandedUsersLikedList';
 import LikeGradientIcon from './LikeGradientIcon';
 import '../styles/ExpandedUsersLikedList.css';
+import HoverInfo from './HoverInfo';
 
 const UsersLikedList = ({ likes: { usersLiked } }) => {
   const [firstUser, secondUser] = usersLiked;
   const [renderExpandedList, setRenderExpandedList] = useState(false);
+  const [expandedListMounted, setExpandedListMounted] = useState(false);
 
   const firstUserName = firstUser.firstName + ' ' + firstUser.lastName;
   let secondUserName = '';
@@ -33,8 +35,11 @@ const UsersLikedList = ({ likes: { usersLiked } }) => {
     }
   };
 
-  const handleMouseOver = () => setRenderExpandedList(true);
-  const handleMouseLeave = () => setRenderExpandedList(false);
+  const handleMouseOver = () => {
+    setRenderExpandedList(true);
+    setExpandedListMounted(true);
+  };
+  const handleMouseLeave = () => setExpandedListMounted(false);
 
   const userListStyles = {
     textDecoration: renderExpandedList ? 'underline' : 'none',
@@ -51,7 +56,15 @@ const UsersLikedList = ({ likes: { usersLiked } }) => {
         <div className="list" style={userListStyles}>
           {renderList()}
         </div>
-        {renderExpandedList && <ExpandedUsersLikedList userList={usersLiked} />}
+        {renderExpandedList && (
+          <HoverInfo
+            setRenderHoverWindow={setRenderExpandedList}
+            className="expanded-users-liked-list"
+            isMounted={expandedListMounted}
+          >
+            <ExpandedUsersLikedList userList={usersLiked} />
+          </HoverInfo>
+        )}
       </div>
     </div>
   );

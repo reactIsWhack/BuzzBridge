@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Post.css';
 import { PostActions } from './PostActions';
 import UsersLikedList from './UsersLikedList';

@@ -9,7 +9,7 @@ const ExpandedUsersLikedList = ({ userList }) => {
     );
   });
 
-  return <div className="expanded-users-liked-list">{userName}</div>;
+  return <>{userName}</>;
 };
 
 export default ExpandedUsersLikedList;

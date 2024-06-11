@@ -55,10 +55,34 @@
   text-decoration: underline;
 }
 
-.author-info span {
+.post-timestamp-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post-full-date {
+  position: absolute;
+  color: #e4e4e4;
+  padding: 0.5em 0.9em;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  top: 20px;
+}
+
+.post-full-date div {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.post-timestamp-container span {
   color: gray;
   font-size: 0.75rem;
   font-weight: 375;
+  cursor: text;
 }
 
 .post-message {
