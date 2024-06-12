@@ -6,13 +6,19 @@ import PostOptions from './PostOptions';
 import { setDeletedPostId } from '../app/features/posts/postsSlice';
 import useClickOutside from '../hooks/useClickOutside';
 
-const PostControls = ({ author, _id }) => {
+const PostControls = ({
+  author,
+  _id,
+  className,
+  renderPostOptions,
+  setRenderPostOptions,
+  renderThreeDots,
+}) => {
   const dispatch = useDispatch();
   const { userId } = useSelector(selectUser); // Gets the id of the user to check if the given post is from the logged in user
 
   const menuRef = useRef(null); // The three dots to toggle the post menu
   const optionsRef = useRef(null); // The whole container of the post menu
-  const [renderPostOptions, setRenderPostOptions] = useState(false); // Determines if a menu to delete or edit a post should be shown
 
   useClickOutside({ parentRef: menuRef, childRef: optionsRef }, () =>
     setRenderPostOptions(false)
@@ -27,16 +33,31 @@ const PostControls = ({ author, _id }) => {
     }
   };
 
+  const threeDotsStyle = {
+    visibility:
+      !renderThreeDots && className === 'comment-options'
+        ? 'hidden'
+        : 'visible',
+  };
+
   return (
-    <div className="post-options" onClick={handleClick} ref={menuRef}>
+    <div className={className} onClick={handleClick} ref={menuRef}>
       {String(userId) === String(author._id) && (
-        <SlOptions fill="#606770" size={18} cursor="pointer" /> // Render three dots to toggle the post menu if the given post is from the logged in user
+        <div className="three-dots-container" style={threeDotsStyle}>
+          <SlOptions
+            fill="#606770"
+            size={className === 'comment-options' ? 14 : 18}
+            cursor="pointer"
+          />{' '}
+        </div>
+        // Render three dots to toggle the post menu if the given post is from the logged in user
       )}
       {renderPostOptions && (
-        <div ref={optionsRef} className="post-options-container">
+        <div ref={optionsRef} className={`${className}-container`}>
           <PostOptions
             setRenderPostOptions={setRenderPostOptions}
             renderPostOptions={renderPostOptions}
+            className={className}
           />
         </div>
       )}

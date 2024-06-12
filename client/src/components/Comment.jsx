@@ -7,6 +7,7 @@ import CommentLikesDesc from './CommentLikesDesc';
 import ExpandedUsersLikedList from './ExpandedUsersLikedList';
 import FullDateCreation from './FullDateCreation';
 import HoverInfo from './HoverInfo';
+import PostControls from './ContentControls';
 
 const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const [renderExactCreatedDate, setRenderExactCreatedDate] = useState(false); // determines if the full date of a comments createdAt should be rendered.
   const [fullDateMounted, setFullDateMounted] = useState(false); // used for creating smooth transition when the full date is rendered
   const [likedListMounted, setLikedListMounted] = useState(false);
+  const [renderCommentControls, setRenderCommentControls] = useState(false);
+  const [renderPostOptions, setRenderPostOptions] = useState(false); // Determines if a menu to delete or edit a comment should be shown
+  const [renderThreeDots, setRenderThreeDots] = useState(false);
 
   //  Gets time in days between the comment creation date and the current date
   let timeAgo = Math.round(
@@ -88,34 +92,59 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
     setFullDateMounted(false);
   };
 
-  console.log(fullDateMounted);
+  const renderCommentMenu = () => {
+    setRenderCommentControls(true);
+    setRenderThreeDots(true);
+  };
+  const hideCommentMenu = () => {
+    if (!renderPostOptions) {
+      setRenderCommentControls(false);
+    }
+    setRenderThreeDots(false);
+  };
 
   return (
-    <div className="comment">
+    <div
+      className="comment"
+      onMouseOver={renderCommentMenu}
+      onMouseLeave={hideCommentMenu}
+    >
       <div className="comment-top">
         <img src={author.photo} />
-        <div className="comment-content">
-          <span>{author.firstName + ' ' + author.lastName}</span>
-          <div className="comment-message">{commentMessage}</div>
-          {likes.total > 0 && (
-            <div
-              className="comments-like-section"
-              onMouseOver={handleMouseOver}
-              onMouseLeave={handleMouseLeave}
-            >
-              <CommentLikesDesc likes={likes} />
-              {/* renders an icon that displays the number of likes for a comment */}
-              {renderLikesList && (
-                <HoverInfo
-                  setRenderHoverWindow={setRenderLikesList}
-                  className="expanded-users-liked-list"
-                  isMounted={likedListMounted}
-                >
-                  <ExpandedUsersLikedList userList={likes.usersLiked} />
-                </HoverInfo>
-              )}
-              {/* when the icon is hovered, this component renders a list of users that liked that comment */}
-            </div>
+        <div className="main-comment-content">
+          <div className="comment-content">
+            <span>{author.firstName + ' ' + author.lastName}</span>
+            <div className="comment-message">{commentMessage}</div>
+            {likes.total > 0 && (
+              <div
+                className="comments-like-section"
+                onMouseOver={handleMouseOver}
+                onMouseLeave={handleMouseLeave}
+              >
+                <CommentLikesDesc likes={likes} />
+                {/* renders an icon that displays the number of likes for a comment */}
+                {renderLikesList && (
+                  <HoverInfo
+                    setRenderHoverWindow={setRenderLikesList}
+                    className="expanded-users-liked-list"
+                    isMounted={likedListMounted}
+                  >
+                    <ExpandedUsersLikedList userList={likes.usersLiked} />
+                  </HoverInfo>
+                )}
+                {/* when the icon is hovered, this component renders a list of users that liked that comment */}
+              </div>
+            )}
+          </div>
+          {renderCommentControls && (
+            <PostControls
+              renderPostOptions={renderPostOptions}
+              setRenderPostOptions={setRenderPostOptions}
+              author={author}
+              _id={_id}
+              className="comment-options"
+              renderThreeDots={renderThreeDots}
+            />
           )}
         </div>
       </div>

@@ -134,4 +134,11 @@
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.8);
   top: 20px;
+  z-index: 5;
+}
+
+.main-comment-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 }

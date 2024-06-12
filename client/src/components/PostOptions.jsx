@@ -5,25 +5,32 @@ import deleteIcon from '../assets/deleteIcon.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDeletePostPopup } from '../app/features/popup/popupSlice';
 
-const PostOptions = ({ setRenderPostOptions, renderPostOptions }) => {
+const PostOptions = ({
+  setRenderPostOptions,
+  renderPostOptions,
+  className,
+}) => {
   const dispatch = useDispatch();
 
   const toggleDeletePopup = async () => {
-    setRenderPostOptions(false);
-    dispatch(setDeletePostPopup(true));
+    if (className !== 'comment-options') {
+      setRenderPostOptions(false);
+      dispatch(setDeletePostPopup(true));
+    }
     // window.scrollTo(0, 0);
   };
+  const content = className === 'comment-options' ? 'comment' : 'post';
 
   return (
     <>
-      <div className="post-menu-container">
+      <div className={`${content}-menu-container`}>
         <div className="edit-post-option">
           <img src={editIcon} />
-          <div>Edit Post</div>
+          <div>Edit {content}</div>
         </div>
         <div className="delete-post-option" onClick={toggleDeletePopup}>
           <img src={deleteIcon} />
-          <div>Delete Post</div>
+          <div>Delete {content}</div>
         </div>
       </div>
     </>

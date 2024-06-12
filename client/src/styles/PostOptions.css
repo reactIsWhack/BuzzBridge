@@ -1,18 +1,26 @@
-.post-options {
+.post-options,
+.comment-options {
   position: relative;
   margin-right: 1em;
 }
 
-.post-menu-container {
+.post-menu-container,
+.comment-menu-container {
   width: 200px;
   min-height: 62px;
   background: white;
   padding: 0.5em;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.275);
+  text-transform: capitalize;
 }
 
-.post-menu-container:after {
+.comment-menu-container {
+  width: 210px;
+}
+
+.post-menu-container:after,
+.comment-menu-container::after {
   content: '';
   position: absolute;
   top: 0;
@@ -26,14 +34,12 @@
   margin-top: -12px;
 }
 
-.post-options-container {
+.post-options-container,
+.comment-options-container {
   position: absolute;
   right: -20px;
   top: 40px;
-}
-
-.edit-post-option {
-  margin-bottom: 0.5em;
+  z-index: 1;
 }
 
 .delete-post-option,
@@ -43,7 +49,6 @@
   gap: 0.6em;
   padding: 0.75em;
   border-radius: 8px;
-  cursor: pointer;
 }
 
 .delete-post-option:hover,

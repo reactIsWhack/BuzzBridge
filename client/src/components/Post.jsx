@@ -5,7 +5,7 @@ import UsersLikedList from './UsersLikedList';
 import CommentBar from './CommentBar';
 import Comment from './Comment';
 import GeneralPostInfo from './GeneralPostInfo';
-import PostControls from './PostControls';
+import PostControls from './ContentControls';
 
 const Post = ({
   author,
@@ -22,6 +22,7 @@ const Post = ({
   const [renderOnlyLatestComments, setRenderOnlyLatestComments] =
     useState(true);
   const [latestComments, setLatestComments] = useState([]); // Renders the latest comment when the component mounts and any new comments that are created
+  const [renderPostOptions, setRenderPostOptions] = useState(false); // Determines if a menu to delete or edit a post should be shown
 
   // State is used to render the number of previous comments and if comments should be rendered. Number of previous comments refers to all the comments except for the latest one.
   const [originalCommentLength, setOriginalCommentLength] = useState(0);
@@ -54,7 +55,13 @@ const Post = ({
       <div className="post-top-container">
         <div className="author-section">
           <GeneralPostInfo author={author} createdAt={createdAt} />
-          <PostControls author={author} _id={_id} />
+          <PostControls
+            author={author}
+            _id={_id}
+            className="post-options"
+            renderPostOptions={renderPostOptions}
+            setRenderPostOptions={setRenderPostOptions}
+          />
         </div>
         <div className="post-message">{postMessage}</div>
       </div>
