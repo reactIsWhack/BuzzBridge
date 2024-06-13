@@ -8,6 +8,7 @@ import { createPost } from '../app/features/posts/postsSlice';
 import useDisableBackground from '../hooks/useDisableBackground';
 import createNewLine from '../utils/createNewLine';
 import { setRenderPostFormModal } from '../app/features/popup/popupSlice';
+import PostFormBtns from './PostFormBtns';
 
 const PostForm = ({ renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
@@ -42,7 +43,7 @@ const PostForm = ({ renderModal }) => {
     formData.append('photo', photo);
     formData.append('postMessage', postMessage);
     await dispatch(createPost(formData));
-    setRenderModal(false);
+    dispatch(setRenderPostFormModal(false));
   };
 
   const handleOnKeyDown = async (e) => {
@@ -143,7 +144,7 @@ const PostForm = ({ renderModal }) => {
             onInput={handleInput}
             id="post-form-textarea"
           ></textarea>
-          {imagePreview && (
+          {imagePreview ? (
             <div className="image-preview-container">
               <img
                 src={closeIcon}
@@ -152,8 +153,7 @@ const PostForm = ({ renderModal }) => {
               />
               <img src={imagePreview} className="file-upload-preview" />
             </div>
-          )}
-          {!imagePreview && (
+          ) : (
             <label htmlFor="file-upload" className="custom-file-upload">
               <img src={imageIcon} />
               <div>Add a photo or video to your post</div>
@@ -167,14 +167,8 @@ const PostForm = ({ renderModal }) => {
             onClick={handleClick}
             ref={fileUploadRef}
           />
-          <div className="post-btn-container">
-            <button
-              className={`post-btn ${!postMessage && 'post-btn-disabled'}`}
-              disabled={!postMessage ? true : false}
-            >
-              Post
-            </button>
-          </div>
+          <PostFormBtns postMessage={postMessage} />{' '}
+          {/* contains the creation or edit button for a post depending on if the user is editing or creating a post*/}
         </form>
       </div>
     </div>
