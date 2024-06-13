@@ -77,16 +77,20 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   };
 
   const handleMouseOver = (e) => {
-    setRenderLikesList(true);
-    setLikedListMounted(true);
+    if (!likedListMounted && !renderLikesList) {
+      setRenderLikesList(true);
+      setLikedListMounted(true);
+    }
   }; // These functions toggle the rendering of the users liked list when the like icon of a comment is hovered.
   const handleMouseLeave = async (e) => {
     setLikedListMounted(false);
   };
 
   const renderDate = async (e) => {
-    setRenderExactCreatedDate(true);
-    setFullDateMounted(true);
+    if (!fullDateMounted && !renderExactCreatedDate) {
+      setRenderExactCreatedDate(true);
+      setFullDateMounted(true);
+    }
   };
   const hideDate = (e) => {
     setFullDateMounted(false);

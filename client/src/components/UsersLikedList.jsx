@@ -36,8 +36,10 @@ const UsersLikedList = ({ likes: { usersLiked } }) => {
   };
 
   const handleMouseOver = () => {
-    setRenderExpandedList(true);
-    setExpandedListMounted(true);
+    if (!renderExpandedList && !expandedListMounted) {
+      setRenderExpandedList(true);
+      setExpandedListMounted(true);
+    }
   };
   const handleMouseLeave = () => setExpandedListMounted(false);
 

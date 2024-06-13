@@ -51,7 +51,7 @@
   cursor: pointer;
 }
 
-.author-info div div:hover {
+.timestamp-container span:hover {
   text-decoration: underline;
 }
 

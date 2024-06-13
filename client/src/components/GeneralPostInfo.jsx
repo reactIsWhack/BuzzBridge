@@ -14,8 +14,10 @@ const GeneralPostInfo = ({ author, createdAt }) => {
   // smoothly renders the exact date of a posts creation when the component mounts and unmounts
 
   const handleMouseOver = () => {
-    setRenderFullPostDate(true);
-    setFullPostDateMounted(true);
+    if (!fullPostDateMounted && !renderFullPostDate) {
+      setRenderFullPostDate(true);
+      setFullPostDateMounted(true);
+    }
   };
   const handleMouseLeave = () => setFullPostDateMounted(false);
 
