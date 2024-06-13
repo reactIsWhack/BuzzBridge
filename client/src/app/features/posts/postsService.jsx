@@ -24,3 +24,8 @@ export const createComment = async (id, commentMessage) => {
   const response = await axios.post(`/api/comments/${id}`, { commentMessage });
   return response;
 };
+
+export const delComment = async (postId, commentId) => {
+  const response = await axios.delete(`/api/comments/${postId}/${commentId}`);
+  return response;
+};

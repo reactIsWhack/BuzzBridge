@@ -6,13 +6,14 @@ import PostOptions from './PostOptions';
 import { setDeletedPostId } from '../app/features/posts/postsSlice';
 import useClickOutside from '../hooks/useClickOutside';
 
-const PostControls = ({
+const ContentControls = ({
   author,
   _id,
   className,
   renderPostOptions,
   setRenderPostOptions,
   renderThreeDots,
+  postId,
 }) => {
   const dispatch = useDispatch();
   const { userId } = useSelector(selectUser); // Gets the id of the user to check if the given post is from the logged in user
@@ -58,6 +59,8 @@ const PostControls = ({
             setRenderPostOptions={setRenderPostOptions}
             renderPostOptions={renderPostOptions}
             className={className}
+            commentId={_id}
+            postId={postId}
           />
         </div>
       )}
@@ -65,4 +68,4 @@ const PostControls = ({
   );
 };
 
-export default PostControls;
+export default ContentControls;

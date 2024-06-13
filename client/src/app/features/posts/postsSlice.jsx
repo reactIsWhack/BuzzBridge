@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   addPost,
   createComment,
+  delComment,
   deleteContent,
   getPosts,
   like,
@@ -71,7 +72,6 @@ export const likeContent = createAsyncThunk(
   async ({ id, contentData, postId }, thunkAPI) => {
     try {
       const response = await like(id, contentData);
-      console.log(response);
       return { data: response.data, content: contentData.content, postId };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -87,6 +87,19 @@ export const addComment = createAsyncThunk(
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  'comments/deleteComment',
+  async ({ postId, commentId }) => {
+    try {
+      const response = await delComment(postId, commentId);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -159,6 +172,15 @@ const postsSlice = createSlice({
         );
         console.log(commentedPost);
         commentedPost.comments = action.payload.data.comments;
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        const updatedPost = state.posts.find(
+          (post) => String(post._id) === String(action.payload._id)
+        );
+        updatedPost.comments = action.payload.comments;
+      })
+      .addCase(deleteComment.rejected, (state, action) => {
+        toast.error(action.payload);
       });
   },
 });

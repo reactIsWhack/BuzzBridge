@@ -5,7 +5,7 @@ import UsersLikedList from './UsersLikedList';
 import CommentBar from './CommentBar';
 import Comment from './Comment';
 import GeneralPostInfo from './GeneralPostInfo';
-import PostControls from './ContentControls';
+import ContentControls from './ContentControls';
 
 const Post = ({
   author,
@@ -55,7 +55,7 @@ const Post = ({
       <div className="post-top-container">
         <div className="author-section">
           <GeneralPostInfo author={author} createdAt={createdAt} />
-          <PostControls
+          <ContentControls
             author={author}
             _id={_id}
             className="post-options"
@@ -101,7 +101,7 @@ const Post = ({
 
         {comments.length > 0 && renderComments && (
           <div className="comments-container">
-            {renderOnlyLatestComments && comments.length > 1 && (
+            {renderOnlyLatestComments && originalCommentLength > 1 && (
               <div
                 className="view-previous"
                 onClick={togglePreviousCommentsRender}

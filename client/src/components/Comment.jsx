@@ -7,7 +7,7 @@ import CommentLikesDesc from './CommentLikesDesc';
 import ExpandedUsersLikedList from './ExpandedUsersLikedList';
 import FullDateCreation from './FullDateCreation';
 import HoverInfo from './HoverInfo';
-import PostControls from './ContentControls';
+import ContentControls from './ContentControls';
 
 const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
   const dispatch = useDispatch();
@@ -141,13 +141,14 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
             )}
           </div>
           {renderCommentControls && (
-            <PostControls
+            <ContentControls
               renderPostOptions={renderPostOptions}
               setRenderPostOptions={setRenderPostOptions}
               author={author}
               _id={_id}
               className="comment-options"
               renderThreeDots={renderThreeDots}
+              postId={postId}
             />
           )}
         </div>
