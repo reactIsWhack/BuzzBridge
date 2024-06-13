@@ -7,8 +7,9 @@ import imageIcon from '../assets/imageIcon.svg';
 import { createPost } from '../app/features/posts/postsSlice';
 import useDisableBackground from '../hooks/useDisableBackground';
 import createNewLine from '../utils/createNewLine';
+import { setRenderPostFormModal } from '../app/features/popup/popupSlice';
 
-const PostForm = ({ setRenderModal, renderModal }) => {
+const PostForm = ({ renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
   const [imagePreview, setImagePreview] = useState('');
   const [postMessage, setPostMessage] = useState('');
@@ -112,7 +113,10 @@ const PostForm = ({ setRenderModal, renderModal }) => {
     <div className="post-modal-container">
       <div className="modal-top">
         <div className="modal-close-icon">
-          <img src={closeIcon} onClick={() => setRenderModal(false)} />
+          <img
+            src={closeIcon}
+            onClick={() => dispatch(setRenderPostFormModal(false))}
+          />
         </div>
         <h2>Create Post</h2>
       </div>

@@ -1,28 +1,33 @@
 import React, { useState } from 'react';
 import '../styles/PostBar.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
 import Modal from './Modal';
 import PostForm from './PostForm';
+import {
+  selectPopup,
+  setRenderPostFormModal,
+} from '../app/features/popup/popupSlice';
 
 const PostBar = () => {
   const { firstName, profilePicture } = useSelector(selectUser);
-  const [renderModal, setRenderModal] = useState(false);
+  const { renderPostFormModal } = useSelector(selectPopup);
+  const dispatch = useDispatch();
 
   return (
     <>
       <div className="post-modal">
-        {renderModal && (
+        {renderPostFormModal && (
           <Modal>
-            <PostForm
-              setRenderModal={setRenderModal}
-              renderModal={renderModal}
-            />
+            <PostForm renderModal={renderPostFormModal} />
           </Modal>
         )}
       </div>
 
-      <div className="post-form" onClick={() => setRenderModal(true)}>
+      <div
+        className="post-form"
+        onClick={() => dispatch(setRenderPostFormModal(true))}
+      >
         <img src={profilePicture} alt="profile-picture" />
         <div>
           What's on your mind, <span>{firstName}</span>?

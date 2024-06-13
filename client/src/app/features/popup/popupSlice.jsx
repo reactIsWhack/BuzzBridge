@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   renderDeletePostPopup: false,
+  renderPostFormModal: false,
 };
 
 const popupSlice = createSlice({
@@ -11,6 +12,9 @@ const popupSlice = createSlice({
     setDeletePostPopup(state, action) {
       state.renderDeletePostPopup = action.payload;
     },
+    setRenderPostFormModal(state, action) {
+      state.renderPostFormModal = action.payload;
+    },
   },
 });
 
@@ -18,4 +22,5 @@ export default popupSlice.reducer;
 
 export const selectPopup = (state) => state.popup;
 
-export const { setDeletePostPopup } = popupSlice.actions;
+export const { setDeletePostPopup, setRenderPostFormModal } =
+  popupSlice.actions;

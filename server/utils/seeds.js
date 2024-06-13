@@ -239,13 +239,14 @@ const generateFakeDataForClient = async () => {
 
     await generateFakePosts();
     console.log('✅');
-  } else {
-    await User.deleteMany({ isFake: true });
-    const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
-    user.friends = [];
-    await user.save();
-    await Post.deleteMany({ isFake: true });
   }
+  // else {
+  //   await User.deleteMany({ isFake: true });
+  //   const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
+  //   user.friends = [];
+  //   await user.save();
+  //   await Post.deleteMany({ isFake: true });
+  // }
 };
 
 module.exports = {
