@@ -3,8 +3,11 @@ import '../styles/PostOptions.css';
 import editIcon from '../assets/editIcon.svg';
 import deleteIcon from '../assets/deleteIcon.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDeletePostPopup } from '../app/features/popup/popupSlice';
-import { deleteComment } from '../app/features/posts/postsSlice';
+import {
+  setDeletePostPopup,
+  setRenderPostFormModal,
+} from '../app/features/popup/popupSlice';
+import { deleteComment, selectPosts } from '../app/features/posts/postsSlice';
 
 const PostOptions = ({
   setRenderPostOptions,
@@ -15,6 +18,7 @@ const PostOptions = ({
 }) => {
   const dispatch = useDispatch();
   const content = className === 'comment-options' ? 'comment' : 'post';
+  const { posts } = useSelector(selectPosts);
 
   const toggleDeletePopup = async () => {
     if (content === 'post') {
@@ -25,10 +29,23 @@ const PostOptions = ({
     setRenderPostOptions(false);
   };
 
+  const renderEditPostForm = () => {
+    const editedPost = posts.find(
+      (post) => String(post._id) === String(postId)
+    );
+    dispatch(
+      setRenderPostFormModal({
+        render: true,
+        editing: true,
+        editedPost: editedPost,
+      })
+    );
+  };
+
   return (
     <>
       <div className={`${content}-menu-container`}>
-        <div className="edit-post-option">
+        <div className="edit-post-option" onClick={renderEditPostForm}>
           <img src={editIcon} />
           <div>Edit {content}</div>
         </div>

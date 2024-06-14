@@ -12,8 +12,13 @@ import PostFormBtns from './PostFormBtns';
 
 const PostForm = ({ renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
-  const [imagePreview, setImagePreview] = useState('');
-  const [postMessage, setPostMessage] = useState('');
+  const { editing, render, editedPost } = renderModal;
+  const [imagePreview, setImagePreview] = useState(
+    editing ? editedPost.img.src : ''
+  );
+  const [postMessage, setPostMessage] = useState(
+    editing ? editedPost.postMessage : ''
+  );
   const [enterTotal, setEnterTotal] = useState(0);
   const fileUploadRef = useRef(null);
   const dispatch = useDispatch();
@@ -43,7 +48,7 @@ const PostForm = ({ renderModal }) => {
     formData.append('photo', photo);
     formData.append('postMessage', postMessage);
     await dispatch(createPost(formData));
-    dispatch(setRenderPostFormModal(false));
+    dispatch(setRenderPostFormModal({ render: false, editing: false }));
   };
 
   const handleOnKeyDown = async (e) => {
@@ -116,10 +121,14 @@ const PostForm = ({ renderModal }) => {
         <div className="modal-close-icon">
           <img
             src={closeIcon}
-            onClick={() => dispatch(setRenderPostFormModal(false))}
+            onClick={() =>
+              dispatch(
+                setRenderPostFormModal({ render: false, editing: false })
+              )
+            }
           />
         </div>
-        <h2>Create Post</h2>
+        <h2>{editing ? 'Edit' : 'Create'} Post</h2>
       </div>
       <div className="modal-border"></div>
       <div className="post-form-section">
@@ -167,7 +176,7 @@ const PostForm = ({ renderModal }) => {
             onClick={handleClick}
             ref={fileUploadRef}
           />
-          <PostFormBtns postMessage={postMessage} />{' '}
+          <PostFormBtns postMessage={postMessage} editing={editing} />{' '}
           {/* contains the creation or edit button for a post depending on if the user is editing or creating a post*/}
         </form>
       </div>

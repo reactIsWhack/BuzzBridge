@@ -2,7 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   renderDeletePostPopup: false,
-  renderPostFormModal: false,
+  renderPostFormModal: {
+    render: false,
+    editing: false,
+    editedPost: null,
+  },
 };
 
 const popupSlice = createSlice({

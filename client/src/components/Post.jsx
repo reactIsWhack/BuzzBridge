@@ -61,6 +61,7 @@ const Post = ({
             className="post-options"
             renderPostOptions={renderPostOptions}
             setRenderPostOptions={setRenderPostOptions}
+            postId={_id}
           />
         </div>
         <div className="post-message">{postMessage}</div>

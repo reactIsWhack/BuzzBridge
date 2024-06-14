@@ -17,7 +17,7 @@ const PostBar = () => {
   return (
     <>
       <div className="post-modal">
-        {renderPostFormModal && (
+        {renderPostFormModal.render && (
           <Modal>
             <PostForm renderModal={renderPostFormModal} />
           </Modal>
@@ -26,7 +26,9 @@ const PostBar = () => {
 
       <div
         className="post-form"
-        onClick={() => dispatch(setRenderPostFormModal(true))}
+        onClick={() =>
+          dispatch(setRenderPostFormModal({ render: true, editing: false }))
+        }
       >
         <img src={profilePicture} alt="profile-picture" />
         <div>

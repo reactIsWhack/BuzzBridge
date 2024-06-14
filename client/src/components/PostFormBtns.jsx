@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PostFormBtns = ({ postMessage }) => {
+const PostFormBtns = ({ postMessage, editing }) => {
   return (
     <>
       <div className="post-btn-container">
@@ -8,7 +8,7 @@ const PostFormBtns = ({ postMessage }) => {
           className={`post-btn ${!postMessage && 'post-btn-disabled'}`}
           disabled={!postMessage ? true : false}
         >
-          Post
+          {editing ? 'Save' : 'Post'}
         </button>
       </div>
     </>
