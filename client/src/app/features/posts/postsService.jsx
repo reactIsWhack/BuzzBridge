@@ -29,3 +29,11 @@ export const delComment = async (postId, commentId) => {
   const response = await axios.delete(`/api/comments/${postId}/${commentId}`);
   return response;
 };
+
+export const editContent = async (contentId, contentData) => {
+  const response = await axios.patch(
+    `/api/posts/editpost/${contentId}`,
+    contentData
+  );
+  return response;
+};

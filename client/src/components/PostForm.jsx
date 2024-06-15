@@ -4,7 +4,7 @@ import closeIcon from '../assets/closeIcon.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../app/features/user/userSlice';
 import imageIcon from '../assets/imageIcon.svg';
-import { createPost } from '../app/features/posts/postsSlice';
+import { createPost, editPost } from '../app/features/posts/postsSlice';
 import useDisableBackground from '../hooks/useDisableBackground';
 import createNewLine from '../utils/createNewLine';
 import { setRenderPostFormModal } from '../app/features/popup/popupSlice';
@@ -14,7 +14,7 @@ const PostForm = ({ renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
   const { editing, render, editedPost } = renderModal;
   const [imagePreview, setImagePreview] = useState(
-    editing ? editedPost.img.src : ''
+    editing ? editedPost.img.src : null
   );
   const [postMessage, setPostMessage] = useState(
     editing ? editedPost.postMessage : ''
@@ -22,8 +22,10 @@ const PostForm = ({ renderModal }) => {
   const [enterTotal, setEnterTotal] = useState(0);
   const fileUploadRef = useRef(null);
   const dispatch = useDispatch();
+  const [file, setFile] = useState('');
 
   const previewFile = async (e) => {
+    setFile(e.target.files[0]);
     if (!postMessage) {
       document
         .getElementById('post-form-textarea')
@@ -34,6 +36,8 @@ const PostForm = ({ renderModal }) => {
     const url = URL.createObjectURL(file);
     setImagePreview(url);
   };
+  console.log(file, 'file');
+
   let requestCount = 0;
 
   const handleSubmit = async (e) => {
@@ -44,10 +48,17 @@ const PostForm = ({ renderModal }) => {
     }
     const formData = new FormData();
 
-    const photo = fileUploadRef.current && fileUploadRef.current.files[0];
-    formData.append('photo', photo);
-    formData.append('postMessage', postMessage);
-    await dispatch(createPost(formData));
+    formData.append('photo', file);
+    formData.append(editing ? 'contentMessage' : 'postMessage', postMessage);
+    if (editing) {
+      formData.append('photoURL', editedPost.img.src);
+      formData.append('contentType', 'post');
+      await dispatch(
+        editPost({ contentId: editedPost._id, contentData: formData })
+      );
+    } else {
+      await dispatch(createPost(formData));
+    }
     dispatch(setRenderPostFormModal({ render: false, editing: false }));
   };
 
@@ -94,6 +105,7 @@ const PostForm = ({ renderModal }) => {
 
   const clearFileUpload = () => {
     setImagePreview('');
+    setFile('');
     if (fileUploadRef.current) {
       fileUploadRef.current.value = '';
     }
@@ -174,7 +186,6 @@ const PostForm = ({ renderModal }) => {
             name="postImage"
             onChange={previewFile}
             onClick={handleClick}
-            ref={fileUploadRef}
           />
           <PostFormBtns postMessage={postMessage} editing={editing} />{' '}
           {/* contains the creation or edit button for a post depending on if the user is editing or creating a post*/}
