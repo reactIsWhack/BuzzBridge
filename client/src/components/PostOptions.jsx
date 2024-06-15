@@ -30,16 +30,18 @@ const PostOptions = ({
   };
 
   const renderEditPostForm = () => {
-    const editedPost = posts.find(
-      (post) => String(post._id) === String(postId)
-    );
-    dispatch(
-      setRenderPostFormModal({
-        render: true,
-        editing: true,
-        editedPost: editedPost,
-      })
-    );
+    if (content === 'post') {
+      const editedPost = posts.find(
+        (post) => String(post._id) === String(postId)
+      );
+      dispatch(
+        setRenderPostFormModal({
+          render: true,
+          editing: true,
+          editedPost: editedPost,
+        })
+      );
+    }
   };
 
   return (
