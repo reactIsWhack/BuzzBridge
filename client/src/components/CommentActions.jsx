@@ -33,7 +33,7 @@ const CommentActions = ({ createdAt, _id, postId, usersLiked }) => {
     } else if (timeAgo < 7) {
       // If the comment was made less than a week ago, render the timestamp in days.
       return `${timeAgo}d`;
-    } else if (timeAgo > 7 && timeAgo <= 31) {
+    } else if (timeAgo >= 7 && timeAgo <= 31) {
       // If the comment was made less than a month ago, then render the timestamp in weeks.
       return `${Math.floor(timeAgo / 7)}w`;
     } else if (timeAgo > 31 && timeAgo < 365) {
