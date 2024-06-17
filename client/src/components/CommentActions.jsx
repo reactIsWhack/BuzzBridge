@@ -18,9 +18,11 @@ const CommentActions = ({ createdAt, _id, postId, usersLiked }) => {
   const startDate = new Date(Date.now());
   const endDate = new Date(createdAt);
   //  Gets time in days between the comment creation date and the current date
-  let timeAgo = Math.round(
-    (Date.parse(startDate) - Date.parse(endDate)) / (1000 * 60 * 60 * 24)
-  );
+  let timeAgoRounded = (
+    (Date.parse(startDate) - Date.parse(endDate)) /
+    (1000 * 60 * 60 * 24)
+  ).toFixed(1);
+  const timeAgo = Number(timeAgoRounded).toFixed(0);
 
   const renderTimeStamp = () => {
     if (timeAgo === 0) {
