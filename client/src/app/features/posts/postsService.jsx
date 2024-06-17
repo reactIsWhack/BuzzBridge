@@ -37,3 +37,11 @@ export const editContent = async (contentId, contentData) => {
   );
   return response;
 };
+
+export const eComment = async (commentId, commentData) => {
+  const response = await axios.patch(
+    `/api/comments/editcomment/${commentId}`,
+    commentData
+  );
+  return response;
+};

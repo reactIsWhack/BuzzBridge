@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addComment } from '../app/features/posts/postsSlice';
+import { addComment, editComment } from '../app/features/posts/postsSlice';
 import createNewLine from '../utils/createNewLine';
 import { removeEditedComment } from '../app/features/popup/popupSlice';
 
@@ -9,6 +9,7 @@ const CommentBarTextarea = ({
   commentMessage,
   setCommentMessage,
   isEditing,
+  postId,
 }) => {
   const dispatch = useDispatch();
 
@@ -19,7 +20,21 @@ const CommentBarTextarea = ({
       e.preventDefault();
       requestCount++;
       if (requestCount === 1) {
-        dispatch(addComment({ id, commentMessage }));
+        if (isEditing) {
+          await dispatch(
+            editComment({
+              commentId: id,
+              commentData: {
+                contentMessage: commentMessage,
+                contentType: 'comment',
+              },
+              updatedPostId: postId,
+            })
+          );
+          dispatch(removeEditedComment(id));
+        } else {
+          dispatch(addComment({ id, commentMessage }));
+        }
       }
       await setCommentMessage('');
     }

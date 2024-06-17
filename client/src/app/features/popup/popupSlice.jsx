@@ -25,7 +25,7 @@ const popupSlice = createSlice({
     },
     removeEditedComment(state, action) {
       state.editedComments = state.editedComments.filter(
-        (comment) => String(comment._id) !== String(action.payload)
+        (comment) => String(comment._id) !== String(action.payload) // id of the comment
       );
     },
   },

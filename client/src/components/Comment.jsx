@@ -67,6 +67,7 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
             setCommentMessage={setCurrentCommentMessage}
             isEditing={true}
             commentMessage={currentCommentMessage}
+            postId={postId}
           />
         ) : (
           <div className="main-comment-content">

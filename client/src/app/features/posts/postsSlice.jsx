@@ -4,6 +4,7 @@ import {
   createComment,
   delComment,
   deleteContent,
+  eComment,
   editContent,
   getPosts,
   like,
@@ -108,13 +109,25 @@ export const deleteComment = createAsyncThunk(
 export const editPost = createAsyncThunk(
   'posts/editPost',
   async ({ contentId, contentData }, thunkAPI) => {
-    console.log(contentId, contentData.get('postMessage'));
     try {
       const response = await editContent(contentId, contentData);
-      console.log(response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const editComment = createAsyncThunk(
+  'comments/editComment',
+  async ({ commentId, commentData, updatedPostId }, thunkAPI) => {
+    try {
+      console.log(commentData);
+      const response = await eComment(commentId, commentData);
+      console.log(response);
+      return { data: response.data, postId: updatedPostId };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -206,6 +219,19 @@ const postsSlice = createSlice({
         editedPost.updatedPost = action.payload.updatedAt;
       })
       .addCase(editPost.rejected, (state, action) => {
+        toast.error(action.payload);
+      })
+      .addCase(editComment.fulfilled, (state, action) => {
+        const { data, postId } = action.payload;
+        const updatedPost = state.posts.find(
+          (post) => String(post._id) === String(postId)
+        );
+        const updatedComment = updatedPost.comments.find(
+          (comment) => String(comment._id) === String(data._id)
+        );
+        updatedComment.commentMessage = data.commentMessage;
+      })
+      .addCase(editComment.rejected, (state, action) => {
         toast.error(action.payload);
       });
   },

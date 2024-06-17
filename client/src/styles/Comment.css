@@ -63,7 +63,7 @@
   background-color: #f0f2f5;
   padding: 0.55em 0.85em;
   border-radius: 20px;
-  min-width: 150px;
+  min-width: 155px;
   position: relative;
 }
 
@@ -94,7 +94,7 @@
 
 .timestamp-label {
   color: gray;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   position: relative;
   display: flex;
   flex-direction: column;
