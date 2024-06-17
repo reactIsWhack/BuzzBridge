@@ -22,7 +22,7 @@ const CommentActions = ({ createdAt, _id, postId, usersLiked }) => {
     (Date.parse(startDate) - Date.parse(endDate)) /
     (1000 * 60 * 60 * 24)
   ).toFixed(1);
-  const timeAgo = Number(timeAgoRounded).toFixed(0);
+  const timeAgo = Number(Number(timeAgoRounded).toFixed(0));
 
   const renderTimeStamp = () => {
     if (timeAgo === 0) {

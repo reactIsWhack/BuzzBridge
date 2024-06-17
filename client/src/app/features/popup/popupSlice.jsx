@@ -7,6 +7,7 @@ const initialState = {
     editing: false,
     editedPost: null,
   },
+  editedComments: [],
 };
 
 const popupSlice = createSlice({
@@ -19,6 +20,14 @@ const popupSlice = createSlice({
     setRenderPostFormModal(state, action) {
       state.renderPostFormModal = action.payload;
     },
+    setRenderEditCommentForm(state, action) {
+      state.editedComments = [...state.editedComments, action.payload];
+    },
+    removeEditedComment(state, action) {
+      state.editedComments = state.editedComments.filter(
+        (comment) => String(comment._id) !== String(action.payload)
+      );
+    },
   },
 });
 
@@ -26,5 +35,9 @@ export default popupSlice.reducer;
 
 export const selectPopup = (state) => state.popup;
 
-export const { setDeletePostPopup, setRenderPostFormModal } =
-  popupSlice.actions;
+export const {
+  setDeletePostPopup,
+  setRenderPostFormModal,
+  setRenderEditCommentForm,
+  removeEditedComment,
+} = popupSlice.actions;

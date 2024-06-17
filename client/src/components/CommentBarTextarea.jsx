@@ -1,9 +1,15 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addComment } from '../app/features/posts/postsSlice';
 import createNewLine from '../utils/createNewLine';
+import { removeEditedComment } from '../app/features/popup/popupSlice';
 
-const CommentBarTextarea = ({ id, commentMessage, setCommentMessage }) => {
+const CommentBarTextarea = ({
+  id,
+  commentMessage,
+  setCommentMessage,
+  isEditing,
+}) => {
   const dispatch = useDispatch();
 
   // Prevent default textarea behavior of creating a scrollbar for text when enter kery is pressed
@@ -12,7 +18,7 @@ const CommentBarTextarea = ({ id, commentMessage, setCommentMessage }) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       requestCount++;
-      if (commentMessage && requestCount === 1) {
+      if (requestCount === 1) {
         dispatch(addComment({ id, commentMessage }));
       }
       await setCommentMessage('');
@@ -32,17 +38,29 @@ const CommentBarTextarea = ({ id, commentMessage, setCommentMessage }) => {
     setCommentMessage(e.target.value);
   };
 
+  const handleClick = () => {
+    dispatch(removeEditedComment(id));
+  };
+
   return (
-    <textarea
-      maxLength={1500}
-      placeholder="Write a comment..."
-      rows={1}
-      onKeyDown={handleKeyDown}
-      onInput={handleInput}
-      id={`comment-textarea-${id}`}
-      onChange={handleChange}
-      value={commentMessage}
-    ></textarea>
+    <div className="edit-comment-form">
+      <textarea
+        maxLength={1500}
+        placeholder={isEditing ? '' : 'Write a comment...'}
+        rows={1}
+        onKeyDown={handleKeyDown}
+        onInput={handleInput}
+        id={`comment-textarea-${id}`} // the id of the post or comment to identify the unique textarea
+        onChange={handleChange}
+        value={commentMessage}
+        unselectable="on"
+      ></textarea>
+      {isEditing && (
+        <div className="edit-cancel-btn" onClick={handleClick}>
+          Cancel
+        </div>
+      )}
+    </div>
   );
 };
 

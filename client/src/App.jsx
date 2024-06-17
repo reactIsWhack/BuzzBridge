@@ -15,7 +15,7 @@ axios.defaults.withCredentials = true;
 const App = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector(selectUser);
-  const { postsIsLoading, noMorePosts } = useSelector(selectPosts);
+  const { postsIsLoading } = useSelector(selectPosts);
 
   const handleScroll = async () => {
     const bottom =

@@ -11,7 +11,8 @@
   border-radius: 50%;
 }
 
-.comment-bar-container textarea {
+.comment-bar-container textarea,
+.comment-top textarea {
   flex: 1;
   outline: none;
   resize: none;

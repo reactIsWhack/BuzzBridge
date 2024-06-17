@@ -5,13 +5,13 @@ import deleteIcon from '../assets/deleteIcon.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setDeletePostPopup,
+  setRenderEditCommentForm,
   setRenderPostFormModal,
 } from '../app/features/popup/popupSlice';
 import { deleteComment, selectPosts } from '../app/features/posts/postsSlice';
 
 const PostOptions = ({
   setRenderPostOptions,
-  renderPostOptions,
   className,
   commentId,
   postId,
@@ -29,11 +29,11 @@ const PostOptions = ({
     setRenderPostOptions(false);
   };
 
-  const renderEditPostForm = () => {
+  const renderEditPostForm = async () => {
+    const editedPost = posts.find(
+      (post) => String(post._id) === String(postId)
+    );
     if (content === 'post') {
-      const editedPost = posts.find(
-        (post) => String(post._id) === String(postId)
-      );
       dispatch(
         setRenderPostFormModal({
           render: true,
@@ -41,6 +41,14 @@ const PostOptions = ({
           editedPost: editedPost,
         })
       );
+    } else {
+      setRenderPostOptions(false);
+      const editedComment = editedPost.comments.find(
+        (comment) => String(comment._id) === String(commentId)
+      );
+      await dispatch(setRenderEditCommentForm(editedComment));
+      const element = document.getElementById(`comment-textarea-${commentId}`);
+      element.select();
     }
   };
 

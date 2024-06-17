@@ -17,6 +17,7 @@
 
 .comment-menu-container {
   width: 210px;
+  padding: 0.5em 0.25em;
 }
 
 .post-menu-container:after,
