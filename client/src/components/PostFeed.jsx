@@ -12,10 +12,8 @@ const PostFeed = () => {
   return (
     <>
       <PostBar />
-      <div>
-        <div className="feed">{postCard}</div>
-        {postsIsLoading && <div className="post-loader-spinner"></div>}
-      </div>
+      <div className="feed">{postCard}</div>
+      {postsIsLoading && <div className="post-loader-spinner"></div>}
     </>
   );
 };

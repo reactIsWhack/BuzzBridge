@@ -1,0 +1,35 @@
+.request-cards-container {
+  display: grid;
+  grid-template-columns: 190px 190px 190px 190px 190px;
+  column-gap: 1em;
+  row-gap: 1em;
+}
+
+.user-block-container {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.231);
+  border-radius: 6px;
+}
+
+.user-block-img {
+  height: 200px;
+}
+
+.user-block-img img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  cursor: pointer;
+}
+
+.block-user-name {
+  text-align: center;
+  padding: 0.75em 1em;
+  font-weight: 500;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+}

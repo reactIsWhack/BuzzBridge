@@ -51,7 +51,7 @@ const populateFakeUserFriends = async () => {
     const friends = new Set(j > 55 ? [String(clientTestingUser._id)] : []);
     const randomFriendCount = Math.floor(Math.random() * (5 - 1 + 1) + 1);
 
-    if (j < 4) {
+    if (j < 6) {
       clientTestingUser.friendRequests = [
         ...clientTestingUser.friendRequests,
         fakeUser,
@@ -247,13 +247,14 @@ const generateFakeDataForClient = async () => {
 
     await generateFakePosts();
     console.log('✅');
-  } else {
-    await User.deleteMany({ isFake: true });
-    const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
-    user.friends = [];
-    await user.save();
-    await Post.deleteMany({ isFake: true });
   }
+  // else {
+  //   await User.deleteMany({ isFake: true });
+  //   const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
+  //   user.friends = [];
+  //   await user.save();
+  //   await Post.deleteMany({ isFake: true });
+  // }
 };
 
 module.exports = {

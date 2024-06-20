@@ -2,13 +2,16 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
 import '../styles/Friends.css';
+import FriendRequests from '../components/FriendRequests';
 
 const Friends = () => {
   useRedirectLoggedOutUser('/friends');
   return (
     <div className="friends-page">
       <Navbar />
-      <h1>Friends</h1>
+      <div className="friends-content">
+        <FriendRequests />
+      </div>
     </div>
   );
 };
