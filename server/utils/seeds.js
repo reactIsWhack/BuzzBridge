@@ -29,7 +29,7 @@ const generateFakeUsers = async () => {
     };
 
     const user = await User.create(fakeUser);
-    if (testUser) {
+    if (testUser && i > 5) {
       testUser.friends = [...testUser.friends, user];
       await testUser.save();
     }
@@ -41,14 +41,22 @@ const populateFakeUserFriends = async () => {
   const allFakeUsers = await User.find({ isFake: true });
   // The clientTestingUser is created to recieve posts on the home page feed on the frontend from fakeUsers.
   const clientTestingUser = await User.findOne({
-    email: 'packer.slacker@gmail.com',
+    email: nodeEnv === 'test' ? 'test@gmail.com' : 'packer.slacker@gmail.com',
   });
+  console.log(clientTestingUser);
 
   for (let j = 0; j < allFakeUsers.length; j++) {
     const fakeUser = allFakeUsers[j];
     // Ensures not all fakeUsers have the clientTesting user as a friend
     const friends = new Set(j > 55 ? [String(clientTestingUser._id)] : []);
     const randomFriendCount = Math.floor(Math.random() * (5 - 1 + 1) + 1);
+
+    if (j < 4) {
+      clientTestingUser.friendRequests = [
+        ...clientTestingUser.friendRequests,
+        fakeUser,
+      ];
+    }
 
     // Generate random friends for the current fake user
     for (let i = 0; i < randomFriendCount; i++) {
@@ -78,6 +86,7 @@ const populateFakeUserFriends = async () => {
       await friend.save();
     });
   }
+  await clientTestingUser.save();
 
   // Retrieve the updated fake users with populated friends
   const updatedFakeUsers = await User.find({ isFake: true }).populate(
@@ -223,7 +232,6 @@ const generateFakePosts = async () => {
       { path: 'author', model: 'user' },
     ],
   });
-  console.log(updatedFakeUsers[0].posts[0].comments);
 
   return updatedFakeUsers;
 };
@@ -239,14 +247,13 @@ const generateFakeDataForClient = async () => {
 
     await generateFakePosts();
     console.log('✅');
+  } else {
+    await User.deleteMany({ isFake: true });
+    const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
+    user.friends = [];
+    await user.save();
+    await Post.deleteMany({ isFake: true });
   }
-  // else {
-  //   await User.deleteMany({ isFake: true });
-  //   const user = await User.findOne({ email: 'packer.slacker@gmail.com' });
-  //   user.friends = [];
-  //   await user.save();
-  //   await Post.deleteMany({ isFake: true });
-  // }
 };
 
 module.exports = {

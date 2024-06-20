@@ -9,7 +9,14 @@ const {
 
 beforeAll(async () => {
   await initializeMongoDB();
+
   await User.deleteMany();
+  await User.create({
+    firstName: 'test',
+    lastName: 'jest',
+    email: 'test@gmail.com',
+    password: 'test1234',
+  });
 });
 
 describe('Fake User Testing', () => {
@@ -38,6 +45,10 @@ describe('Fake User Testing', () => {
 
   it('Should generate friends for all fakeUsers', async () => {
     const usersWithFriends = await populateFakeUserFriends();
+    const testingUser = await User.findOne({
+      email: 'test@gmail.com',
+    }).populate({ path: 'friendRequests', model: 'user' });
+    console.log(testingUser);
 
     // Ensure there are friends in each users friend's array
     expect(usersWithFriends).toEqual(
@@ -45,6 +56,15 @@ describe('Fake User Testing', () => {
         expect.objectContaining({
           ...fakeUser,
           friends: expect.arrayContaining([expect.objectContaining(fakeUser)]),
+        }),
+      ])
+    );
+    // Ensure the user for testing on the client has friend requests
+    expect(testingUser.friendRequests.length).toBe(4);
+    expect(testingUser.friendRequests).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          ...fakeUser,
         }),
       ])
     );
