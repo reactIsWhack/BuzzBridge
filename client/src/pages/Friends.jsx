@@ -5,6 +5,7 @@ import '../styles/Friends.css';
 import FriendRequests from '../components/FriendRequests';
 import { useDispatch } from 'react-redux';
 import { getLoggedInUserProfile } from '../app/features/user/userSlice';
+import FriendCards from '../components/FriendCards';
 
 const Friends = () => {
   useRedirectLoggedOutUser('/friends');
@@ -19,6 +20,7 @@ const Friends = () => {
       <Navbar />
       <div className="friends-content">
         <FriendRequests />
+        <FriendCards />
       </div>
     </div>
   );

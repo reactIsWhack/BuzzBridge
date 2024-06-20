@@ -1,8 +1,9 @@
-.request-cards-container {
+.user-cards-container {
   display: grid;
   grid-template-columns: 190px 190px 190px 190px 190px;
   column-gap: 1em;
   row-gap: 1em;
+  margin-top: 1.5em;
 }
 
 .user-block-container {
@@ -32,4 +33,12 @@
   font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.block-user-name div {
+  cursor: pointer;
+}
+
+.block-user-name div:hover {
+  text-decoration: underline;
 }

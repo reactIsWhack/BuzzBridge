@@ -1,10 +1,9 @@
 .friends-page {
-  /* overflow-y: scroll; */
   height: 100vh;
 }
 
 .friends-content {
-  padding: 3.75em 8em;
+  padding: 3.75em 8em 1em 8em;
 }
 
 .friend-requests-section {
@@ -12,7 +11,12 @@
   padding: 2em 1.5em;
 }
 
-.friend-request-header {
+.friend-cards {
+  padding: 2em 1.5em;
+}
+
+.friend-request-header,
+.friend-list-header {
   font-size: 1.25rem;
   font-weight: 600;
 }

@@ -7,7 +7,9 @@ const UserBlock = ({ firstName, lastName, photo, _id }) => {
       <div className="user-block-img">
         <img src={photo} />
       </div>
-      <div className="block-user-name">{firstName + ' ' + lastName}</div>
+      <div className="block-user-name">
+        <div>{firstName + ' ' + lastName}</div>
+      </div>
     </div>
   );
 };

@@ -16,7 +16,7 @@ const FriendRequests = () => {
       {isLoading ? (
         <div className="loader-spinner"></div>
       ) : (
-        <div className="request-cards-container">
+        <div className="user-cards-container">
           {friendRequests.length ? (
             userCard
           ) : (
