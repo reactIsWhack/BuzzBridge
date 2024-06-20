@@ -4,7 +4,7 @@ import { selectUser } from '../app/features/user/userSlice';
 import UserBlock from './UserBlock';
 
 const FriendRequests = () => {
-  const { friendRequests } = useSelector(selectUser);
+  const { friendRequests, isLoading } = useSelector(selectUser);
 
   const userCard = friendRequests.map((friendRequest) => {
     return <UserBlock key={friendRequest._id} {...friendRequest} />;
@@ -13,13 +13,17 @@ const FriendRequests = () => {
   return (
     <div className="friend-requests-section">
       <h2 className="friend-request-header">Friend Requests</h2>
-      <div className="request-cards-container">
-        {friendRequests.length ? (
-          userCard
-        ) : (
-          <div className="no-requests-label">You have no friend requests</div>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="loader-spinner"></div>
+      ) : (
+        <div className="request-cards-container">
+          {friendRequests.length ? (
+            userCard
+          ) : (
+            <div className="no-requests-label">You have no friend requests</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

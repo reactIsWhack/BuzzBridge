@@ -46,15 +46,19 @@ body {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.16);
 }
 
-.post-loader-spinner {
+.loader-spinner {
   border: 5px solid rgba(0, 0, 0, 0.3);
   border-top: 5px solid #3498db;
   border-radius: 50%;
   width: 100px;
   height: 100px;
   animation: spin 5s linear infinite;
+  margin-top: 25px;
+}
+
+.post-loader-spinner {
   margin: 0 auto;
-  margin-top: 180px;
+  margin-top: 155px;
 }
 
 @keyframes spin {

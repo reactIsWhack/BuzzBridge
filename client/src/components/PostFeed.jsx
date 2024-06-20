@@ -13,7 +13,9 @@ const PostFeed = () => {
     <>
       <PostBar />
       <div className="feed">{postCard}</div>
-      {postsIsLoading && <div className="post-loader-spinner"></div>}
+      {postsIsLoading && (
+        <div className="loader-spinner post-loader-spinner"></div>
+      )}
     </>
   );
 };

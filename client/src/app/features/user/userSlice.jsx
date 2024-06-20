@@ -122,7 +122,11 @@ const userSlice = createSlice({
         state.isLoading = false;
         toast.error(action.payload);
       })
+      .addCase(getLoggedInUserProfile.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(getLoggedInUserProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.userId = action.payload._id;
         state.firstName = action.payload.firstName;
         state.lastName = action.payload.lastName;
@@ -134,9 +138,10 @@ const userSlice = createSlice({
         state.profilePicture = action.payload.photo;
         state.coverPhoto = action.payload.coverPhoto;
       })
-      .addCase(getLoggedInUserProfile.rejected, (state, action) =>
-        toast.error(action.payload)
-      )
+      .addCase(getLoggedInUserProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        toast.error(action.payload);
+      })
       .addCase(logoutUser.fulfilled, (state, action) => {
         state.isLoggedIn = false;
         toast.success(action.payload);
