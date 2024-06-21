@@ -6,6 +6,7 @@
   margin-bottom: 0.75em;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .comments-label {
@@ -63,19 +64,27 @@
   background-color: #f0f2f5;
   padding: 0.55em 0.85em;
   border-radius: 20px;
-  min-width: 155px;
   position: relative;
+  max-width: 530px;
+}
+
+@media screen and (max-width: 700px) {
+  .comment-content {
+    max-width: 270px;
+  }
 }
 
 .comment-content span {
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
+  width: 100%;
 }
 
 .comment-message {
   font-size: 0.8rem;
   padding-top: 0.2em;
+  word-wrap: break-word;
 }
 
 .comment-content span:hover {

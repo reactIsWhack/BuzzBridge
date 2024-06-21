@@ -10,12 +10,17 @@ import { selectPopup } from '../app/features/popup/popupSlice';
 import CommentBarTextarea from './CommentBarTextarea';
 
 const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
+  const isOnPhone = window.screen.width < 500 ? true : false;
   const [renderLikesList, setRenderLikesList] = useState(false); // determines if a list of users that liked a comment should be rendered.
 
   const [likedListMounted, setLikedListMounted] = useState(false);
-  const [renderCommentControls, setRenderCommentControls] = useState(false);
+  const [renderCommentControls, setRenderCommentControls] = useState(
+    isOnPhone ? true : false
+  );
   const [renderPostOptions, setRenderPostOptions] = useState(false); // Determines if a menu to delete or edit a comment should be shown
-  const [renderThreeDots, setRenderThreeDots] = useState(false);
+  const [renderThreeDots, setRenderThreeDots] = useState(
+    isOnPhone ? true : false
+  );
   const [currentCommentMessage, setCurrentCommentMessage] = useState('');
   const { editedComments } = useSelector(selectPopup);
   const commentInEditedComments = editedComments.find(

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addComment, editComment } from '../app/features/posts/postsSlice';
 import createNewLine from '../utils/createNewLine';
@@ -51,11 +51,21 @@ const CommentBarTextarea = ({
       return;
     }
     setCommentMessage(e.target.value);
+    createNewLine(true, e.target);
   };
 
   const handleClick = () => {
     dispatch(removeEditedComment(id));
   };
+
+  useEffect(() => {
+    if (isEditing) {
+      const element = document.getElementById(`comment-textarea-${id}`);
+      element.style.height = 'auto';
+      console.log(element.scrollHeight);
+      element.style.height = element.scrollHeight + 'px';
+    }
+  }, [isEditing, commentMessage]);
 
   return (
     <div className="edit-comment-form">
@@ -68,7 +78,6 @@ const CommentBarTextarea = ({
         id={`comment-textarea-${id}`} // the id of the post or comment to identify the unique textarea
         onChange={handleChange}
         value={commentMessage}
-        unselectable="on"
       ></textarea>
       {isEditing && (
         <div className="edit-cancel-btn" onClick={handleClick}>
