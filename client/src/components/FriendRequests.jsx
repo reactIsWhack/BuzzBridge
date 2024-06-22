@@ -7,7 +7,13 @@ const FriendRequests = () => {
   const { friendRequests, isLoading } = useSelector(selectUser);
 
   const userCard = friendRequests.map((friendRequest) => {
-    return <UserBlock key={friendRequest._id} {...friendRequest} />;
+    return (
+      <UserBlock
+        key={friendRequest._id}
+        {...friendRequest}
+        isFriendRequest={true}
+      />
+    );
   });
 
   return (
