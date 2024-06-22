@@ -1,9 +1,15 @@
 .user-cards-container {
   display: grid;
-  grid-template-columns: 190px 190px 190px 190px 190px;
+  grid-template-columns: 195px 195px 195px 195px 195px;
   column-gap: 1em;
   row-gap: 1em;
   margin-top: 1.5em;
+}
+
+@media screen and (max-width: 500px) {
+  .user-cards-container {
+    grid-template-columns: 164px 164px;
+  }
 }
 
 .user-block-container {

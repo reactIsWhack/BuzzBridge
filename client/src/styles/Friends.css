@@ -15,6 +15,17 @@
   padding: 2em 1.5em;
 }
 
+@media screen and (max-width: 500px) {
+  .friends-content {
+    padding: 3.75em 1em;
+  }
+
+  .friend-requests-section,
+  .friend-cards {
+    padding: 2em 0;
+  }
+}
+
 .friend-request-header,
 .friend-list-header {
   font-size: 1.25rem;

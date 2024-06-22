@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/UserBlock.css';
+import shortenName from '../utils/shortenName';
 
 const UserBlock = ({ firstName, lastName, photo, _id }) => {
   return (
@@ -8,7 +9,7 @@ const UserBlock = ({ firstName, lastName, photo, _id }) => {
         <img src={photo} />
       </div>
       <div className="block-user-name">
-        <div>{firstName + ' ' + lastName}</div>
+        <div>{shortenName(firstName, lastName)}</div>
       </div>
     </div>
   );
