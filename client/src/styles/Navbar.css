@@ -156,10 +156,10 @@
 
 @keyframes show {
   from {
-    height: 0;
+    visibility: 'hidden';
   }
   to {
-    height: 20px;
+    visibility: 'visible';
   }
 }
 

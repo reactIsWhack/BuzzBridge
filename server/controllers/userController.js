@@ -140,7 +140,7 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error('Invalid email or password');
+    throw new Error('Invalid password');
   }
 });
 
@@ -229,9 +229,10 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
 
   // find the user, and remove the requested userId from the requestedUser friendRequests array
 
-  user.friendRequests = requestedUser.friendRequests.filter(
-    (friendRequest) => String(friendRequest) !== String(userId)
+  const updatedFriendRequests = user.friendRequests.filter(
+    (friendRequest) => String(friendRequest._id) !== String(requestedUser._id)
   );
+  user.friendRequests = updatedFriendRequests;
 
   // Add the logged in usersId (user that accepted the request) to the requestedUsers friends and the logged in usersFriends
 

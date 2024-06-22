@@ -34,7 +34,7 @@ const GeneralPostInfo = ({ author, createdAt }) => {
           onMouseLeave={handleMouseLeave}
         >
           <span>{`${month} ${formattedDay}${
-            currentYear !== year ? year : ''
+            currentYear !== year ? `, ${year}` : ''
           } at ${time} ${daytime}`}</span>
           {renderFullPostDate && (
             <HoverInfo

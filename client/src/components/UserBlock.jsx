@@ -11,7 +11,7 @@ const UserBlock = ({ firstName, lastName, photo, _id, isFriendRequest }) => {
       </div>
       <div className="block-user-name">
         <div>{shortenName(firstName, lastName)}</div>
-        {isFriendRequest && <FriendRequestOptions />}
+        {isFriendRequest && <FriendRequestOptions _id={_id} />}
       </div>
     </div>
   );

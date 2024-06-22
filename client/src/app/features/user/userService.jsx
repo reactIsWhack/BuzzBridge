@@ -25,3 +25,10 @@ export const getUsers = async () => {
   const response = await axios.get(`/api/users/allusers/${skip}`);
   return response;
 };
+
+export const acceptFriend = async (userId) => {
+  const response = await axios.patch(
+    `/api/users/acceptfriendrequest/${userId}`
+  );
+  return response;
+};

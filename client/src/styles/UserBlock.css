@@ -1,6 +1,6 @@
 .user-cards-container {
   display: grid;
-  grid-template-columns: 195px 195px 195px 195px 195px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   column-gap: 1em;
   row-gap: 1em;
   margin-top: 1.5em;
@@ -8,7 +8,7 @@
 
 @media screen and (max-width: 500px) {
   .user-cards-container {
-    grid-template-columns: 164px 164px;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -72,7 +72,6 @@
   padding: 0.65em;
   cursor: pointer;
   border-radius: 6px;
-  transition: background 0.5s;
 }
 
 .decline-btn:hover {
