@@ -266,6 +266,27 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
   res.json(updatedUser);
 });
 
+const declineFriendRequest = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const user = await User.findById(req.userId);
+  const updatedFriendRequests = user.friendRequests.filter(
+    (friendRequest) => String(friendRequest._id) !== String(userId)
+  );
+  user.friendRequests = updatedFriendRequests;
+
+  const updatedUser = await user.save().then((user) =>
+    user.populate({
+      path: 'friendRequests',
+      model: 'user',
+      select: '-password',
+    })
+  );
+  console.log(updatedUser, 'updatedUser');
+
+  res.status(200).json(updatedUser);
+});
+
 const getLoggedInUser = asyncHandler(async (req, res) => {
   const { skip } = req.params;
   const user = await User.findById(req.userId)
@@ -476,4 +497,5 @@ module.exports = {
   getUserProfile,
   updateUser,
   removeFriend,
+  declineFriendRequest,
 };

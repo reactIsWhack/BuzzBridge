@@ -11,6 +11,7 @@ const {
   getUserProfile,
   updateUser,
   removeFriend,
+  declineFriendRequest,
 } = require('../controllers/userController');
 const protect = require('../middleware/routeProtector');
 const uploader = require('../utils/fileUpload');
@@ -22,6 +23,7 @@ router.get('/logoutuser', logoutUser);
 router.get('/getloginstatus', getLoginStatus);
 router.patch('/friendrequest/:friendId', protect, friendRequest);
 router.patch('/acceptfriendrequest/:userId', protect, acceptFriendRequest);
+router.patch('/declinefriendrequest/:userId', protect, declineFriendRequest);
 router.get('/user/:skip', protect, getLoggedInUser);
 router.get('/allusers/:skip', protect, getAllUsers);
 router.get('/userprofile/:userId/:skip', protect, getUserProfile);

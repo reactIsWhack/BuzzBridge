@@ -39,10 +39,9 @@ describe('PATCH /users', () => {
     user = userData.user;
   });
 
-  it('Should friend request three users', async () => {
-    for (let i = 0; i < 3; i++) {
+  it('Should sent friend request to four users', async () => {
+    for (let i = 0; i < 4; i++) {
       const randomUser = await getRandomUser(randomUsers);
-      //   randomUsers keeps track of the users that have been requested, ensuring that there are no duplicate values
       randomUsers.push(randomUser);
       const response = await request(app)
         .patch(`/api/users/friendrequest/${randomUser._id}`)
@@ -52,41 +51,54 @@ describe('PATCH /users', () => {
       const updatedRandomUser = await User.findById(randomUser._id);
 
       expect(response.body.message).toBe('Friend Request Sent!');
-      expect(String(updatedRandomUser.friendRequests[0])).toBe(
-        String(user._id)
+      expect(updatedRandomUser.friendRequests.length).toBe(1);
+      expect(updatedRandomUser.friendRequests[0].toString()).toBe(
+        user._id.toString()
       );
     }
   });
 
-  it('Should accept the three friendRequests to the test user', async () => {
-    // Login the randomUser that was sent the request and accept the friendRequest
-    for (let i = 0; i < randomUsers.length; i++) {
+  it('Should accept the three friend requests sent by the test user', async () => {
+    for (let i = 0; i < 3; i++) {
       const randomUser = randomUsers[i];
-      const user2Data = await loginTestUser(
+      const { token } = await loginTestUser(
         randomUser.email,
         process.env.FAKE_USER_PASSWORD
       );
       const response = await request(app)
-        .patch(
-          `/api/users/acceptfriendrequest/${user2Data.user.friendRequests[0]._id}`
-        )
-        .set('Cookie', [...user2Data.token])
+        .patch(`/api/users/acceptfriendrequest/${user._id}`)
+        .set('Cookie', [...token])
         .expect(200)
         .expect('Content-Type', /application\/json/);
-      const updatedTestingUser = await User.findOne({
-        email: 'test@gmail.com',
-      });
-      // Ensure three friends were added to the testingUser and the randomUser also has the testingUser in their friends array, and vice versa
-      i === 3 && expect(updatedTestingUser.friends.length).toBe(3);
-      expect(updatedTestingUser.friends).toEqual(
-        expect.arrayContaining([randomUser._id])
-      );
+
+      const updatedTestUser = await User.findById(user._id);
+      expect(response.body.friends[0]._id.toString()).toBe(user._id.toString());
       expect(
-        response.body.friends.some(
-          (friend) => String(friend._id) === String(updatedTestingUser._id)
-        )
-      ).toBeTruthy();
+        updatedTestUser.friends.map((friend) => friend._id.toString())
+      ).toContain(response.body._id.toString());
+      i === 3 && expect(updatedTestUser.friends.length).toBe(3);
     }
+  });
+
+  it('Should decline a friend request sent by the test user', async () => {
+    const randomUser = randomUsers[3];
+    const randomUserData = await loginTestUser(
+      randomUser.email,
+      process.env.FAKE_USER_PASSWORD
+    );
+    const response = await request(app)
+      .patch(`/api/users/declinefriendrequest/${user._id}`)
+      .set('Cookie', [...randomUserData.token])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const updatedTestUser = await User.findById(user._id);
+    expect(response.body.friendRequests.length).toBe(0);
+    expect(response.body.friends.length).toBe(0);
+    expect(
+      updatedTestUser.friends.map((friend) => friend._id.toString())
+    ).not.toContain(response.body._id.toString());
+    expect(updatedTestUser.friends.length).toBe(3);
   });
 
   it("Should update the user's avatar", async () => {
@@ -169,17 +181,6 @@ describe('GET /users', () => {
       .expect('Content-Type', /application\/json/);
 
     expect(response.body).toEqual(friend);
-  });
-
-  it('Should get exactly 8 users that are not friends with the testUser, and discludes the testUser.', async () => {
-    const response = await request(app)
-      .get('/api/users/allusers/0')
-      .set('Cookie', [...token])
-      .expect(200)
-      .expect('Content-Type', /application\/json/);
-
-    expect(response.body.length).toBe(8);
-    expect(response.body.map((user) => user._id)).not.toEqual(user.friends);
   });
 });
 

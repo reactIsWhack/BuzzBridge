@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "cross-env NODE_ENV=deploy nodemon index.js NODE_ENV=deploy",
-    "test": "cross-env NODE_ENV=test jest --watchAll --verbose --testPathPattern=tests/fakeUsers.test.js",
+    "test": "cross-env NODE_ENV=test jest --watchAll --verbose --testPathPattern=tests/users.test.js",
     "coverage": "jest --coverage"
   },
   "author": "Ryan Naini",
