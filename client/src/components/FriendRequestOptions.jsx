@@ -2,12 +2,12 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   acceptfriendrequest,
+  declineFriendRequest,
   selectUser,
 } from '../app/features/user/userSlice';
 
 const FriendRequestOptions = ({ _id }) => {
   const dispatch = useDispatch();
-  const { friendRequestsLoading } = useSelector(selectUser);
 
   const disableButtons = () => {
     const confirmBtn = document.querySelector(`.confirm-btn-${_id}`);
@@ -23,6 +23,11 @@ const FriendRequestOptions = ({ _id }) => {
     dispatch(acceptfriendrequest(_id));
   };
 
+  const declineRequest = () => {
+    disableButtons();
+    dispatch(declineFriendRequest(_id));
+  };
+
   return (
     <>
       <button
@@ -31,7 +36,12 @@ const FriendRequestOptions = ({ _id }) => {
       >
         Confirm
       </button>
-      <button className={`decline-btn decline-btn-${_id}`}>Delete</button>
+      <button
+        className={`decline-btn decline-btn-${_id}`}
+        onClick={declineRequest}
+      >
+        Delete
+      </button>
     </>
   );
 };

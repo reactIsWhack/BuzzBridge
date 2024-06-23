@@ -1,6 +1,6 @@
 const shortenName = (firstName, lastName) => {
   const fullName = firstName + ' ' + lastName;
-  if (fullName.length > 16 && window.screen.width < 500) {
+  if (fullName.length > 16 && window.screen.width < 1000) {
     if (firstName.length < 16) {
       const shortenedName =
         firstName +

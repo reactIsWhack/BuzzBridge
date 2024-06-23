@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   acceptFriend,
   createUser,
+  declineRequest,
   getPersonalProfile,
   getUsers,
   login,
@@ -26,7 +27,6 @@ const initialState = {
   createdAt: '',
   isLoggedIn: false,
   isLoading: false,
-  friendRequestsLoading: false,
   unknownUsers: [],
 };
 
@@ -103,12 +103,24 @@ export const acceptfriendrequest = createAsyncThunk(
   async (userId, thunkAPI) => {
     try {
       const response = await acceptFriend(userId);
-      console.log(response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.message || error.response.data.message
       );
+    }
+  }
+);
+
+export const declineFriendRequest = createAsyncThunk(
+  'user/declineRequest',
+  async (userId, thunkAPI) => {
+    try {
+      const response = await declineRequest(userId);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -193,16 +205,17 @@ const userSlice = createSlice({
       .addCase(getUnkownUsers.rejected, (state, action) =>
         toast.error(action.payload)
       )
-      .addCase(acceptfriendrequest.pending, (state) => {
-        state.friendRequestsLoading = true;
-      })
       .addCase(acceptfriendrequest.fulfilled, (state, action) => {
-        state.friendRequestsLoading = false;
         state.friendRequests = action.payload.friendRequests;
         state.friends = sortNamesAlphabetically(action.payload.friends);
       })
       .addCase(acceptfriendrequest.rejected, (state, action) => {
-        state.friendRequestsLoading = false;
+        toast.error(action.payload);
+      })
+      .addCase(declineFriendRequest.fulfilled, (state, action) => {
+        state.friendRequests = action.payload.friendRequests;
+      })
+      .addCase(declineFriendRequest.rejected, async (state, action) => {
         toast.error(action.payload);
       });
   },

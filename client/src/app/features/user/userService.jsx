@@ -32,3 +32,10 @@ export const acceptFriend = async (userId) => {
   );
   return response;
 };
+
+export const declineRequest = async (userId) => {
+  const response = await axios.patch(
+    `/api/users/declinefriendrequest/${userId}`
+  );
+  return response;
+};

@@ -6,9 +6,71 @@
   margin-top: 1.5em;
 }
 
+@media screen and (max-width: 1050px) and (min-width: 950px) {
+  /* for ipad pro */
+  .user-cards-container {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  .friends-content {
+    padding: 3.75em 1em 1em 1em;
+  }
+
+  .friend-requests-section,
+  .friend-cards {
+    padding: 2em 0.5em;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .user-cards-container {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  .friends-content {
+    padding: 3.75em 1em 1em 1em;
+  }
+
+  .friend-requests-section,
+  .friend-cards {
+    padding: 2em 0.5em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  /* Surface Duo */
+  .user-cards-container {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .friends-content {
+    padding: 3.75em 0.5em 1em 0.5em;
+  }
+
+  .friend-requests-section,
+  .friend-cards {
+    padding: 2em 0.4em;
+  }
+}
+
 @media screen and (max-width: 500px) {
   .user-cards-container {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .friends-content {
+    padding: 3.75em 0 1em 0;
+  }
+
+  .friend-requests-section,
+  .friend-cards {
+    padding: 2em 0.35em;
+  }
+
+  .middle-container {
+    gap: 0.65em;
   }
 }
 
@@ -17,6 +79,7 @@
   flex-direction: column;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.231);
   border-radius: 6px;
+  min-width: 160px;
 }
 
 .user-block-img {

@@ -6,12 +6,7 @@ body {
   font-family: Montserrat;
   margin: 0;
   background: #f0f2f5;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+
   overflow-y: scroll;
 }
 
