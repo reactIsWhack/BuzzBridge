@@ -9,6 +9,7 @@ import useDisableBackground from '../hooks/useDisableBackground';
 import createNewLine from '../utils/createNewLine';
 import { setRenderPostFormModal } from '../app/features/popup/popupSlice';
 import PostFormBtns from './PostFormBtns';
+import previewFile from '../utils/previewFile';
 
 const PostForm = ({ renderModal }) => {
   const { firstName, lastName, profilePicture } = useSelector(selectUser);
@@ -23,20 +24,6 @@ const PostForm = ({ renderModal }) => {
   const fileUploadRef = useRef(null);
   const dispatch = useDispatch();
   const [file, setFile] = useState('');
-
-  const previewFile = async (e) => {
-    setFile(e.target.files[0]);
-    if (!postMessage) {
-      document
-        .getElementById('post-form-textarea')
-        .style.removeProperty('height');
-    }
-
-    const file = e.target.files[0];
-    const url = URL.createObjectURL(file);
-    setImagePreview(url);
-  };
-  console.log(file, 'file');
 
   let requestCount = 0;
 
@@ -184,7 +171,9 @@ const PostForm = ({ renderModal }) => {
             id="file-upload"
             type="file"
             name="postImage"
-            onChange={previewFile}
+            onChange={(e) =>
+              previewFile(e.target.files[0], setFile, setImagePreview)
+            }
             onClick={handleClick}
           />
           <PostFormBtns postMessage={postMessage} editing={editing} />{' '}
