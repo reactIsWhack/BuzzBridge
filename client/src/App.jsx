@@ -9,6 +9,7 @@ import Friends from './pages/Friends';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUnkownUsers, selectUser } from './app/features/user/userSlice';
 import { getAllPosts, selectPosts } from './app/features/posts/postsSlice';
+import UserProfile from './pages/UserProfile';
 
 axios.defaults.withCredentials = true;
 
@@ -63,6 +64,7 @@ const App = () => {
           }
         ></Route>
         <Route path="/friends" element={<Friends />}></Route>
+        <Route path="/userprofile/:userId" element={<UserProfile />}></Route>
       </Routes>
     </>
   );
