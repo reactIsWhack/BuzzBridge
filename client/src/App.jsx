@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Login from './pages/Login';
 import Home from './pages/Home';
@@ -21,13 +21,14 @@ const App = () => {
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector(selectUser);
   const { postsIsLoading } = useSelector(selectPosts);
+  const { pathname } = useLocation();
 
   const handleScroll = async () => {
     const bottom =
       Math.ceil(window.innerHeight + window.scrollY) >=
       document.documentElement.scrollHeight;
 
-    if (bottom) {
+    if (bottom && pathname === '/') {
       window.removeEventListener('scroll', handleScroll);
 
       await dispatch(getAllPosts());
@@ -41,6 +42,7 @@ const App = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
+      console.log('loading more posts...');
       dispatch(getUnkownUsers());
       dispatch(getAllPosts());
       dispatch(getLoggedInUserProfile());
