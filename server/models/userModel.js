@@ -36,7 +36,7 @@ const userSchema = new Schema(
     },
     coverPhoto: {
       type: String,
-      default: 'https://i.ibb.co/4pDNDk1/avatar.png',
+      default: '',
     },
     bio: {
       type: String,

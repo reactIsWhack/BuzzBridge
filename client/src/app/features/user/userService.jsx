@@ -6,7 +6,7 @@ export const createUser = async (formData) => {
 };
 
 export const getPersonalProfile = async () => {
-  const response = await axios.get('/api/users/user/0');
+  const response = await axios.get('/api/users/user');
   return response;
 };
 
@@ -37,5 +37,10 @@ export const declineRequest = async (userId) => {
   const response = await axios.patch(
     `/api/users/declinefriendrequest/${userId}`
   );
+  return response;
+};
+
+export const getProfile = async (userId) => {
+  const response = await axios.get(`/api/users/userprofile/${userId}`);
   return response;
 };

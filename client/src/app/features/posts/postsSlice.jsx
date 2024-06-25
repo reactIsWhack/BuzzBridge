@@ -24,18 +24,12 @@ export const getAllPosts = createAsyncThunk(
   async (_, thunkAPI) => {
     const { posts } = thunkAPI.getState();
 
-    if (posts.noMorePosts) return;
-
     try {
       const response = await getPosts(
         !posts.posts.length
           ? new Date(Date.now())
           : posts.posts[posts.posts.length - 1].createdAt
       );
-
-      if (response.status === 204) {
-        thunkAPI.dispatch(setNoMorePosts(true));
-      }
 
       return response.data;
     } catch (error) {
@@ -136,9 +130,6 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setNoMorePosts(state, action) {
-      state.noMorePosts = action.payload;
-    },
     removePost(state, action) {
       state.posts = state.posts.filter(
         (post) => String(post._id) !== String(state.deletePostId)
@@ -239,7 +230,6 @@ const postsSlice = createSlice({
 
 export default postsSlice.reducer;
 
-export const { setNoMorePosts, removePost, setDeletedPostId, resetPosts } =
-  postsSlice.actions;
+export const { removePost, setDeletedPostId, resetPosts } = postsSlice.actions;
 
 export const selectPosts = (state) => state.posts;

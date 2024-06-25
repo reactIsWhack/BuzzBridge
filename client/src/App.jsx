@@ -7,7 +7,11 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Friends from './pages/Friends';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUnkownUsers, selectUser } from './app/features/user/userSlice';
+import {
+  getUnkownUsers,
+  selectUser,
+  getLoggedInUserProfile,
+} from './app/features/user/userSlice';
 import { getAllPosts, selectPosts } from './app/features/posts/postsSlice';
 import UserProfile from './pages/UserProfile';
 
@@ -39,6 +43,7 @@ const App = () => {
     if (isLoggedIn) {
       dispatch(getUnkownUsers());
       dispatch(getAllPosts());
+      dispatch(getLoggedInUserProfile());
     }
 
     window.addEventListener('scroll', handleScroll, {

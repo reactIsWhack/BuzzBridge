@@ -10,10 +10,12 @@ import { selectPopup } from '../app/features/popup/popupSlice';
 import DeletePostPopup from '../components/DeletePostPopup';
 import useDisableBackground from '../hooks/useDisableBackground';
 import { useLocation } from 'react-router-dom';
+import { selectUser } from '../app/features/user/userSlice';
 
 const Home = () => {
   useRedirectLoggedOutUser('/');
   const { renderDeletePostPopup } = useSelector(selectPopup);
+  const { isLoading } = useSelector(selectUser);
 
   useDisableBackground(renderDeletePostPopup, null);
 
@@ -22,17 +24,19 @@ const Home = () => {
       <div className="parent-nav">
         <Navbar />
       </div>
-      <div className="home">
-        <div className="home-left">
-          <UnknownContacts />
+      {!isLoading && (
+        <div className="home">
+          <div className="home-left">
+            <UnknownContacts />
+          </div>
+          <div className="home-middle">
+            <PostFeed />
+          </div>
+          <div className="home-right">
+            <FriendList />
+          </div>
         </div>
-        <div className="home-middle">
-          <PostFeed />
-        </div>
-        <div className="home-right">
-          <FriendList />
-        </div>
-      </div>
+      )}
       {renderDeletePostPopup && <DeletePostPopup />}
     </div>
   );

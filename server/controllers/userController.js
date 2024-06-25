@@ -288,16 +288,11 @@ const declineFriendRequest = asyncHandler(async (req, res) => {
 });
 
 const getLoggedInUser = asyncHandler(async (req, res) => {
-  const { skip } = req.params;
   const user = await User.findById(req.userId)
     .populate([
       {
         path: 'posts',
         model: 'post',
-        options: {
-          skip,
-          limit: 5,
-        },
         populate: {
           path: 'author',
           model: 'user',
@@ -341,7 +336,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  const { userId, skip } = req.params;
+  const { userId } = req.params;
 
   const user = await User.findById(userId)
     .select('-password')
@@ -349,10 +344,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
       { path: 'friends', select: '-password' },
       {
         path: 'posts',
-        options: {
-          skip,
-          limit: 5,
-        },
         populate: {
           path: 'author',
           model: 'user',

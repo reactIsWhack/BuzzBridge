@@ -3,7 +3,7 @@ import searchIcon from '../assets/searchIcon.svg';
 import BuzzBridgeIcon from '../assets/BuzzBridgeIcon.jpg';
 import { FaUserFriends } from 'react-icons/fa';
 import { AiFillHome } from 'react-icons/ai';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getLoggedInUserProfile,
@@ -19,6 +19,7 @@ const Navbar = () => {
   const { profilePicture, isLoggedIn } = useSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   // UserOptions is a component that allows the user to logout or go to their profile,
   // and should only be rendered when the user clicks on their profile in the top right hence this state.
   const [renderUserOptions, setRenderUserOptions] = useState(false);
@@ -31,12 +32,6 @@ const Navbar = () => {
   // Determines if the search bar should be expanded when the user clicks on the search bar input.
   // The expanded search bar represents a window with a larger search input where the user can search for other users on the site.
   const [expandSearchBar, setExpandSearchBar] = useState(false);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(getLoggedInUserProfile());
-    }
-  }, [isLoggedIn]);
 
   // When the user clicks outside of their profile icon, close the UserOptions
   useClickOutside({ parentRef: profileRef, childRef: userOptionsRef }, () =>
@@ -148,7 +143,7 @@ const Navbar = () => {
           />
           {renderUserOptions && (
             <div className="user-options-container" ref={userOptionsRef}>
-              <UserOptions />
+              <UserOptions setRenderUserOptions={setRenderUserOptions} />
             </div>
           )}
         </div>

@@ -4,20 +4,19 @@ import {
   createUser,
   declineRequest,
   getPersonalProfile,
+  getProfile,
   getUsers,
   login,
   logout,
 } from './userService';
 import { toast } from 'react-toastify';
-import defaultProfile from '../../../assets/defaultProfile.png';
 import sortNamesAlphabetically from '../../../utils/sortNamesAlphatbetically';
 
-const initialState = {
+const basicUserInfo = {
   firstName: '',
   lastName: '',
-  email: '',
   userId: '',
-  profilePicture: 'https://i.ibb.co/4pDNDk1/avatar.png',
+  profilePicture: '',
   coverPhoto: '',
   bio: '',
   posts: [],
@@ -25,9 +24,16 @@ const initialState = {
   friendRequests: [],
   mutualFriends: [],
   createdAt: '',
+};
+
+const initialState = {
+  email: '',
   isLoggedIn: false,
   isLoading: false,
   unknownUsers: [],
+  ...basicUserInfo,
+  profilePicture: 'https://i.ibb.co/4pDNDk1/avatar.png',
+  viewingUserProfileInfo: { ...basicUserInfo },
 };
 
 export const registerUser = createAsyncThunk(
@@ -117,10 +123,24 @@ export const declineFriendRequest = createAsyncThunk(
   async (userId, thunkAPI) => {
     try {
       const response = await declineRequest(userId);
-      console.log(response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const getUserProfile = createAsyncThunk(
+  'user/getProfile',
+  async (userId, thunkAPI) => {
+    try {
+      const response = await getProfile(userId);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.message || error.response.data.message
+      );
     }
   }
 );
@@ -216,6 +236,27 @@ const userSlice = createSlice({
         state.friendRequests = action.payload.friendRequests;
       })
       .addCase(declineFriendRequest.rejected, async (state, action) => {
+        toast.error(action.payload);
+      })
+      .addCase(getUserProfile.pending, (state) => {
+        state.viewingUserProfileInfo = basicUserInfo;
+      })
+      .addCase(
+        getUserProfile.fulfilled,
+        ({ viewingUserProfileInfo }, { payload }) => {
+          viewingUserProfileInfo.firstName = payload.firstName;
+          viewingUserProfileInfo.lastName = payload.lastName;
+          viewingUserProfileInfo.userId = payload._id;
+          viewingUserProfileInfo.profilePicture = payload.photo;
+          viewingUserProfileInfo.coverPhoto = payload.coverPhoto;
+          viewingUserProfileInfo.bio = payload.bio;
+          viewingUserProfileInfo.posts = payload.posts;
+          viewingUserProfileInfo.friends = payload.friends;
+          viewingUserProfileInfo.friendRequests = payload.friendRequests;
+          viewingUserProfileInfo.createdAt = payload.createdAt;
+        }
+      )
+      .addCase(getUserProfile.rejected, (_, action) => {
         toast.error(action.payload);
       });
   },

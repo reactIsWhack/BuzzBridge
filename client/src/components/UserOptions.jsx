@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, selectUser } from '../app/features/user/userSlice';
 import { FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import '../styles/UserOptions.css';
 
-const UserOptions = () => {
+const UserOptions = ({ setRenderUserOptions }) => {
   const { firstName, lastName, profilePicture, userId } =
     useSelector(selectUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const logout = () => dispatch(logoutUser(navigate));
-  const navigateToProfile = () => navigate(`/userprofile/${userId}`);
+  const navigateToProfile = () => {
+    navigate(`/userprofile/${userId}`);
+    setRenderUserOptions(false);
+  };
 
   return (
     <div className="options-container">
