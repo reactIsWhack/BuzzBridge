@@ -9,3 +9,10 @@
 .cover-photo-default {
   background: linear-gradient(#f0f2f5 84%, #6d6d6d);
 }
+
+@media screen and (max-width: 500px) {
+  .cover-photo-img {
+    height: 170px;
+    border-radius: 0;
+  }
+}

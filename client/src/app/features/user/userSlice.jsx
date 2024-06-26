@@ -8,6 +8,7 @@ import {
   getUsers,
   login,
   logout,
+  getProfilePosts,
 } from './userService';
 import { toast } from 'react-toastify';
 import sortNamesAlphabetically from '../../../utils/sortNamesAlphatbetically';
@@ -33,7 +34,11 @@ const initialState = {
   unknownUsers: [],
   ...basicUserInfo,
   profilePicture: 'https://i.ibb.co/4pDNDk1/avatar.png',
-  viewingUserProfileInfo: { ...basicUserInfo },
+  viewingUserProfileInfo: {
+    ...basicUserInfo,
+    profileLoading: false,
+    postsLoading: false,
+  },
 };
 
 export const registerUser = createAsyncThunk(
@@ -145,6 +150,26 @@ export const getUserProfile = createAsyncThunk(
   }
 );
 
+export const getUserPosts = createAsyncThunk(
+  'user/getPosts',
+  async (userId, thunkAPI) => {
+    try {
+      const {
+        user: { viewingUserProfileInfo },
+      } = thunkAPI.getState();
+      const { length } = viewingUserProfileInfo;
+      const dateQuery = length
+        ? new Date(viewingUserProfileInfo[length - 1].createdAt)
+        : new Date(Date.now());
+      const response = await getProfilePosts(userId, dateQuery);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -239,25 +264,38 @@ const userSlice = createSlice({
         toast.error(action.payload);
       })
       .addCase(getUserProfile.pending, (state) => {
+        state.viewingUserProfileInfo.profileLoading = true;
         state.viewingUserProfileInfo = basicUserInfo;
       })
       .addCase(
         getUserProfile.fulfilled,
         ({ viewingUserProfileInfo }, { payload }) => {
+          viewingUserProfileInfo.profileLoading = false;
           viewingUserProfileInfo.firstName = payload.firstName;
           viewingUserProfileInfo.lastName = payload.lastName;
           viewingUserProfileInfo.userId = payload._id;
           viewingUserProfileInfo.profilePicture = payload.photo;
           viewingUserProfileInfo.coverPhoto = payload.coverPhoto;
           viewingUserProfileInfo.bio = payload.bio;
-          viewingUserProfileInfo.posts = payload.posts;
           viewingUserProfileInfo.friends = payload.friends;
           viewingUserProfileInfo.friendRequests = payload.friendRequests;
           viewingUserProfileInfo.createdAt = payload.createdAt;
         }
       )
       .addCase(getUserProfile.rejected, (_, action) => {
+        state.viewingUserProfileInfo.profileLoading = false;
         toast.error(action.payload);
+      })
+      .addCase(getUserPosts.pending, (state) => {
+        state.viewingUserProfileInfo.postsLoading = true;
+      })
+      .addCase(getUserPosts.fulfilled, (state, action) => {
+        state.viewingUserProfileInfo.postsLoading = false;
+        state.viewingUserProfileInfo.posts = action.payload;
+      })
+      .addCase(getUserPosts.rejected, (state, action) => {
+        state.viewingUserProfileInfo.postsLoading = false;
+        toast.error(error.message);
       });
   },
 });

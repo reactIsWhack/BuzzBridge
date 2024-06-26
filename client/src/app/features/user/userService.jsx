@@ -44,3 +44,10 @@ export const getProfile = async (userId) => {
   const response = await axios.get(`/api/users/userprofile/${userId}`);
   return response;
 };
+
+export const getProfilePosts = async (userId, dateQuery) => {
+  const response = await axios.get(
+    `/api/posts/userposts/${userId}/${dateQuery}`
+  );
+  return response;
+};

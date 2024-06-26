@@ -6,17 +6,20 @@ import '../styles/ProfileBanner.css';
 const ProfileBanner = () => {
   const { viewingUserProfileInfo, userId } = useSelector(selectUser);
   const [file, setFile] = useState('');
-  const { coverPhoto } = viewingUserProfileInfo;
+  const { coverPhoto, profileLoading, postsLoading } = viewingUserProfileInfo;
 
   const coverPhotoStyles = {
-    backgroundImage: coverPhoto ? `url(${coverPhoto})` : '',
+    backgroundImage:
+      coverPhoto && !profileLoading && !postsLoading
+        ? `url(${coverPhoto})`
+        : '',
     backgroundRepeat: 'no-repeat',
   };
 
   return (
     <div className="profile-banner">
-      <div class="image-upload">
-        <label for="file-input">
+      <div className="image-upload">
+        <label htmlFor="file-input">
           <div
             className={`cover-photo-img ${
               !coverPhoto ? 'cover-photo-default' : ''
@@ -25,7 +28,9 @@ const ProfileBanner = () => {
           ></div>{' '}
         </label>
 
-        <input id="file-input" type="file" hidden />
+        {userId === viewingUserProfileInfo.userId && (
+          <input id="file-input" type="file" hidden />
+        )}
       </div>
     </div>
   );

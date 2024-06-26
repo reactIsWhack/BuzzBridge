@@ -8,3 +8,9 @@
   height: 680px;
   padding: 0 4em;
 }
+
+@media screen and (max-width: 500px) {
+  .profile-banner {
+    padding: 0;
+  }
+}
