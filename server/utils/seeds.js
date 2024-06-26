@@ -9,7 +9,7 @@ const path = require('path');
 
 const nodeEnv = process.env.NODE_ENV;
 
-const generateFakeUsers = async () => {
+const generateFakeUsers = async (addAllFriends) => {
   console.log('Generating fake users...');
   const testUser = await User.findOne({ email: 'test@gmail.com' });
   for (let i = 0; nodeEnv === 'test' ? i < 10 : i < 80; i++) {
@@ -29,7 +29,7 @@ const generateFakeUsers = async () => {
     };
 
     const user = await User.create(fakeUser);
-    if (testUser && i > 5) {
+    if (testUser && (i > 5 || addAllFriends)) {
       testUser.friends = [...testUser.friends, user];
       await testUser.save();
     }
@@ -56,7 +56,7 @@ const populateFakeUserFriends = async () => {
         ...clientTestingUser.friendRequests,
         fakeUser,
       ];
-    }
+    } // adds 6 friend requests to the testing user
 
     // Generate random friends for the current fake user
     for (let i = 0; i < randomFriendCount; i++) {

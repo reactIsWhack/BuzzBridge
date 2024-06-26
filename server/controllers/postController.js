@@ -54,32 +54,34 @@ const createPost = asyncHandler(async (req, res) => {
 });
 
 const getUserPosts = asyncHandler(async (req, res) => {
-  // Find the logged in user by id from protect middleware and populate their posts array.
-  // Since each post also has an array of comments, populate the comments within the posts too.
-  const user = await User.findById(req.userId).populate([
-    {
-      path: 'posts',
-      populate: {
-        path: 'author',
-        model: 'user',
-        select: ['-password', '-posts'],
-      },
+  const { userId, dateQuery } = req.params;
+
+  const allPosts = await Post.find({
+    author: userId,
+    createdAt: {
+      $lt: Date.parse(new Date(dateQuery)),
     },
-    {
-      path: 'posts',
-      populate: {
+  })
+    .sort({ createdAt: -1 })
+    .limit(process.env.NODE_ENV === 'test' ? 3 : 8) // testing purpose
+    .populate([
+      { path: 'author', model: 'user', select: '-password' },
+      {
         path: 'comments',
         model: 'comment',
-        populate: {
-          path: 'author',
-          model: 'user',
-          select: ['-password', '-posts'],
-        },
+        populate: [
+          { path: 'author', model: 'user' },
+          { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
+        ],
       },
-    },
-  ]);
+      { path: 'likes', populate: { path: 'usersLiked', model: 'user' } },
+    ]);
 
-  res.status(200).json(user.posts);
+  if (!allPosts) {
+    return res.status(200).json([]);
+  }
+
+  res.status(200).json(allPosts);
 });
 
 const getAllPosts = asyncHandler(async (req, res) => {

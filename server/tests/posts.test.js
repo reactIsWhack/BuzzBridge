@@ -11,6 +11,7 @@ const removeAllImagesFromUploads = require('../utils/wipeUploadsFolder');
 
 let jwt;
 let testUser;
+let patchTestPost;
 
 beforeAll(async () => {
   await initializeMongoDB();
@@ -22,7 +23,7 @@ beforeAll(async () => {
     email: 'test@gmail.com',
     password: 'test1234',
   });
-  await generateFakeUsers();
+  await generateFakeUsers(true);
   await generateFakePosts();
   const { token, user } = await loginTestUser('test@gmail.com', 'test1234');
   jwt = token;
@@ -89,94 +90,120 @@ describe('POST /api/posts', () => {
   });
 });
 
-let randomPosts;
-
 describe('GET /api/posts', () => {
-  const allPosts = [];
-  it('Should get the test user posts and their friends posts', async () => {
+  let allPosts = [];
+  let randomUser;
+  let randomUserPosts = [];
+
+  it('Should get 25 posts', async () => {
+    // controller function limits query to 25 posts
     const response = await request(app)
-      .get('/api/posts/allposts/0/0')
+      .get(`/api/posts/allposts/${new Date(Date.now())}`)
       .set('Cookie', [...jwt])
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    allPosts.push(...response.body);
-    expect(response.body.length).toBe(27);
+    randomUser = response.body[9].author;
+    allPosts = [...allPosts, ...response.body];
+    expect(response.body.length).toBe(25);
     expect(response.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          author: expect.objectContaining({ _id: testUser._id }),
           postMessage: expect.any(String),
-          likes: { total: 0, usersLiked: [] },
-          comments: [],
-          img: expect.any(Object),
+          author: expect.any(Object),
+          likes: expect.any(Object),
+          comments: expect.arrayContaining([]),
         }),
       ])
     );
-    // Ensure the test user's post is first since it created the first post.
-    randomPosts = [response.body[3], response.body[5]];
   });
 
-  // The client should be able to view more posts when they scroll to the bottom of the page, so this test ensures that more unique posts can be loaded.
-
-  it('Should get the remaining test user posts and their friends posts', async () => {
+  it('Should get the remaining older posts', async () => {
     const response = await request(app)
-      .get('/api/posts/allposts/25/2')
+      .get(`/api/posts/allposts/${new Date(allPosts[24].createdAt)}`) // starts querying at the oldest created post from the original 25
       .set('Cookie', [...jwt])
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    allPosts.push(...response.body);
-    // Ensures the newly loaded posts and the previous posts do not have duplicate values, and it is sorted by latest
-    expect(arrayHasDuplicates(allPosts.map((post) => post._id))).toBeFalsy();
+    patchTestPost = response.body[0];
+    allPosts = [...allPosts, ...response.body];
+    expect(allPosts.length).toBeGreaterThan(30);
+    expect(arrayHasDuplicates(allPosts.map((post) => post._id))).toBe(false);
     expect(allPosts).toEqual(
-      allPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      allPosts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
     );
   });
 
-  it('Should get the posts of the test user', async () => {
+  it('Should get 3 posts of a random user', async () => {
     const response = await request(app)
-      .get('/api/posts/userposts')
+      .get(`/api/posts/userposts/${randomUser._id}/${new Date(Date.now())}`) // starts querying at the oldest created post from the original 25
       .set('Cookie', [...jwt])
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.length).toBeTruthy();
+    randomUserPosts = [...response.body];
+    expect(response.body.length).toBe(3);
     expect(response.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          postMessage: 'Jordan Love!',
-          img: expect.any(Object),
+          postMessage: expect.any(String),
+          author: expect.any(Object),
           likes: expect.any(Object),
-          author: expect.objectContaining({ _id: testUser._id }),
+          comments: expect.arrayContaining([]),
         }),
       ])
     );
+  });
+
+  it('Should get any remaining posts of the random user', async () => {
+    const response = await request(app)
+      .get(
+        `/api/posts/userposts/${randomUser._id}/${new Date(
+          randomUserPosts[2].createdAt
+        )}`
+      ) // starts querying at the oldest created post from the original 25
+      .set('Cookie', [...jwt])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    randomUserPosts = [...randomUserPosts, ...response.body];
+
+    if (response.body.length) {
+      // user might only have three posts, so could return empty arr
+      expect(randomUserPosts).toEqual(
+        randomUserPosts.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        )
+      );
+      expect(
+        arrayHasDuplicates(randomUserPosts.map((item) => item._id))
+      ).toBeFalsy();
+    } else {
+      expect(response.body.length).toBe(0);
+    }
   });
 });
 
 describe('PATCH /api/posts', () => {
   it('Should like a fake user post', async () => {
-    for (const randomPost of randomPosts) {
-      const response = await request(app)
-        .patch(`/api/posts/likepost/${randomPost._id}`)
-        .set('Cookie', [...jwt])
-        .send({ isLiking: true, content: 'post' })
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
+    const response = await request(app)
+      .patch(`/api/posts/likepost/${patchTestPost._id}`)
+      .set('Cookie', [...jwt])
+      .send({ isLiking: true, content: 'post' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
 
-      expect(response.body.likes).toEqual({
-        total: 1,
-        usersLiked: expect.arrayContaining([
-          expect.objectContaining({ _id: testUser._id }),
-        ]),
-      });
-    }
+    expect(response.body.likes).toEqual({
+      total: 1,
+      usersLiked: expect.arrayContaining([
+        expect.objectContaining({ _id: testUser._id }),
+      ]),
+    });
   });
 
   it('Should dislike one post from the fake posts', async () => {
     const response = await request(app)
-      .patch(`/api/posts/likepost/${randomPosts[0]._id}`)
+      .patch(`/api/posts/likepost/${patchTestPost._id}`)
       .set('Cookie', [...jwt])
       .send({ isLiking: false, content: 'post' })
       .expect(200)
@@ -194,7 +221,6 @@ describe('PATCH /api/posts', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
-    console.log(response.body);
     expect(response.body.postMessage).toBe('Meow Meme');
     expect(response.body.img).toEqual(
       expect.objectContaining({
