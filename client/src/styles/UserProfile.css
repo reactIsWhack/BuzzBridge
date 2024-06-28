@@ -1,15 +1,15 @@
 .user-profile-page {
   padding-top: 3em;
+  height: 100vh;
 }
 
 .profile-banner {
   background: white;
   width: 100%;
-  height: 680px;
   padding: 0 4em;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 1050px) {
   .profile-banner {
     padding: 0;
   }

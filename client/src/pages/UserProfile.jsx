@@ -9,9 +9,11 @@ import {
   getUserPosts,
   getUserProfile,
 } from '../app/features/user/userSlice';
+import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
 
 const UserProfile = () => {
   const { userId } = useParams();
+  useRedirectLoggedOutUser(`/userprofile/${userId}`);
   const dispatch = useDispatch();
 
   useEffect(() => {

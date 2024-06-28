@@ -17,7 +17,7 @@ const basicUserInfo = {
   firstName: '',
   lastName: '',
   userId: '',
-  profilePicture: '',
+  profilePicture: 'https://i.ibb.co/4pDNDk1/avatar.png',
   coverPhoto: '',
   bio: '',
   posts: [],
@@ -33,7 +33,6 @@ const initialState = {
   isLoading: false,
   unknownUsers: [],
   ...basicUserInfo,
-  profilePicture: 'https://i.ibb.co/4pDNDk1/avatar.png',
   viewingUserProfileInfo: {
     ...basicUserInfo,
     profileLoading: false,
