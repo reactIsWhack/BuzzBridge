@@ -9,9 +9,11 @@ import {
   login,
   logout,
   getProfilePosts,
+  updateUser,
 } from './userService';
 import { toast } from 'react-toastify';
 import sortNamesAlphabetically from '../../../utils/sortNamesAlphatbetically';
+import { getAllPosts } from '../posts/postsSlice';
 
 const basicUserInfo = {
   firstName: '',
@@ -33,6 +35,8 @@ const initialState = {
   isLoading: false,
   unknownUsers: [],
   ...basicUserInfo,
+  updateProfileLoading: false,
+  updatedProfileType: '',
   viewingUserProfileInfo: {
     ...basicUserInfo,
     profileLoading: false,
@@ -161,10 +165,25 @@ export const getUserPosts = createAsyncThunk(
         ? new Date(viewingUserProfileInfo[length - 1].createdAt)
         : new Date(Date.now());
       const response = await getProfilePosts(userId, dateQuery);
-      console.log(response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateUserProfile = createAsyncThunk(
+  'user/updateUser',
+  async (updatedData, thunkAPI) => {
+    try {
+      const response = await updateUser(updatedData);
+      if (updatedData.photoType === 'pfp')
+        await thunkAPI.dispatch(getAllPosts(new Date(Date.now())));
+
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -175,6 +194,9 @@ const userSlice = createSlice({
   reducers: {
     setIsLoggedIn(state, action) {
       state.isLoggedIn = action.payload;
+    },
+    setUpdatedProfileType(state, action) {
+      state.updatedProfileType = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -295,12 +317,26 @@ const userSlice = createSlice({
       .addCase(getUserPosts.rejected, (state, action) => {
         state.viewingUserProfileInfo.postsLoading = false;
         toast.error(error.message);
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.updateProfileLoading = true;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.updateProfileLoading = false;
+        state.viewingUserProfileInfo.coverPhoto = action.payload.coverPhoto;
+        state.viewingUserProfileInfo.profilePicture = action.payload.photo;
+        state.profilePicture =
+          action.payload.photo || 'https://i.ibb.co/4pDNDk1/avatar.png';
+        state.coverPhoto = action.payload.coverPhoto;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        toast.error(action.payload);
       });
   },
 });
 
 export default userSlice.reducer;
 
-export const { setIsLoggedIn } = userSlice.actions;
+export const { setIsLoggedIn, setUpdatedProfileType } = userSlice.actions;
 
 export const selectUser = (state) => state.user;

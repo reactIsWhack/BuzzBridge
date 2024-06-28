@@ -51,3 +51,8 @@ export const getProfilePosts = async (userId, dateQuery) => {
   );
   return response;
 };
+
+export const updateUser = async (updatedData) => {
+  const response = await axios.patch('/api/users/update', updatedData);
+  return response;
+};

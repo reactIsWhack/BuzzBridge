@@ -365,6 +365,7 @@ const updateUser = asyncHandler(async (req, res) => {
     req.body;
   // photoType specifies if the user is updating their profile picture or cover photo when attatching a file to the request.
   const user = await User.findById(req.userId);
+  console.log(req.file);
 
   // First check if the user is updating their avatar, and if so update the avatar and return
 
@@ -376,11 +377,15 @@ const updateUser = asyncHandler(async (req, res) => {
         folder: 'NodeNet',
       });
       avatar = secure_url;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
 
-    photoType === 'coverPhoto'
-      ? (user.coverPhoto = avatar)
-      : (user.photo = avatar);
+    if (photoType === 'coverPhoto') {
+      user.coverPhoto = avatar;
+    } else {
+      user.photo = avatar;
+    }
     const updatedUser = await user.save();
     const {
       firstName,
@@ -435,7 +440,7 @@ const updateUser = asyncHandler(async (req, res) => {
     return res.status(200).json({ message: 'Password Updated!' });
   }
 
-  user.bio = bio;
+  user.bio = bio || user.bio;
 
   const updatedUser = await user.save();
   res.status(200).json({ bio: updatedUser.bio });

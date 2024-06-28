@@ -112,6 +112,7 @@
   border-radius: 20px;
   width: 40px;
   cursor: pointer;
+  object-fit: cover;
 }
 
 .site-icon {

@@ -8,8 +8,10 @@ import CommentActions from './CommentActions';
 import { useSelector } from 'react-redux';
 import { selectPopup } from '../app/features/popup/popupSlice';
 import CommentBarTextarea from './CommentBarTextarea';
+import { useNavigate } from 'react-router-dom';
 
 const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
+  const navigate = useNavigate();
   const isOnPhone = window.screen.width < 500 ? true : false;
   const [renderLikesList, setRenderLikesList] = useState(false); // determines if a list of users that liked a comment should be rendered.
 
@@ -54,6 +56,8 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
     }
   }, [editedComments]);
 
+  const navigateToProfile = () => navigate(`/userprofile/${author._id}`);
+
   return (
     <div
       className="comment"
@@ -65,7 +69,7 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
           commentInEditedComments && 'comment-top-edit'
         }`}
       >
-        <img src={author.photo} />
+        <img src={author.photo} onClick={navigateToProfile} />
         {commentInEditedComments ? (
           <CommentBarTextarea
             id={_id}
@@ -77,7 +81,9 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
         ) : (
           <div className="main-comment-content">
             <div className="comment-content">
-              <span>{author.firstName + ' ' + author.lastName}</span>
+              <span onClick={navigateToProfile}>
+                {author.firstName + ' ' + author.lastName}
+              </span>
               <div className="comment-message">{commentMessage}</div>
               {likes.total > 0 && (
                 <div
