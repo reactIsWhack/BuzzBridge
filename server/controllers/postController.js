@@ -95,7 +95,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
   if (
     new Date(oldestPost.createdAt).getTime() === new Date(dateQuery).getTime()
   ) {
-    return res.status(204).json([]);
+    return res.status(200).json([]);
   }
 
   const allPosts = await Post.find({

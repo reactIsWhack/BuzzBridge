@@ -5,7 +5,7 @@ import Post from './Post';
 import PostBar from './PostBar';
 
 const PostFeed = () => {
-  const { posts, postsIsLoading } = useSelector(selectPosts);
+  const { posts, postsIsLoading, noMorePosts } = useSelector(selectPosts);
 
   const postCard = posts.map((post) => <Post key={post._id} {...post} />);
 
@@ -13,7 +13,7 @@ const PostFeed = () => {
     <>
       <PostBar />
       <div className="feed">{postCard}</div>
-      {postsIsLoading && (
+      {postsIsLoading && !noMorePosts && (
         <div className="loader-spinner post-loader-spinner"></div>
       )}
     </>

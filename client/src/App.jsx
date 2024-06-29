@@ -19,26 +19,7 @@ axios.defaults.withCredentials = true;
 
 const App = () => {
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector(selectUser);
-  const { postsIsLoading } = useSelector(selectPosts);
-  const { pathname } = useLocation();
-
-  const handleScroll = async () => {
-    const bottom =
-      Math.ceil(window.innerHeight + window.scrollY) >=
-      document.documentElement.scrollHeight;
-
-    if (bottom && pathname === '/') {
-      window.removeEventListener('scroll', handleScroll);
-
-      await dispatch(getAllPosts());
-      if (!postsIsLoading) {
-        window.addEventListener('scroll', handleScroll, {
-          passive: true,
-        });
-      }
-    }
-  };
+  const { isLoggedIn, viewingUserProfileInfo } = useSelector(selectUser);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -47,14 +28,6 @@ const App = () => {
       dispatch(getAllPosts());
       dispatch(getLoggedInUserProfile());
     }
-
-    window.addEventListener('scroll', handleScroll, {
-      passive: true,
-    });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, [dispatch, isLoggedIn]);
 
   return (

@@ -21,16 +21,15 @@ const initialState = {
 
 export const getAllPosts = createAsyncThunk(
   'posts/getAllPosts',
-  async (requery, thunkAPI) => {
-    const { posts } = thunkAPI.getState();
+  async (_, thunkAPI) => {
+    const { posts, noMorePosts } = thunkAPI.getState();
 
     try {
       const response = await getPosts(
-        !posts.posts.length || requery
+        !posts.posts.length
           ? new Date(Date.now())
           : posts.posts[posts.posts.length - 1].createdAt
       );
-      console.log(response, 'posts');
 
       return response.data;
     } catch (error) {
@@ -117,10 +116,7 @@ export const editComment = createAsyncThunk(
   'comments/editComment',
   async ({ commentId, commentData, updatedPostId }, thunkAPI) => {
     try {
-      console.log(commentData);
       const response = await eComment(commentId, commentData);
-      console.log(response);
-      return { data: response.data, postId: updatedPostId };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
@@ -146,9 +142,7 @@ const postsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllPosts.pending, (state) => {
-        if (!state.noMorePosts) {
-          state.postsIsLoading = true;
-        }
+        state.postsIsLoading = true;
       })
       .addCase(getAllPosts.fulfilled, (state, action) => {
         state.postsIsLoading = false;
@@ -158,6 +152,8 @@ const postsSlice = createSlice({
           state.queryDates.push(
             action.payload[action.payload.length - 1].createdAt
           );
+        } else {
+          state.noMorePosts = true;
         }
       })
       .addCase(getAllPosts.rejected, (state, action) => {
