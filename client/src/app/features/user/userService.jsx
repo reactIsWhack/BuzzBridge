@@ -56,3 +56,8 @@ export const updateUser = async (updatedData) => {
   const response = await axios.patch('/api/users/update', updatedData);
   return response;
 };
+
+export const unfriend = async (friendId) => {
+  const response = await axios.patch(`/api/users/removefriend/${friendId}`);
+  return response;
+};

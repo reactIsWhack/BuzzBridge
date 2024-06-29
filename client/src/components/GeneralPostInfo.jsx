@@ -2,10 +2,12 @@ import { useState } from 'react';
 import renderExactDate from '../utils/renderExactDate';
 import HoverInfo from './HoverInfo';
 import FullDateCreation from './FullDateCreation';
+import { useNavigate } from 'react-router-dom';
 
 const currentYear = new Date().getFullYear().toString();
 
 const GeneralPostInfo = ({ author, createdAt }) => {
+  const navigate = useNavigate();
   const postCreatedAtDate = new Date(createdAt);
   const { month, formattedDay, year, at, time, daytime, dayName } =
     renderExactDate(postCreatedAtDate);
@@ -15,17 +17,20 @@ const GeneralPostInfo = ({ author, createdAt }) => {
 
   const handleMouseOver = () => {
     if (!fullPostDateMounted && !renderFullPostDate) {
-      setRenderFullPostDate(true);
-      setFullPostDateMounted(true);
+      setTimeout(() => {
+        setRenderFullPostDate(true);
+        setFullPostDateMounted(true);
+      }, 1000);
     }
   };
   const handleMouseLeave = () => setFullPostDateMounted(false);
+  const navigateToProfile = () => navigate(`/userprofile/${author._id}`);
 
   return (
     <div className="author-info">
       <img src={author.photo} className="author-post-profile" />
       <div>
-        <div className="post-author-name">
+        <div className="post-author-name" onClick={navigateToProfile}>
           {author.firstName + ' ' + author.lastName}
         </div>
         <div

@@ -71,12 +71,16 @@ const UserProfileInfo = ({
       </div>
       <div className="contact-info">
         <div className="profile-name">{firstName + ' ' + lastName}</div>
-        <div className="friends-count">
-          {!profileLoading ? `${friends.length} friends` : ''}
-        </div>
+        {friends.length > 0 && !profileLoading && (
+          <div className="friends-count">
+            {friends.length} {friends.length === 1 ? 'friend' : 'friends'}
+          </div>
+        )}
         <div className="friends-profile-pictures">{friendProfilePictures}</div>
       </div>
-      {userId !== profileId && !profileLoading && <FriendLabels />}
+      {userId !== profileId && !profileLoading && friends.length > 0 && (
+        <FriendLabels />
+      )}
     </div>
   );
 };

@@ -26,6 +26,10 @@
   text-transform: capitalize;
 }
 
+.post-author-name:hover {
+  text-decoration: underline;
+}
+
 .author-post-profile {
   height: 40px;
   width: 40px;

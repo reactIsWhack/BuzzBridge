@@ -21,15 +21,16 @@ const initialState = {
 
 export const getAllPosts = createAsyncThunk(
   'posts/getAllPosts',
-  async (_, thunkAPI) => {
+  async (requery, thunkAPI) => {
     const { posts } = thunkAPI.getState();
 
     try {
       const response = await getPosts(
-        !posts.posts.length
+        !posts.posts.length || requery
           ? new Date(Date.now())
           : posts.posts[posts.posts.length - 1].createdAt
       );
+      console.log(response, 'posts');
 
       return response.data;
     } catch (error) {
@@ -139,7 +140,7 @@ const postsSlice = createSlice({
       state.deletePostId = action.payload;
     },
     resetPosts(state, action) {
-      return initialState;
+      state.posts = [];
     },
   },
   extraReducers: (builder) => {

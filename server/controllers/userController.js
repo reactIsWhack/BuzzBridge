@@ -466,19 +466,25 @@ const removeFriend = asyncHandler(async (req, res) => {
     (userId) => String(userId) !== String(friendId)
   );
 
-  await friend.save();
-  const { friends, mutualFriends } = await loggedInUser.save().then((post) =>
-    post.populate([
-      { path: 'friends', model: 'user', select: ['-password', '-posts'] },
-      {
-        path: 'friendRequests',
+  const updatedFriend = await friend
+    .save()
+    .then((user) =>
+      user.populate({ path: 'friends', model: 'user', select: '-password' })
+    );
+  const { friends } = await loggedInUser
+    .save()
+    .then((post) =>
+      post.populate({
+        path: 'friends',
         model: 'user',
         select: ['-password', '-posts'],
-      },
-    ])
-  );
+      })
+    );
 
-  res.status(200).json({ friends, mutualFriends });
+  res.status(200).json({
+    loggedInUserFriends: friends,
+    unfriendedUserFriends: updatedFriend.friends,
+  });
 });
 
 module.exports = {

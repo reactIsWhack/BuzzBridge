@@ -10,10 +10,11 @@ import {
   logout,
   getProfilePosts,
   updateUser,
+  unfriend,
 } from './userService';
 import { toast } from 'react-toastify';
 import sortNamesAlphabetically from '../../../utils/sortNamesAlphatbetically';
-import { getAllPosts } from '../posts/postsSlice';
+import { getAllPosts, resetPosts } from '../posts/postsSlice';
 
 const basicUserInfo = {
   firstName: '',
@@ -143,7 +144,6 @@ export const getUserProfile = createAsyncThunk(
   async (userId, thunkAPI) => {
     try {
       const response = await getProfile(userId);
-      console.log(response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -177,10 +177,20 @@ export const updateUserProfile = createAsyncThunk(
   async (updatedData, thunkAPI) => {
     try {
       const response = await updateUser(updatedData);
-      if (updatedData.photoType === 'pfp')
-        await thunkAPI.dispatch(getAllPosts(new Date(Date.now())));
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
 
-      console.log(response);
+export const unfriendUser = createAsyncThunk(
+  'user/unfriend',
+  async (friendId, thunkAPI) => {
+    try {
+      const response = await unfriend(friendId);
+      await thunkAPI.dispatch(resetPosts());
+      await thunkAPI.dispatch(getAllPosts(true)); // ensures the logged in user wont see the posts of the unfriended user
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data.message);
@@ -330,6 +340,21 @@ const userSlice = createSlice({
         state.coverPhoto = action.payload.coverPhoto;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
+        state.updateProfileLoading = false;
+        toast.error(action.payload);
+      })
+      .addCase(unfriendUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(unfriendUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.viewingUserProfileInfo.friends =
+          action.payload.unfriendedUserFriends;
+        state.friends = action.payload.loggedInUserFriends;
+      })
+      .addCase(unfriendUser.rejected, (state, action) => {
+        state.isLoading = false;
+
         toast.error(action.payload);
       });
   },
