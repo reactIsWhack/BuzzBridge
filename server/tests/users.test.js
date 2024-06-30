@@ -39,8 +39,8 @@ describe('PATCH /users', () => {
     user = userData.user;
   });
 
-  it('Should sent friend request to four users', async () => {
-    for (let i = 0; i < 4; i++) {
+  it('Should sent friend request to five users', async () => {
+    for (let i = 0; i < 5; i++) {
       const randomUser = await getRandomUser(randomUsers);
       randomUsers.push(randomUser);
       const response = await request(app)
@@ -135,9 +135,10 @@ describe('PATCH /users', () => {
       .expect('Content-Type', /application\/json/);
 
     // test user friends should no longer include the user who was just removed
-    expect(response.body.friends.length).toBe(2);
-    expect(response.body.friends).not.toContain(removedFriend);
-    expect(response.body.friends).toEqual(
+    expect(response.body.loggedInUserFriends.length).toBe(2);
+    expect(response.body.unfriendUserFriends).toBeFalsy();
+    expect(response.body.loggedInUserFriends).not.toContain(removedFriend);
+    expect(response.body.loggedInUserFriends).toEqual(
       expect.arrayContaining([expect.objectContaining(userOutline)])
     );
   });
@@ -155,7 +156,7 @@ describe('GET /users', () => {
 
   it('Should get the profile of the logged in test user', async () => {
     const response = await request(app)
-      .get('/api/users/user/0')
+      .get('/api/users/user')
       .set('Cookie', [...token])
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -175,7 +176,7 @@ describe('GET /users', () => {
   it('Should get the profile of a friend of the test user', async () => {
     const friend = user.friends[0];
     const response = await request(app)
-      .get(`/api/users/userprofile/${friend._id}/0`)
+      .get(`/api/users/userprofile/${friend._id}`)
       .set('Cookie', [...token])
       .expect(200)
       .expect('Content-Type', /application\/json/);
