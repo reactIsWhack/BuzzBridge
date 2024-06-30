@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../styles/UserProfile.css';
 import ProfileBanner from '../components/ProfileBanner';
@@ -26,6 +26,7 @@ const UserProfile = () => {
     <div className="user-profile-page">
       <Navbar />
       <ProfileBanner />
+      <Outlet />
     </div>
   );
 };

@@ -9,6 +9,7 @@ import '../styles/ProfileBanner.css';
 import UserProfileInfo from './UserProfileInfo';
 import loadingGif from '../assets/loading-gif.gif';
 import { toast } from 'react-toastify';
+import ProfileNavbar from './ProfileNavbar';
 
 const ProfileBanner = () => {
   const {
@@ -78,6 +79,8 @@ const ProfileBanner = () => {
           profileId={viewingUserProfileInfo.userId}
         />
       </div>
+      <div className="profile-border"></div>
+      <ProfileNavbar />
     </div>
   );
 };

@@ -1,0 +1,57 @@
+.profile-navbar {
+  margin: 0 -0.5em;
+}
+
+.profile-nav-links {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  gap: 0.1em;
+}
+
+.profile-nav-links li {
+  font-size: 0.94rem;
+  font-weight: 550;
+  cursor: pointer;
+  position: relative;
+  padding: 0.25em 0;
+}
+
+.profile-nav-links li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 0.5em;
+}
+
+.profile-link-inactive {
+  color: #65676b;
+  transition: background 0.4s;
+  border-radius: 5px;
+}
+
+.profile-link-inactive:hover {
+  background: #f1f1f1;
+}
+
+.profile-nav-links .profile-link-active {
+  color: #1877f2;
+}
+
+.profile-link-active .profile-link-border {
+  position: absolute;
+  border: 1.5px solid #1877f2;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.profile-nav-links span {
+  padding: 0 0.5em;
+}
+
+.profile-nav-links li a {
+  text-decoration: none;
+}

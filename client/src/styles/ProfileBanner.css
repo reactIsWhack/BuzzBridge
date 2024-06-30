@@ -51,7 +51,11 @@
 .user-profile-info {
   padding: 1.5em 2em 0.65em 2em;
   display: flex;
-  border-bottom: 1px solid #d3d3d3;
+}
+
+.profile-border {
+  border-top: 1px solid #d3d3d3;
+  margin: 0 2em;
 }
 
 .user-profile-photo {

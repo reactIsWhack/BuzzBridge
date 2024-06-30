@@ -14,6 +14,8 @@ import {
 } from './app/features/user/userSlice';
 import { getAllPosts, selectPosts } from './app/features/posts/postsSlice';
 import UserProfile from './pages/UserProfile';
+import ProfileMainContent from './components/ProfileMainContent';
+import ProfileFriends from './components/ProfileFriends';
 
 axios.defaults.withCredentials = true;
 
@@ -44,7 +46,10 @@ const App = () => {
           }
         ></Route>
         <Route path="/friends" element={<Friends />}></Route>
-        <Route path="/userprofile/:userId" element={<UserProfile />}></Route>
+        <Route path="/userprofile/:userId" element={<UserProfile />}>
+          <Route index element={<ProfileMainContent />}></Route>
+          <Route path="friends" element={<ProfileFriends />}></Route>
+        </Route>
       </Routes>
     </>
   );
