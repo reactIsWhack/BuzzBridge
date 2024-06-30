@@ -1,4 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  asyncThunkCreator,
+} from '@reduxjs/toolkit';
 import {
   acceptFriend,
   createUser,
@@ -12,6 +16,7 @@ import {
   updateUser,
   unfriend,
   sendRequest,
+  cancelRequest,
 } from './userService';
 import { toast } from 'react-toastify';
 import sortNamesAlphabetically from '../../../utils/sortNamesAlphatbetically';
@@ -132,6 +137,7 @@ export const declineFriendRequest = createAsyncThunk(
   async (userId, thunkAPI) => {
     try {
       const response = await declineRequest(userId);
+      console.log(response);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -203,6 +209,18 @@ export const sendFriendRequest = createAsyncThunk(
   async (userId, thunkAPI) => {
     try {
       const response = await sendRequest(userId);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const cancelFriendRequest = createAsyncThunk(
+  'user/cancelRequest',
+  async (userId, thunkAPI) => {
+    try {
+      const response = await cancelRequest(userId);
       console.log(response);
       return response.data;
     } catch (error) {
@@ -408,6 +426,18 @@ const userSlice = createSlice({
           action.payload.updatedFriendRequests;
       })
       .addCase(sendFriendRequest.rejected, (state, action) => {
+        state.isLoading = false;
+        toast.error(action.payload);
+      })
+      .addCase(cancelFriendRequest.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(cancelFriendRequest.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.viewingUserProfileInfo.friendRequests =
+          action.payload.updatedFriendRequests;
+      })
+      .addCase(cancelFriendRequest.rejected, (state, action) => {
         state.isLoading = false;
         toast.error(action.payload);
       });

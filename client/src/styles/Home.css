@@ -27,11 +27,11 @@ h3 {
 
 .home-left {
   position: sticky;
-  height: calc(100vh - 5em);
-  margin-top: 5em;
+  height: calc(100vh - 74px);
   width: 320px;
-  top: 80px;
+  top: 70px;
   overflow-y: hidden;
+  padding: 0.4em 0 0;
 }
 
 .home-left:hover,
@@ -43,7 +43,7 @@ h3 {
   min-width: 680px;
   padding: 1.95em 1.35em 0;
   flex: 1;
-  margin-top: 3.75em;
+  margin-top: 3.6em;
 }
 
 .home-right {
@@ -51,8 +51,8 @@ h3 {
   width: 360px;
   padding: 1.3em 0 0;
   position: sticky;
-  top: 70px;
-  height: calc(100vh - 70px);
+  top: 65px;
+  height: calc(100vh - 65px);
   overflow-y: hidden;
 }
 

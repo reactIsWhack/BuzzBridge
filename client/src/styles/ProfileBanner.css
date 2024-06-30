@@ -156,12 +156,14 @@
   gap: 0.5em;
   color: white;
   font-family: Montserrat;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .remove-friend-btn span,
 .add-friend-btn span {
-  font-size: 0.9rem;
   font-weight: 550;
+  font-size: 0.85rem;
 }
 
 .add-friend-btn {

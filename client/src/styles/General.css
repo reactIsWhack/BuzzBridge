@@ -42,18 +42,17 @@ body {
 }
 
 .loader-spinner {
-  border: 8px solid rgba(0, 0, 0, 0.3);
-  border-top: 8px solid #3498db;
+  border: 6.5px solid rgba(0, 0, 0, 0.3);
+  border-top: 6.5px solid #3498db;
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   animation: spin 3s linear infinite;
   margin-top: 25px;
 }
 
 .post-loader-spinner {
-  margin: 0 auto;
-  margin-top: 155px;
+  margin: 1em auto;
 }
 
 .pfp-loader-spinner {

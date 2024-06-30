@@ -66,3 +66,10 @@ export const sendRequest = async (userId) => {
   const response = await axios.patch(`/api/users/friendrequest/${userId}`);
   return response;
 };
+
+export const cancelRequest = async (userId) => {
+  const response = await axios.patch(
+    `/api/users/cancelfriendrequest/${userId}`
+  );
+  return response;
+};

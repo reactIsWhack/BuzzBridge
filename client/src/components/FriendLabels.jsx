@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   acceptfriendrequest,
+  cancelFriendRequest,
   declineFriendRequest,
   selectUser,
   sendFriendRequest,
@@ -27,6 +28,8 @@ const FriendLabels = () => {
     dispatch(acceptfriendrequest(viewingUserProfileInfo.userId));
   const declineRequest = () =>
     dispatch(declineFriendRequest(viewingUserProfileInfo.userId));
+  const cancelRequest = () =>
+    dispatch(cancelFriendRequest(viewingUserProfileInfo.userId));
 
   const labelBtnStyles = {
     opacity: isLoading ? 0.6 : 1,
@@ -85,7 +88,7 @@ const FriendLabels = () => {
             <button
               className="add-friend-btn"
               style={labelBtnStyles}
-              onClick={requestFriend}
+              onClick={requestSentToViewingUser ? cancelRequest : requestFriend}
               disabled={isLoading ? true : false}
             >
               {requestSentToViewingUser ? (
