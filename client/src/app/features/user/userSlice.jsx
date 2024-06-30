@@ -83,7 +83,6 @@ export const loginUser = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error, 'error');
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
@@ -222,6 +221,13 @@ const userSlice = createSlice({
     setUpdatedProfileType(state, action) {
       state.updatedProfileType = action.payload;
     },
+    resetViewingUser(state) {
+      state.viewingUserProfileInfo = {
+        ...basicUserInfo,
+        profileLoading: false,
+        postsLoading: false,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -295,17 +301,40 @@ const userSlice = createSlice({
       .addCase(getUnkownUsers.rejected, (state, action) =>
         toast.error(action.payload)
       )
+      .addCase(acceptfriendrequest.pending, (state) => {
+        if (state.viewingUserProfileInfo.userId) {
+          state.isLoading = true;
+        }
+      })
       .addCase(acceptfriendrequest.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.friendRequests = action.payload.friendRequests;
         state.friends = sortNamesAlphabetically(action.payload.friends);
+        if (state.viewingUserProfileInfo.userId) {
+          const viewingUser = action.payload.friends.find(
+            (user) =>
+              String(user._id) === String(state.viewingUserProfileInfo.userId)
+          );
+          state.viewingUserProfileInfo.friendRequests =
+            viewingUser.friendRequests;
+          state.viewingUserProfileInfo.friends = viewingUser.friends;
+        }
       })
       .addCase(acceptfriendrequest.rejected, (state, action) => {
+        state.isLoading = false;
         toast.error(action.payload);
       })
+      .addCase(declineFriendRequest.pending, (state) => {
+        if (state.viewingUserProfileInfo.userId) {
+          state.isLoading = true;
+        }
+      })
       .addCase(declineFriendRequest.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.friendRequests = action.payload.friendRequests;
       })
       .addCase(declineFriendRequest.rejected, async (state, action) => {
+        state.isLoading = false;
         toast.error(action.payload);
       })
       .addCase(getUserProfile.pending, (state) => {
@@ -387,6 +416,7 @@ const userSlice = createSlice({
 
 export default userSlice.reducer;
 
-export const { setIsLoggedIn, setUpdatedProfileType } = userSlice.actions;
+export const { setIsLoggedIn, setUpdatedProfileType, resetViewingUser } =
+  userSlice.actions;
 
 export const selectUser = (state) => state.user;

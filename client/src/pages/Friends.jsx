@@ -4,7 +4,10 @@ import { useRedirectLoggedOutUser } from '../hooks/useRedirectLoggedOutUser';
 import '../styles/Friends.css';
 import FriendRequests from '../components/FriendRequests';
 import { useDispatch } from 'react-redux';
-import { getLoggedInUserProfile } from '../app/features/user/userSlice';
+import {
+  getLoggedInUserProfile,
+  resetViewingUser,
+} from '../app/features/user/userSlice';
 import FriendCards from '../components/FriendCards';
 
 const Friends = () => {
@@ -12,6 +15,7 @@ const Friends = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(resetViewingUser());
     dispatch(getLoggedInUserProfile());
   }, []);
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  acceptfriendrequest,
+  declineFriendRequest,
   selectUser,
   sendFriendRequest,
   unfriendUser,
@@ -21,6 +23,10 @@ const FriendLabels = () => {
     dispatch(unfriendUser(viewingUserProfileInfo.userId));
   const requestFriend = () =>
     dispatch(sendFriendRequest(viewingUserProfileInfo.userId));
+  const acceptRequest = () =>
+    dispatch(acceptfriendrequest(viewingUserProfileInfo.userId));
+  const declineRequest = () =>
+    dispatch(declineFriendRequest(viewingUserProfileInfo.userId));
 
   const labelBtnStyles = {
     opacity: isLoading ? 0.6 : 1,
@@ -56,11 +62,21 @@ const FriendLabels = () => {
         <>
           {userInFriendRequests ? (
             <div className="friend-request-options">
-              <button className="add-friend-btn">
+              <button
+                className="add-friend-btn"
+                style={labelBtnStyles}
+                disabled={isLoading ? true : false}
+                onClick={acceptRequest}
+              >
                 <MdPersonAddAlt1 size={21} />
                 <span>Accept Request</span>
               </button>
-              <button className="remove-friend-btn">
+              <button
+                className="remove-friend-btn"
+                style={labelBtnStyles}
+                disabled={isLoading ? true : false}
+                onClick={declineRequest}
+              >
                 <MdPersonRemoveAlt1 size={21} />
                 <span>Deny Request</span>
               </button>

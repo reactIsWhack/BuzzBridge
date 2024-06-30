@@ -195,15 +195,13 @@ const friendRequest = asyncHandler(async (req, res) => {
 
   // The friendRequests array of a user represents all of the userId's that have requested to be a friend of this user. It will be populated during GET requests
 
-  const updatedRequestedUser = await requestedUser
-    .save()
-    .then((user) =>
-      user.populate({
-        path: 'friendRequests',
-        model: 'user',
-        select: '-password',
-      })
-    );
+  const updatedRequestedUser = await requestedUser.save().then((user) =>
+    user.populate({
+      path: 'friendRequests',
+      model: 'user',
+      select: '-password',
+    })
+  );
 
   if (updatedRequestedUser) {
     res.status(200).json({
@@ -252,20 +250,17 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
 
   // Save both the accepted user, and the user that accepted the request
 
-  await requestedUser.save().then((user) =>
-    user.populate({
-      path: 'friends',
-      model: 'user',
-      populate: { path: 'friends', model: 'user' },
-    })
-  );
+  await requestedUser.save();
   const updatedUser = await user.save().then((user) =>
     user.populate([
       {
         path: 'friends',
         model: 'user',
         select: ['-password'],
-        populate: { path: 'friends', model: 'user' },
+        populate: [
+          { path: 'friends', model: 'user' },
+          { path: 'friendRequests', model: 'user' },
+        ],
       },
       {
         path: 'friendRequests',

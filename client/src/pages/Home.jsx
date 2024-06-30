@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectPopup } from '../app/features/popup/popupSlice';
 import DeletePostPopup from '../components/DeletePostPopup';
 import useDisableBackground from '../hooks/useDisableBackground';
-import { selectUser } from '../app/features/user/userSlice';
+import { resetViewingUser, selectUser } from '../app/features/user/userSlice';
 import { getAllPosts, selectPosts } from '../app/features/posts/postsSlice';
 
 const Home = () => {
@@ -39,6 +39,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    dispatch(resetViewingUser());
     window.addEventListener('scroll', handleScroll, {
       passive: true,
     });
@@ -46,7 +47,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [noMorePosts]);
+  }, []);
 
   return (
     <div className="main-page">
