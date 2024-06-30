@@ -11,6 +11,7 @@ import {
   getProfilePosts,
   updateUser,
   unfriend,
+  sendRequest,
 } from './userService';
 import { toast } from 'react-toastify';
 import sortNamesAlphabetically from '../../../utils/sortNamesAlphatbetically';
@@ -198,6 +199,19 @@ export const unfriendUser = createAsyncThunk(
   }
 );
 
+export const sendFriendRequest = createAsyncThunk(
+  'user/sendRequest',
+  async (userId, thunkAPI) => {
+    try {
+      const response = await sendRequest(userId);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -354,7 +368,18 @@ const userSlice = createSlice({
       })
       .addCase(unfriendUser.rejected, (state, action) => {
         state.isLoading = false;
-
+        toast.error(action.payload);
+      })
+      .addCase(sendFriendRequest.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(sendFriendRequest.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.viewingUserProfileInfo.friendRequests =
+          action.payload.updatedFriendRequests;
+      })
+      .addCase(sendFriendRequest.rejected, (state, action) => {
+        state.isLoading = false;
         toast.error(action.payload);
       });
   },

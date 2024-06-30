@@ -121,6 +121,12 @@
   gap: 0.5em;
 }
 
+.friend-request-options {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
 .friend-check {
   display: flex;
   align-items: center;

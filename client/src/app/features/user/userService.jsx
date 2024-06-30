@@ -61,3 +61,8 @@ export const unfriend = async (friendId) => {
   const response = await axios.patch(`/api/users/removefriend/${friendId}`);
   return response;
 };
+
+export const sendRequest = async (userId) => {
+  const response = await axios.patch(`/api/users/friendrequest/${userId}`);
+  return response;
+};

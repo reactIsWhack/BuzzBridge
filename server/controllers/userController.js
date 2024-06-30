@@ -195,10 +195,21 @@ const friendRequest = asyncHandler(async (req, res) => {
 
   // The friendRequests array of a user represents all of the userId's that have requested to be a friend of this user. It will be populated during GET requests
 
-  const updatedRequestedUser = await requestedUser.save();
+  const updatedRequestedUser = await requestedUser
+    .save()
+    .then((user) =>
+      user.populate({
+        path: 'friendRequests',
+        model: 'user',
+        select: '-password',
+      })
+    );
 
   if (updatedRequestedUser) {
-    res.status(200).json({ message: 'Friend Request Sent!' });
+    res.status(200).json({
+      message: 'Friend Request Sent!',
+      updatedFriendRequests: updatedRequestedUser.friendRequests,
+    });
   }
 });
 
@@ -350,6 +361,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
           select: '-password',
         },
       },
+      { path: 'friendRequests', model: 'user', select: '-password' },
     ]);
 
   if (!user) {
@@ -471,15 +483,13 @@ const removeFriend = asyncHandler(async (req, res) => {
     .then((user) =>
       user.populate({ path: 'friends', model: 'user', select: '-password' })
     );
-  const { friends } = await loggedInUser
-    .save()
-    .then((post) =>
-      post.populate({
-        path: 'friends',
-        model: 'user',
-        select: ['-password', '-posts'],
-      })
-    );
+  const { friends } = await loggedInUser.save().then((post) =>
+    post.populate({
+      path: 'friends',
+      model: 'user',
+      select: ['-password', '-posts'],
+    })
+  );
 
   res.status(200).json({
     loggedInUserFriends: friends,
