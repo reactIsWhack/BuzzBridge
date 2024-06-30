@@ -12,6 +12,7 @@ const {
   updateUser,
   removeFriend,
   declineFriendRequest,
+  cancelFriendRequest,
 } = require('../controllers/userController');
 const protect = require('../middleware/routeProtector');
 const uploader = require('../utils/fileUpload');
@@ -29,5 +30,6 @@ router.get('/allusers/:skip', protect, getAllUsers);
 router.get('/userprofile/:userId', protect, getUserProfile);
 router.patch('/update', protect, uploader.single('avatar'), updateUser);
 router.patch('/removefriend/:friendId', protect, removeFriend);
+router.patch('/cancelfriendrequest/:userId', protect, cancelFriendRequest);
 
 module.exports = router;

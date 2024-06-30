@@ -101,6 +101,23 @@ describe('PATCH /users', () => {
     expect(updatedTestUser.friends.length).toBe(3);
   });
 
+  it('Should cancel one friend request sent by the test user', async () => {
+    const canceledUser = randomUsers[4];
+    const response = await request(app)
+      .patch(`/api/users/cancelfriendrequest/${canceledUser._id}`)
+      .set('Cookie', [...token])
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    console.log(response.body);
+
+    expect(response.body.updatedFriendRequests.length).toBeFalsy();
+    expect(
+      response.body.updatedFriendRequests.map((request) =>
+        request._id.toString()
+      )
+    ).not.toContain(user._id.toString());
+  });
+
   it("Should update the user's avatar", async () => {
     const response = await request(app)
       .patch('/api/users/update')

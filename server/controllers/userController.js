@@ -277,7 +277,7 @@ const declineFriendRequest = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.userId);
   const updatedFriendRequests = user.friendRequests.filter(
-    (friendRequest) => String(friendRequest._id) !== String(userId)
+    (friendRequest) => String(friendRequest) !== String(userId)
   );
   user.friendRequests = updatedFriendRequests;
 
@@ -288,9 +288,34 @@ const declineFriendRequest = asyncHandler(async (req, res) => {
       select: '-password',
     })
   );
-  console.log(updatedUser, 'updatedUser');
 
   res.status(200).json(updatedUser);
+});
+
+const cancelFriendRequest = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const requestedUser = await User.findById(userId);
+
+  if (!requestedUser) {
+    res.status(404).json({ message: 'User not found' });
+  }
+
+  const updatedFriendRequests = requestedUser.friendRequests.filter(
+    (friendRequest) => String(friendRequest) !== String(req.userId)
+  );
+  requestedUser.friendRequests = updatedFriendRequests;
+  const updatedRequestedUser = await requestedUser.save().then((user) =>
+    user.populate({
+      path: 'friendRequests',
+      model: 'user',
+      select: '-password',
+    })
+  );
+
+  res
+    .status(200)
+    .json({ updatedFriendRequests: updatedRequestedUser.friendRequests });
 });
 
 const getLoggedInUser = asyncHandler(async (req, res) => {
@@ -505,4 +530,5 @@ module.exports = {
   updateUser,
   removeFriend,
   declineFriendRequest,
+  cancelFriendRequest,
 };
