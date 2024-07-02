@@ -17,14 +17,13 @@ const GeneralPostInfo = ({ author, createdAt }) => {
 
   const handleMouseOver = () => {
     if (!fullPostDateMounted && !renderFullPostDate) {
-      setTimeout(() => {
-        setRenderFullPostDate(true);
-        setFullPostDateMounted(true);
-      }, 1000);
+      setRenderFullPostDate(true);
+      setFullPostDateMounted(true);
     }
   };
   const handleMouseLeave = () => setFullPostDateMounted(false);
   const navigateToProfile = () => navigate(`/userprofile/${author._id}`);
+  const closeHoverInfo = () => setRenderFullPostDate(false);
 
   return (
     <div className="author-info">
@@ -42,13 +41,15 @@ const GeneralPostInfo = ({ author, createdAt }) => {
             currentYear !== year ? `, ${year}` : ''
           } at ${time} ${daytime}`}</span>
           {renderFullPostDate && (
-            <HoverInfo
-              isMounted={fullPostDateMounted}
-              setRenderHoverWindow={setRenderFullPostDate}
-              className="post-full-date"
-            >
-              <FullDateCreation createdAt={createdAt} />
-            </HoverInfo>
+            <div onMouseOver={closeHoverInfo}>
+              <HoverInfo
+                isMounted={fullPostDateMounted}
+                setRenderHoverWindow={setRenderFullPostDate}
+                className="post-full-date"
+              >
+                <FullDateCreation createdAt={createdAt} />
+              </HoverInfo>
+            </div>
           )}{' '}
           {/* HoverInfo is a  component that has the smooth transition of a div when conditionally rendered */}
         </div>

@@ -8,7 +8,6 @@ const ProfileNavbar = () => {
   const { viewingUserProfileInfo } = useSelector(selectUser);
 
   const setActiveClassName = ({ isActive }) => {
-    console.log(isActive);
     return `profile-link ${
       isActive ? 'profile-link-active' : 'profile-link-inactive'
     } `;
