@@ -69,7 +69,11 @@ const Comment = ({ commentMessage, author, likes, createdAt, _id, postId }) => {
           commentInEditedComments && 'comment-top-edit'
         }`}
       >
-        <img src={author.photo} onClick={navigateToProfile} />
+        <img
+          src={author.photo}
+          onClick={navigateToProfile}
+          className="comment-pfp"
+        />
         {commentInEditedComments ? (
           <CommentBarTextarea
             id={_id}

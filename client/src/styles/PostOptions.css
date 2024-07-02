@@ -1,6 +1,10 @@
 .post-options,
 .comment-options {
   position: relative;
+  display: flex;
+}
+
+.post-options {
   margin-right: 1em;
 }
 
@@ -13,11 +17,6 @@
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.275);
   text-transform: capitalize;
-}
-
-.comment-menu-container {
-  width: 210px;
-  padding: 0.5em 0.25em;
 }
 
 .post-menu-container:after,
@@ -66,6 +65,6 @@
 
 .delete-post-option img,
 .edit-post-option img {
-  height: 25px;
+  height: 30px;
   cursor: pointer;
 }

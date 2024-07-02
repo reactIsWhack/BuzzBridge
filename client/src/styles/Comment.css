@@ -53,7 +53,7 @@
   text-transform: capitalize;
 }
 
-.comment-top img {
+.comment-pfp {
   height: 32px;
   width: 32px;
   border-radius: 50%;
@@ -86,6 +86,7 @@
   font-size: 0.8rem;
   padding-top: 0.2em;
   word-wrap: break-word;
+  min-width: 135px;
 }
 
 .comment-content span:hover {
