@@ -1,0 +1,129 @@
+.profile-main-content {
+  display: flex;
+  margin-top: 1.5em;
+  padding: 0 6em 2em 6em;
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.profile-friends-preview {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  padding: 0.5em 0.85em;
+}
+
+.profile-posts {
+  flex: 1.25;
+}
+
+.friend-captions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.friends-label {
+  text-decoration: none;
+  color: black;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.friends-label:hover {
+  text-decoration: underline;
+}
+
+.all-friends-caption {
+  text-decoration: none;
+  color: #1877f2;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  padding: 0.5em;
+  transition: background 0.4s;
+}
+
+.all-friends-caption:hover {
+  background: #f1f1f1;
+}
+
+.user-friends-total {
+  font-size: 0.9rem;
+  color: #65676b;
+  margin-top: -0.2em;
+}
+
+.friend-preview-cards-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 0.75em;
+  margin-top: 1.25em;
+  row-gap: 1.25em;
+}
+
+.friend-preview-card a {
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  font-weight: 550;
+  cursor: pointer;
+  text-decoration: none;
+  color: black;
+}
+
+.friend-preview-card a:hover {
+  text-decoration: underline;
+}
+
+.friend-preview-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: filter 1s ease;
+}
+
+.friend-preview-card img:hover {
+  filter: brightness(90%);
+}
+
+@media screen and (max-width: 1050px) {
+  .profile-main-content {
+    padding: 0 2em 2em 2em;
+  }
+
+  .friend-preview-cards-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .profile-main-content {
+    flex-direction: column;
+    padding: 0 2.75em 2em 2.75em;
+  }
+
+  .friend-preview-cards-container {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .profile-main-content {
+    padding: 0 1em 2em 1em;
+  }
+
+  .friend-preview-cards-container {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (max-width: 535px) {
+  .profile-main-content {
+    padding: 0 0 2em 0;
+  }
+
+  .profile-friends-preview {
+    border-radius: 0;
+  }
+}

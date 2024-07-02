@@ -14,7 +14,7 @@ import {
 } from './app/features/user/userSlice';
 import { getAllPosts, selectPosts } from './app/features/posts/postsSlice';
 import UserProfile from './pages/UserProfile';
-import ProfileMainContent from './components/ProfileMainContent';
+import ProfileMainContent from './pages/ProfileMainContent';
 import ProfileFriends from './components/ProfileFriends';
 
 axios.defaults.withCredentials = true;

@@ -27,27 +27,6 @@
   position: relative;
 }
 
-@media screen and (max-width: 1050px) {
-  .cover-photo-img {
-    height: 380px;
-    border-radius: 0;
-  }
-}
-
-@media screen and (max-width: 830px) {
-  .cover-photo-img {
-    height: 270px;
-    border-radius: 0;
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .cover-photo-img {
-    height: 170px;
-    border-radius: 0;
-  }
-}
-
 .user-profile-info {
   padding: 1.5em 2em 0.65em 2em;
   display: flex;
@@ -174,6 +153,13 @@
   background: #1877f2;
 }
 
+@media screen and (max-width: 1050px) {
+  .cover-photo-img {
+    height: 380px;
+    border-radius: 0;
+  }
+}
+
 @media screen and (max-width: 830px) {
   .user-profile-info {
     flex-direction: column;
@@ -192,5 +178,30 @@
 
   .friend-labels {
     margin: 1em auto 0.5em auto;
+  }
+
+  .cover-photo-img {
+    height: 270px;
+    border-radius: 0;
+    margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .cover-photo-img {
+    height: 170px;
+    border-radius: 0;
+  }
+
+  .friend-labels {
+    margin: 1em 0.5em;
+  }
+
+  .profile-border {
+    margin: 0 1em;
+  }
+
+  .user-profile-info {
+    padding: 1.5em 0 0.65em 0;
   }
 }

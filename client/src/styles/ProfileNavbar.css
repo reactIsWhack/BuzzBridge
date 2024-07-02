@@ -1,5 +1,5 @@
 .profile-navbar {
-  margin: 0 -0.5em;
+  margin: 0 2em;
 }
 
 .profile-nav-links {
@@ -8,6 +8,8 @@
   list-style-type: none;
   margin: 0;
   gap: 0.1em;
+  justify-content: left;
+  padding: 0;
 }
 
 .profile-nav-links li {
@@ -54,4 +56,10 @@
 
 .profile-nav-links li a {
   text-decoration: none;
+}
+
+@media screen and (max-width: 500px) {
+  .profile-navbar {
+    margin: 0 1em;
+  }
 }

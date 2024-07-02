@@ -5,7 +5,7 @@
   height: 60px;
   padding: 1em;
   justify-content: space-between;
-  z-index: 5;
+  z-index: 10;
   position: fixed;
   top: 0;
   right: 0;
